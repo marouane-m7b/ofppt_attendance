@@ -12,7 +12,8 @@ class AlertController extends Controller
      */
     public function index()
     {
-        //
+        $alerts = Alert::all()->load('etudiant');
+        return response()->json($alerts);
     }
 
     /**

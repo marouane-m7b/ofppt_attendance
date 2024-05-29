@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AlertController;
 use App\Http\Controllers\DesignerController;
 use App\Http\Controllers\EtudiantController;
 use App\Http\Controllers\FiliereController;
@@ -18,6 +19,7 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::delete('/secteurs/{secteur}', [SecteurController::class, 'destroy']);
     Route::put('/reset-validator/{id}', [ValidatorController::class, 'resetPassword']);
     Route::put('/reset-designer/{id}', [DesignerController::class, 'resetPassword']);
+    Route::get('/alerts', [AlertController::class, 'index']);
     Route::apiResources([
         'designers' => \App\Http\Controllers\DesignerController::class,
         'validators' => \App\Http\Controllers\ValidatorController::class,

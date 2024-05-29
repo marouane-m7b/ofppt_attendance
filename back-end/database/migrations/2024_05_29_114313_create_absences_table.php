@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->double('duree');
             $table->string('commentaire');
+            $table->boolean('is_justified')->default(false);
             $table->foreignId('etudiant_id')->nullable()->constrained('etudiants')->cascadeOnDelete();
             $table->foreignId('designer_id')->nullable()->constrained('designers')->cascadeOnDelete();
             $table->foreignId('validator_id')->nullable()->constrained('validators')->cascadeOnDelete();
