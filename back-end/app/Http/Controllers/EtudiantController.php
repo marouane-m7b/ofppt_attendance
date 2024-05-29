@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Designer;
 use App\Models\Etudiant;
 use App\Models\Filiere;
 use Illuminate\Http\Request;
@@ -41,8 +42,13 @@ class EtudiantController extends Controller
 
         $filiere = Filiere::find($request->filiere_id);
         if (!$filiere) {
-            return response()->json(['message' => 'Filiere not found'], 404);
+            return response()->json(['message2' => 'Filiere not found'], 404);
         }
+
+        $designer = Designer::find($request->designer_id);
+        if (!$designer) {
+            return response()->json(['message1' => 'Designer not found'], 404);
+        } 
 
         $etudiant = new Etudiant();
         $etudiant->cin = $request->cin;

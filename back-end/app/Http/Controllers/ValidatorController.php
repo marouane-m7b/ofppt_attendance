@@ -53,7 +53,6 @@ class ValidatorController extends Controller
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|email|unique:validators,email',
-            'secteur_id' => 'required',
         ]);
 
         $password = 'ofppt';
@@ -100,43 +99,5 @@ class ValidatorController extends Controller
         $validator->password = Hash::make('ofppt');
         $validator->save();
         return response()->json($validator, 200);
-    }
-
-    public function questionsToValidate()
-    {
-        $validator = auth('validator')->user();
-        $questions = Question::where('secteur_id', $validator->secteur_id)->where('is_visible', false)->get();
-        return response()->json($questions, 200);
-    }
-
-    public function questionsValidated()
-    {
-        $validator = auth('validator')->user();
-        $questions = Question::where('secteur_id', $validator->secteur_id)->where('is_visible', true)->get();
-        return response()->json($questions, 200);
-    }
-
-    public function downloadQuestions($id)
-    {
-        $question = Question::find($id);
-        if ($question) {
-            $fileName = $question->file_path;
-            $filePath = storage_path('app/public/' . $fileName);
-
-            if (!file_exists($filePath)) {
-                return response()->json([
-                    "status" => 404,
-                    "message" => "cette question n'a pas une pdf"
-                ]);
-            }
-
-            $namePdf = 'Exam_' . $question->file_name . '.pdf';
-            return response()->download($filePath, $namePdf);
-        } else {
-            return response()->json([
-                "status" => 404,
-                "message" => "question non trouvé"
-            ]);
-        }
     }
 }
