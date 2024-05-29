@@ -20,18 +20,14 @@ class Filiere extends Model
     /**
      * Get the questions that belong to the filiere.
      */
-    public function questions()
+    public function etudiants()
     {
-        return $this->hasMany(Question::class);
+        return $this->hasMany(Etudiant::class);
     }
 
     /**
      * Get the validators that belong to the filiere.
      */
-    public function validators()
-    {
-        return $this->hasMany(Validator::class);
-    }
 
     public function secteur()
     {

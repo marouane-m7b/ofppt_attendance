@@ -18,7 +18,6 @@ class DatabaseSeeder extends Seeder
             SecteurSeeder::class,
             FiliereSeeder::class, 
             DesignerSeeder::class,
-            QuestionSeeder::class,
             ValidatorSeeder::class,
         ]);
     }

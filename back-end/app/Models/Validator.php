@@ -27,7 +27,6 @@ class Validator extends Authenticatable
         'last_name',
         'email',
         'password',
-        'secteur_id'
     ];
 
     /**
