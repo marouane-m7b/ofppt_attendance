@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('etudiant_id')->nullable()->constrained('etudiants')->cascadeOnDelete();
             $table->double('duree');
+            $table->boolean('is_validated')->default(false);
             $table->timestamps();
         });
     }
