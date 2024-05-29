@@ -7,18 +7,16 @@ import PropTypes from "prop-types";
 const CreateValidator = ({ targetModel, getAllValidators }) => {
   const { setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
-  const [secteurs, setSecteurs] = useState([]);
   const cancelModel = useRef();
   const addValidator = async (e) => {
     setLoading(true);
     e.preventDefault();
-    const { first_name, last_name, email, secteur } = e.target.elements;
+    const { first_name, last_name, email } = e.target.elements;
     try {
       const { data } = await axiosClient.post("admin/validators", {
         first_name: first_name.value,
         last_name: last_name.value,
         email: email.value,
-        secteur_id: secteur.value,
       });
       await getAllValidators();
       cancelModel.current.click();
@@ -36,19 +34,6 @@ const CreateValidator = ({ targetModel, getAllValidators }) => {
     }
   };
 
-  const getSecteurs = async () => {
-    try {
-      const { data } = await axiosClient.get("/secteur");
-      setSecteurs(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    getSecteurs();
-  }, []);
-
   return (
     <div
       className="modal fade"
@@ -61,7 +46,7 @@ const CreateValidator = ({ targetModel, getAllValidators }) => {
         <div className="modal-content">
           <div className="modal-header">
             <h1 className="modal-title fs-5" id="CreateValidator">
-              Ajouter Une Validateur
+              Ajouter Une Gestionnaire
             </h1>
             <button
               type="button"
@@ -115,22 +100,6 @@ const CreateValidator = ({ targetModel, getAllValidators }) => {
                   name="email"
                 />
                 <span className="text text-danger">{errors?.email}</span>
-              </div>
-
-              <div data-mdb-input-init className="form-outline mb-4">
-                <label className="form-label" htmlFor="form2Example2">
-                  Secteur <span className="text text-danger">*</span>
-                </label>
-                <br />
-                <select name="secteur" id="secteur" className="form-select">
-                  <option value="">Selectionner une secteur</option>
-                  {secteurs?.map((secteur) => (
-                    <option key={secteur.id} value={secteur.id}>
-                      {secteur.nom}
-                    </option>
-                  ))}
-                </select>
-                <span className="text text-danger">{errors?.secteur_id}</span>
               </div>
 
               <div className="modal-footer">

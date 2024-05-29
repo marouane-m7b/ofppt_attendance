@@ -4,54 +4,52 @@ import { axiosClient } from "../../config/Api/AxiosClient";
 import Swal from "sweetalert2";
 import PropTypes from "prop-types";
 
-const CreateAbsence = ({ targetModel, getAllDesigners }) => {
+const CreateAbsence = ({ targetModel, getAllDesigners, role }) => {
   const { setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
   const cancelModel = useRef();
   const addAbsence = async (e) => {
     setLoading(true);
     e.preventDefault();
-    const { etudiant, commantaire, duree } = e.target.elements;
+    const { etudiant, commentaire, duree } = e.target.elements;
+
+    console.log(commentaire);
     try {
-      const { data } = await axiosClient.post("admin/designers", {
-        etudiant: etudiant.value,
-        commantaire: commantaire.value,
-        duree: duree.value,
+      const { data } = await axiosClient.post(`${`/${role}/absences`}`, {
+        etudiant_id: etudiant?.value,
+        commentaire: commentaire?.value,
+        duree: duree?.value,
+      });
+      console.log(data);
+      Swal.fire({
+        text: data.message,
+        icon: "success",
       });
       await getAllDesigners();
       cancelModel.current.click();
-      Swal.fire({
-        title: data.message,
-        text: "Mote de passe : " + data.password,
-        icon: "success",
-      });
-      console.log(data);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       setErrors(error.response.data.errors);
     } finally {
       setLoading(false);
     }
   };
-  const [etudiants, setEtudiants] = useState([
-    {
-      nom: 'zakaria',
-      prenom: 'el houmidi',
-      filiere: 'full stack',
-      cin: 'bj2020',
-      numero_telephone: '0632287513',
-      numero_parent: '0632287513',
-    },
-    {
-      nom: 'marwan',
-      prenom: 'mahboub',
-      filiere: 'full stack',
-      cin: 'bj2020',
-      numero_telephone: '0632287513',
-      numero_parent: '0632287513',
-    }
-  ]);
+  const [etudiants, setEtudiants] = useState([]);
 
+  const getEtudiants = async () => {
+    try {
+      const { data } = await axiosClient.get(`${`/${role}/etudiants`}`);
+      setEtudiants(data);
+      console.log(data);
+      setErrors(null);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getEtudiants();
+  }, []);
   return (
     <div
       className="modal fade"
