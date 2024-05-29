@@ -1,20 +1,19 @@
 import React, { useRef, useState } from "react";
 import { useAppContext } from "../../config/context/ComponentContext";
 import { axiosClient } from "../../config/Api/AxiosClient";
-import Swal from "sweetalert2";
 
-const UpdateDesigner = ({ targetModel, designer, getAllDesigners }) => {
+const UpdateEtudiant = ({ targetModel, etudiant, getAllDesigners }) => {
   const { navigateTo, setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
   const cancelModel = useRef();
 
-  const updateDesigner = async (e) => {
+  const updateEtudiant = async (e) => {
     setLoading(true);
     e.preventDefault();
     const { first_name, last_name, email } = e.target.elements;
     try {
       const { data } = await axiosClient.put(
-        "admin/designers/" + designer?.id,
+        "admin/designers/" + etudiant?.id,
         {
           first_name: first_name.value,
           last_name: last_name.value,
@@ -42,13 +41,13 @@ const UpdateDesigner = ({ targetModel, designer, getAllDesigners }) => {
       className="modal fade"
       id={targetModel}
       tabIndex={-1}
-      aria-labelledby="UpdateDesigner"
+      aria-labelledby="UpdateEtudiant"
       aria-hidden="true"
     >
       <div className="modal-dialog">
         <div className="modal-content">
           <div className="modal-header">
-            <h1 className="modal-title fs-5" id="UpdateDesigner">
+            <h1 className="modal-title fs-5" id="UpdateEtudiant">
               Modifier Une Concepteur
             </h1>
             <button
@@ -59,7 +58,7 @@ const UpdateDesigner = ({ targetModel, designer, getAllDesigners }) => {
             />
           </div>
           <div className="modal-body">
-            <form onSubmit={updateDesigner}>
+            <form onSubmit={updateEtudiant}>
               <div data-mdb-input-init className="form-outline mb-4">
                 <label className="form-label" htmlFor="form2Example1">
                   Nom <span className="text text-danger">*</span>
@@ -67,7 +66,7 @@ const UpdateDesigner = ({ targetModel, designer, getAllDesigners }) => {
                 <input
                   type="text"
                   id="form2Example1"
-                  defaultValue={designer?.first_name}
+                  defaultValue={etudiant?.first_name}
                   className={
                     "form-control" + (errors?.first_name ? " is-invalid" : "")
                   }
@@ -83,7 +82,7 @@ const UpdateDesigner = ({ targetModel, designer, getAllDesigners }) => {
                 <input
                   type="text"
                   id="form2Example2"
-                  defaultValue={designer?.last_name}
+                  defaultValue={etudiant?.last_name}
                   className={
                     "form-control" + (errors?.last_name ? " is-invalid" : "")
                   }
@@ -99,7 +98,7 @@ const UpdateDesigner = ({ targetModel, designer, getAllDesigners }) => {
                 <input
                   type="email"
                   id="form2Example2"
-                  defaultValue={designer?.email}
+                  defaultValue={etudiant?.email}
                   className={
                     "form-control" + (errors?.email ? " is-invalid" : "")
                   }
@@ -141,4 +140,4 @@ const UpdateDesigner = ({ targetModel, designer, getAllDesigners }) => {
   );
 };
 
-export default UpdateDesigner;
+export default UpdateEtudiant;

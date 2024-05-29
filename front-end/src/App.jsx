@@ -26,6 +26,10 @@ import AllSecteurs from "./componets/admin/secteurs/AllSecteurs";
 import AllFilieres from "./componets/admin/filieres/AllFilieres";
 import AdminQuestion from "./componets/admin/questions/AdminQuestion";
 import DesignerQuestion from "./componets/designer/questions/DesignerQuestion";
+import EtudiantList from "./componets/designer/questions/EtudiantListFormateur";
+import EtudiantListFormateur from "./componets/designer/questions/EtudiantListFormateur";
+import EtudiantListGestionnaire from "./componets/Validator/_questions/EtudiantListGestionnaire";
+import AllEtudiant from "./componets/admin/etudiants/AllEtudiant";
 
 function App() {
   return (
@@ -43,9 +47,9 @@ function App() {
         <Route path="/administrateur" element={<AdminIndex />}>
           <Route
             index
-            element={<Navigate to={"/administrateur/concepteurs-managment"} />}
+            element={<Navigate to={"/administrateur/etudiant-managment"} />}
           />
-          <Route path="concepteurs-managment" element={<AllDesigners />} />
+          <Route path="etudiant-managment" element={<AllEtudiant />} />
           <Route path="validateurs-managment" element={<AllValidators />} />
           <Route path="questions-managment" element={<AllAdminQuestions />} />
           <Route path="questions-managment/:id" element={<AdminQuestion />} />
@@ -56,9 +60,9 @@ function App() {
         <Route path="/concepteur" element={<ConcepteurIndex />}>
           <Route
             index
-            element={<Navigate to={"/concepteur/ajouter-questions"} />}
+            element={<Navigate to={"/concepteur/list-etudiants"} />}
           />
-          <Route path="ajouter-questions" element={<AddQuestions />} />
+          <Route path="list-etudiants" element={<EtudiantListFormateur />} />
           <Route path="voir-questions" element={<VoirQuestions />} />
           <Route path="voir-questions/:id" element={<DesignerQuestion />} />
         </Route>
@@ -66,8 +70,9 @@ function App() {
         <Route path="/validateur" element={<ValidateurIndex />}>
           <Route
             index
-            element={<Navigate to={"/validateur/questions-meanagment"} />}
+            element={<Navigate to={"/validateur/list-etudiants"} />}
           />
+          <Route path="list-etudiants" element={<EtudiantListGestionnaire />} />
           <Route path="questions-meanagment" element={<AllQuestions />} />
           <Route path="questions-meanagment/:id" element={<QuestionValidation />} />
           <Route path="questions-validated" element={<AllQuestionsValidated />} />
