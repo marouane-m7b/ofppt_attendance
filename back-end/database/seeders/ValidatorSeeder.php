@@ -17,22 +17,22 @@ class ValidatorSeeder extends Seeder
     {
         $data = [
             // Communication & Soft Skills
-            ['first_name' => 'Kaoutar', 'last_name' => 'Meddri', 'email' => 'kaoutar.meddri@ofppt.ma', 'secteur_id' => Secteur::where('nom', 'Communication & Soft Skills')->first()->id, 'password' => Hash::make('ofppt')],
-            ['first_name' => 'Khadija', 'last_name' => 'Traf', 'email' => 'khadija.traf@ofppt.ma', 'secteur_id' => Secteur::where('nom', 'Communication & Soft Skills')->first()->id, 'password' => Hash::make('ofppt')],
-            ['first_name' => 'Khadija', 'last_name' => 'Chekrani', 'email' => 'khadija.chekrani@ofppt.ma', 'secteur_id' => Secteur::where('nom', 'Communication & Soft Skills')->first()->id, 'password' => Hash::make('ofppt')],
+            ['first_name' => 'Kaoutar', 'last_name' => 'Meddri', 'email' => 'kaoutar.meddri@ofppt.ma', 'password' => Hash::make('ofppt')],
+            ['first_name' => 'Khadija', 'last_name' => 'Traf', 'email' => 'khadija.traf@ofppt.ma', 'password' => Hash::make('ofppt')],
+            ['first_name' => 'Khadija', 'last_name' => 'Chekrani', 'email' => 'khadija.chekrani@ofppt.ma', 'password' => Hash::make('ofppt')],
             // Génie électrique
-            ['first_name' => 'Faical', 'last_name' => 'Essaiydy', 'email' => 'faical.essaiydy@ofppt.ma', 'secteur_id' => Secteur::where('nom', 'Génie électrique')->first()->id, 'password' => Hash::make('ofppt')],
-            ['first_name' => 'Mohammed', 'last_name' => 'Salahi', 'email' => 'mohammed.salahi@ofppt.ma', 'secteur_id' => Secteur::where('nom', 'Génie électrique')->first()->id, 'password' => Hash::make('ofppt')],
-            ['first_name' => 'Said', 'last_name' => 'Fallah', 'email' => 'said.fallah@ofppt.ma', 'secteur_id' => Secteur::where('nom', 'Génie électrique')->first()->id, 'password' => Hash::make('ofppt')],
-            ['first_name' => 'Abdelhadi', 'last_name' => 'Souda', 'email' => 'abdelhadi.souda@ofppt.ma', 'secteur_id' => Secteur::where('nom', 'Génie électrique')->first()->id, 'password' => Hash::make('ofppt')],
-            ['first_name' => 'Ilham', 'last_name' => 'Barhdadi', 'email' => 'ilham.barhdadi@ofppt.ma', 'secteur_id' => Secteur::where('nom', 'Génie électrique')->first()->id, 'password' => Hash::make('ofppt')],
+            ['first_name' => 'Faical', 'last_name' => 'Essaiydy', 'email' => 'faical.essaiydy@ofppt.ma', 'password' => Hash::make('ofppt')],
+            ['first_name' => 'Mohammed', 'last_name' => 'Salahi', 'email' => 'mohammed.salahi@ofppt.ma', 'password' => Hash::make('ofppt')],
+            ['first_name' => 'Said', 'last_name' => 'Fallah', 'email' => 'said.fallah@ofppt.ma', 'password' => Hash::make('ofppt')],
+            ['first_name' => 'Abdelhadi', 'last_name' => 'Souda', 'email' => 'abdelhadi.souda@ofppt.ma', 'password' => Hash::make('ofppt')],
+            ['first_name' => 'Ilham', 'last_name' => 'Barhdadi', 'email' => 'ilham.barhdadi@ofppt.ma', 'password' => Hash::make('ofppt')],
             // Génie Mécanique
-            ['first_name' => 'Badr-eddine', 'last_name' => 'Aaqil', 'email' => 'badr-eddine.aaqil@ofppt.ma', 'secteur_id' => Secteur::where('nom', 'Génie Mécanique')->first()->id, 'password' => Hash::make('ofppt')],
-            ['first_name' => 'Ahmed', 'last_name' => 'Eddanguir', 'email' => 'ahmed.eddanguir@ofppt.ma', 'secteur_id' => Secteur::where('nom', 'Génie Mécanique')->first()->id, 'password' => Hash::make('ofppt')],
+            ['first_name' => 'Badr-eddine', 'last_name' => 'Aaqil', 'email' => 'badr-eddine.aaqil@ofppt.ma', 'password' => Hash::make('ofppt')],
+            ['first_name' => 'Ahmed', 'last_name' => 'Eddanguir', 'email' => 'ahmed.eddanguir@ofppt.ma', 'password' => Hash::make('ofppt')],
             // Métiers de l’Automobile
-            ['first_name' => 'Ayoub', 'last_name' => 'Rajil', 'email' => 'ayoub.rajil@ofppt.ma', 'secteur_id' => Secteur::where('nom', 'Métiers de l’Automobile')->first()->id, 'password' => Hash::make('ofppt')],
-            ['first_name' => 'Khalid', 'last_name' => 'Naji', 'email' => 'khalid.naji@ofppt.ma', 'secteur_id' => Secteur::where('nom', 'Métiers de l’Automobile')->first()->id, 'password' => Hash::make('ofppt')],
-            ['first_name' => 'Salaheddine', 'last_name' => 'Bahri', 'email' => 'salaheddine.bahri@ofppt.ma', 'secteur_id' => Secteur::where('nom', 'Métiers de l’Automobile')->first()->id, 'password' => Hash::make('ofppt')],
+            ['first_name' => 'Ayoub', 'last_name' => 'Rajil', 'email' => 'ayoub.rajil@ofppt.ma', 'password' => Hash::make('ofppt')],
+            ['first_name' => 'Khalid', 'last_name' => 'Naji', 'email' => 'khalid.naji@ofppt.ma', 'password' => Hash::make('ofppt')],
+            ['first_name' => 'Salaheddine', 'last_name' => 'Bahri', 'email' => 'salaheddine.bahri@ofppt.ma', 'password' => Hash::make('ofppt')],
         ];
 
         foreach ($data as $validatorData) {

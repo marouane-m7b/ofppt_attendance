@@ -49,4 +49,9 @@ class Designer extends Authenticatable
             'password' => 'hashed',
         ];
     }
+
+    public function etudiants()
+    {
+        return $this->hasMany(Etudiant::class);
+    }
 }

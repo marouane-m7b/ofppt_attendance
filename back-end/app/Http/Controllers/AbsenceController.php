@@ -2,25 +2,18 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Critere;
+use App\Models\Absence;
 use Illuminate\Http\Request;
 
-class CritereController extends Controller
+class AbsenceController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $absences = Absence::all();
+        return response()->json($absences);
     }
 
     /**
@@ -28,21 +21,17 @@ class CritereController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rules = [
+            'etudiant_id' => 'required|exists:etudiants,id',
+            'date' => 'required|date',
+            'type' => 'required|string'
+        ];
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Critere $critere)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Critere $critere)
+    public function show(Absence $absence)
     {
         //
     }
@@ -50,7 +39,7 @@ class CritereController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Critere $critere)
+    public function update(Request $request, Absence $absence)
     {
         //
     }
@@ -58,7 +47,7 @@ class CritereController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Critere $critere)
+    public function destroy(Absence $absence)
     {
         //
     }
