@@ -12,7 +12,7 @@ class AlertController extends Controller
      */
     public function index()
     {
-        $alerts = Alert::all()->load('etudiant');
+        $alerts = Alert::with(['etudiant.absences.designer', 'etudiant.absences.validator'])->get();
         return response()->json($alerts);
     }
 

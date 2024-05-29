@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Alert extends Model
 {
     use HasFactory;
-    
+
     public function etudiant()
     {
         return $this->belongsTo(Etudiant::class);

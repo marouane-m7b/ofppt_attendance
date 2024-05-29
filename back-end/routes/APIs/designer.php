@@ -12,5 +12,4 @@ Route::middleware(['auth:designer'])->group(function () {
     Route::get('/absences/{id}', [AbsenceController::class, 'show']);
     Route::put('/absences/{id}', [AbsenceController::class, 'update']);
     Route::delete('/absences/{id}', [AbsenceController::class, 'destroy']);
-    Route::get('/alerts', [AlertController::class, 'index']);
 });
