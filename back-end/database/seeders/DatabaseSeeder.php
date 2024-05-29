@@ -16,9 +16,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminSeeder::class,
             SecteurSeeder::class,
-            FiliereSeeder::class, 
+            FiliereSeeder::class,
             DesignerSeeder::class,
             ValidatorSeeder::class,
+            EtudiantSeeder::class,
         ]);
     }
 }

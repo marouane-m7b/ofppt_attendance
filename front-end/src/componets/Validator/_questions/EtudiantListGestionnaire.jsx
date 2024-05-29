@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import CreateAbsence from "../../models/CreateAbsence";
 import { axiosClient } from "../../../config/Api/AxiosClient";
 
@@ -7,24 +7,22 @@ export default function EtudiantListGestionnaire() {
     const [loading, setLoading] = useState(false)
     const [errors, setErrors] = useState([]);
     const [absence, setAbsence] = useState([]);
-    const [etudiants, setEtudiants] = useState([
-        {
-            nom: 'yahya',
-            prenom: 'hamdy',
-            filiere: 'full stack',
-            cin: 'bj2020',
-            numero_telephone: '0632287513',
-            numero_parent: '0632287513',
-        },
-        {
-            nom: 'marwan',
-            prenom: 'mahboub',
-            filiere: 'full stack',
-            cin: 'bj2020',
-            numero_telephone: '0632287513',
-            numero_parent: '0632287513',
+    const [etudiants, setEtudiants] = useState([]);
+    const [alerts, setAlerts] = useState([]);
+
+    const getEtudiants = async () => {
+        try {
+            const { data } = await axiosClient.get("validator/etudiants");
+            setEtudiants(data);
+            setErrors(null);
+        } catch (error) {
+            console.log(error);
         }
-    ]);
+    };
+
+    useEffect(() => {
+        getEtudiants();
+    }, []);
 
     const displayEtudiant = () => {
         if (etudiants?.length > 0) {
@@ -36,7 +34,7 @@ export default function EtudiantListGestionnaire() {
                             <th>{etudiant?.prenom}</th>
                             <th>{etudiant?.cin}</th>
                             <th>{etudiant?.filiere}</th>
-                            <th>{etudiant?.numero_telephone}</th>
+                            <th>{etudiant?.numero_stagiaire}</th>
                             <th>{etudiant?.numero_parent}</th>
                         </tr>
                     )
@@ -54,19 +52,39 @@ export default function EtudiantListGestionnaire() {
     const getAllDesigners = async () => {
         try {
             const { data } = await axiosClient.get("admin/designers");
-            setAbsence(data);
+            // setAbsence(data);
             setErrors(null);
         } catch (error) {
             console.log(error);
         }
     };
+
+    const getAlerts = async () => {
+        try {
+            const { data } = await axiosClient.get("validator/alerts");
+            setAlerts(data);
+            console.log(data[0]);
+            setErrors(null);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    useEffect(() => {
+        getAlerts();
+    }, []);
     return (
         <>
             <div className="row g-3 w-75 m-auto">
-                <div className="alert alert-danger" role="alert">
-                    <strong>Zakaria houmidi</strong> Depace 20 h
-                </div>
-
+                {
+                    alerts?.map((alert) => {
+                        return (
+                            <div key={alert?.id} className="alert alert-danger" role="alert">
+                                <strong>{alert?.etudiant?.nom} {alert?.etudiant?.prenom}</strong> {alert?.duree} H
+                            </div>
+                        )
+                    })
+                }
             </div>
             <div className="row g-3 w-75 m-auto">
                 <div className="d-flex align-items-center justify-content-between">
@@ -82,8 +100,8 @@ export default function EtudiantListGestionnaire() {
                             <tr>
                                 <th>Nom</th>
                                 <th>Prenom</th>
-                                <th>Filiere</th>
                                 <th>Cin</th>
+                                <th>Filiere</th>
                                 <th>Numero de Telephone</th>
                                 <th>Numero de Parent</th>
                             </tr>

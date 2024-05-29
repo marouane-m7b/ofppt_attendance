@@ -12,8 +12,9 @@ export default function AllEtudiant() {
     const { setErrors } = useAppContext();
     const getAllDesigners = async () => {
         try {
-            const { data } = await axiosClient.get("admin/designers");
-            setDesigners(data);
+            const { data } = await axiosClient.get("admin/etudiants");
+
+            setEtudiants(data);
             setErrors(null);
         } catch (error) {
             console.log(error);
@@ -22,10 +23,10 @@ export default function AllEtudiant() {
     const deleteEtudiant = async (etudiant) => {
         setDeleteLoading(true);
         document.getElementById(
-            "deleteBtnEtudiants" + designer?.id
+            "deleteBtnEtudiants" + etudiant?.id
         ).disabled = true;
         document.getElementById(
-            "deleteBtnEtudiants" + designer?.id
+            "deleteBtnEtudiants" + etudiant?.id
         ).innerHTML = `<span
       class="spinner-border spinner-border-sm"
       role="status"
@@ -33,37 +34,30 @@ export default function AllEtudiant() {
     ></span>`;
         try {
             await axiosClient.delete(
-                "admin/designers/" + designer?.id
+                "admin/etudiants/" + etudiant?.id
             );
+            Swal.fire({
+                text: "Etudiant supprime avec success",
+                icon: "success",
+            });
             await getAllDesigners();
         } catch (error) {
             console.log(error);
         } finally {
             document.getElementById(
-                "deleteBtnEtudiants" + designer?.id
+                "deleteBtnEtudiants" + etudiant?.id
             ).disabled = false;
             document.getElementById(
-                "deleteBtnEtudiants" + designer?.id
+                "deleteBtnEtudiants" + etudiant?.id
             ).innerHTML = `Supprimer`;
             setDeleteLoading(false);
         }
     };
 
     useEffect(() => {
-        document.title = "Tous les concepteurs - OFPPT";
+        document.title = "Tous les etudiants - OFPPT";
         getAllDesigners();
     }, []);
-
-    const handleReset = async (validator) => {
-        try {
-            await axiosClient.put("admin/reset-designer/" + validator?.id);
-            Swal.fire("Le mot de passe a bien été réinitialisé !", "Nouveau mot de passe: ofppt", "success");
-            await getAllDesigners();
-        } catch (error) {
-            Swal.fire("Le mot de passe n'a pas pu être réinitialisé !", "Veuillez réessayer !", "error");
-            console.log(error);
-        }
-    };
     return (
         <div className="container mt-5 pt-5">
             <button
@@ -72,7 +66,7 @@ export default function AllEtudiant() {
                 data-bs-toggle="modal"
                 data-bs-target="#CreateEtudiant"
             >
-                Ajouter une concepteur
+                Ajouter une etudiant
             </button>
             <CreateEtudiant
                 targetModel="CreateEtudiant"
@@ -89,7 +83,10 @@ export default function AllEtudiant() {
                             <tr>
                                 <th>Nom</th>
                                 <th>Prenom</th>
-                                <th>E-mail</th>
+                                <th>Numero Stagiare</th>
+                                <th>Numero Parent</th>
+                                <th>Filiere</th>
+                                <th>Formateur</th>
                                 <th>Les Actions</th>
                             </tr>
                         </thead>
@@ -97,12 +94,19 @@ export default function AllEtudiant() {
                             {etudiants?.length > 0 ? (
                                 etudiants?.map((etudiant, i) => (
                                     <tr key={i}>
-                                        <td>{etudiant.first_name}</td>
-                                        <td>{etudiant.last_name}</td>
+                                        <td>{etudiant?.nom}</td>
+                                        <td>{etudiant?.prenom}</td>
                                         <td>
-                                            <Link to={"mailto:" + etudiant.email}>
-                                                {etudiant.email}
-                                            </Link>
+                                            +212 {etudiant?.numero_stagiaire}
+                                        </td>
+                                        <td>
+                                            +212 {etudiant?.numero_parent}
+                                        </td>
+                                        <td>
+                                            {etudiant?.filiere}
+                                        </td>
+                                        <td>
+                                            {etudiant?.designer}
                                         </td>
                                         <td>
                                             <div className="d-flex gap-1 flex-nowrap">
@@ -110,31 +114,24 @@ export default function AllEtudiant() {
                                                     type="button"
                                                     className="btn btn-success"
                                                     data-bs-toggle="modal"
-                                                    data-bs-target={"#UpdateEtudiant" + etudiant.id}
+                                                    data-bs-target={"#UpdateEtudiant" + etudiant?.id}
                                                 >
                                                     Edit
                                                 </button>
                                                 <button
                                                     type="button"
                                                     className="btn btn-danger"
-                                                    id={"deleteBtnEtudiants" + etudiant.id}
+                                                    id={"deleteBtnEtudiants" + etudiant?.id}
                                                     disabled={deleteLoading}
                                                     onClick={() => deleteEtudiant(etudiant)}
                                                 >
                                                     Supprimer
                                                 </button>
                                                 <UpdateEtudiant
-                                                    targetModel={"UpdateEtudiant" + etudiant.id}
+                                                    targetModel={"UpdateEtudiant" + etudiant?.id}
                                                     getAllDesigners={getAllDesigners}
-                                                    designer={etudiant}
+                                                    etudiant={etudiant}
                                                 />
-                                                <button
-                                                    onClick={() => handleReset(etudiant)}
-                                                    type="button"
-                                                    className="btn btn-primary"
-                                                >
-                                                    Reset mot de Passe
-                                                </button>
                                             </div>
                                         </td>
                                     </tr>

@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import CreateAbsence from "../../models/CreateAbsence";
 import { axiosClient } from "../../../config/Api/AxiosClient";
 
@@ -7,24 +7,21 @@ export default function EtudiantListFormateur() {
     const [loading, setLoading] = useState(false)
     const [errors, setErrors] = useState([]);
     const [absence, setAbsence] = useState([]);
-    const [etudiants, setEtudiants] = useState([
-        {
-            nom: 'zakaria',
-            prenom: 'el houmidi',
-            filiere: 'full stack',
-            cin: 'bj2020',
-            numero_telephone: '0632287513',
-            numero_parent: '0632287513',
-        },
-        {
-            nom: 'marwan',
-            prenom: 'mahboub',
-            filiere: 'full stack',
-            cin: 'bj2020',
-            numero_telephone: '0632287513',
-            numero_parent: '0632287513',
+    const [etudiants, setEtudiants] = useState([]);
+
+    const getEtudiants = async () => {
+        try {
+            const { data } = await axiosClient.get("designer/etudiants");
+            setEtudiants(data);
+            setErrors(null);
+        } catch (error) {
+            console.log(error);
         }
-    ]);
+    };
+
+    useEffect(() => {
+        getEtudiants();
+    }, []);
 
     const displayEtudiant = () => {
         if (etudiants?.length > 0) {
@@ -34,9 +31,9 @@ export default function EtudiantListFormateur() {
                         <tr key={etudiant?.id}>
                             <th>{etudiant?.nom}</th>
                             <th>{etudiant?.prenom}</th>
-                            <th>{etudiant?.cin}</th>
                             <th>{etudiant?.filiere}</th>
-                            <th>{etudiant?.numero_telephone}</th>
+                            <th>{etudiant?.cin}</th>
+                            <th>{etudiant?.numero_stagiaire}</th>
                             <th>{etudiant?.numero_parent}</th>
                         </tr>
                     )
@@ -64,6 +61,7 @@ export default function EtudiantListFormateur() {
         <>
             <div className="container mt-5 pt-5">
                 <CreateAbsence
+                    role="designer"
                     targetModel="CreateAbsence"
                     getAllDesigners={getAllDesigners}
                 />

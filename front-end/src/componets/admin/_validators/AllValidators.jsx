@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { axiosClient } from "../../../config/Api/AxiosClient";
 import { Link } from "react-router-dom";
 import { useAppContext } from "../../../config/context/ComponentContext";
@@ -7,8 +7,8 @@ import CreateValidator from "../../models/CreateValidator";
 import Swal from "sweetalert2";
 
 const AllValidators = () => {
-  const [validators, setValidators] = React.useState(null);
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [validators, setValidators] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const { setErrors } = useAppContext();
   const getAllValidators = async () => {
     try {
@@ -33,6 +33,11 @@ const AllValidators = () => {
   ></span>`;
     try {
       await axiosClient.delete("admin/validators/" + validator?.id);
+      Swal.fire({
+        icon: "success",
+        title: "Gestionnaire supprime avec success",
+        timer: 1500,
+      });
       await getAllValidators();
     } catch (error) {
       console.log(error);
@@ -48,14 +53,19 @@ const AllValidators = () => {
   };
 
   useEffect(() => {
-    document.title = "Tous les validateurs - OFPPT";
+    document.title = "Tous les gestionnaires - OFPPT";
     getAllValidators();
   }, []);
 
   const handleReset = async (validator) => {
     try {
       await axiosClient.put("admin/reset-validator/" + validator?.id);
-      Swal.fire("Le mot de passe a bien été réinitialisé !", "Nouveau mot de passe: ofppt", "success");
+      Swal.fire({
+        icon: "success",
+        html: "Le mot de passe a bien été réinitialisé !,<br /> <b>Nouveau mot de passe: </b> <p>ofppt</p>",
+        timer: 1500,
+      });
+      "", "", "success"
       await getAllValidators();
     } catch (error) {
       Swal.fire("Une erreur est survenue !", error.response.data.message, "error");
@@ -71,7 +81,7 @@ const AllValidators = () => {
         data-bs-toggle="modal"
         data-bs-target="#CreateValidator"
       >
-        Ajouter une Validateur
+        Ajouter une Gestionnaires
       </button>
       <CreateValidator
         targetModel="CreateValidator"
@@ -86,7 +96,6 @@ const AllValidators = () => {
               <th>Nom</th>
               <th>Prenom</th>
               <th>E-mail</th>
-              <th>Secteur</th>
               <th>Les Actions</th>
             </tr>
           </thead>
@@ -94,35 +103,34 @@ const AllValidators = () => {
             {validators?.length > 0 ? (
               validators?.map((validator, i) => (
                 <tr key={i}>
-                  <td>{validator.first_name}</td>
-                  <td>{validator.last_name}</td>
+                  <td>{validator?.first_name}</td>
+                  <td>{validator?.last_name}</td>
                   <td>
-                    <Link to={"mailto:" + validator.email}>
-                      {validator.email}
+                    <Link to={"mailto:" + validator?.email}>
+                      {validator?.email}
                     </Link>
                   </td>
-                  <td>{validator.secteur.nom}</td>
                   <td>
                     <div className="d-flex gap-1 flex-nowrap">
                       <button
                         type="button"
                         className="btn btn-success"
                         data-bs-toggle="modal"
-                        data-bs-target={"#UpdateValidator" + validator.id}
+                        data-bs-target={"#UpdateValidator" + validator?.id}
                       >
                         Edit
                       </button>
                       <button
                         type="button"
                         className="btn btn-danger"
-                        id={"deleteBtnValidator" + validator.id}
+                        id={"deleteBtnValidator" + validator?.id}
                         disabled={deleteLoading}
                         onClick={() => deleteValidator(validator)}
                       >
                         Supprimer
                       </button>
                       <UpdateValidator
-                        targetModel={"UpdateValidator" + validator.id}
+                        targetModel={"UpdateValidator" + validator?.id}
                         getAllValidators={getAllValidators}
                         validator={validator}
                       />
@@ -138,7 +146,7 @@ const AllValidators = () => {
                 </tr>
               ))
             ) : (
-              <h1 className="text-center mt-5 pt-5">Aucun Validateur</h1>
+              <h1 className="text-center mt-5 pt-5">Aucun Gestionnaires</h1>
             )}
           </tbody>
         </table>
