@@ -31,7 +31,7 @@ export default function EtudiantListFormateur() {
                         <tr key={etudiant?.id}>
                             <th>{etudiant?.nom}</th>
                             <th>{etudiant?.prenom}</th>
-                            <th>{etudiant?.filiere}</th>
+                            <th>{etudiant?.filiere?.nom}</th>
                             <th>{etudiant?.cin}</th>
                             <th>{etudiant?.numero_stagiaire}</th>
                             <th>{etudiant?.numero_parent}</th>

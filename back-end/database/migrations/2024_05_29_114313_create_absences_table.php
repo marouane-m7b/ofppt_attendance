@@ -19,6 +19,7 @@ return new class extends Migration
             $table->foreignId('etudiant_id')->nullable()->constrained('etudiants')->cascadeOnDelete();
             $table->foreignId('designer_id')->nullable()->constrained('designers')->cascadeOnDelete();
             $table->foreignId('validator_id')->nullable()->constrained('validators')->cascadeOnDelete();
+            $table->string('certificat')->nullable();
             $table->timestamps();
         });
     }
