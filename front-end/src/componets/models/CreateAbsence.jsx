@@ -4,7 +4,7 @@ import { axiosClient } from "../../config/Api/AxiosClient";
 import Swal from "sweetalert2";
 import PropTypes from "prop-types";
 
-const CreateAbsence = ({ targetModel, getAllDesigners, role }) => {
+const CreateAbsence = ({ targetModel, getAllDesigners, role, getAlerts }) => {
   const { setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
   const cancelModel = useRef();
@@ -26,6 +26,7 @@ const CreateAbsence = ({ targetModel, getAllDesigners, role }) => {
         icon: "success",
       });
       await getAllDesigners();
+      await getAlerts()
       cancelModel.current.click();
     } catch (error) {
       console.error(error);

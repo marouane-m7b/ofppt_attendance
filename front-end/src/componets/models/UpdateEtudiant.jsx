@@ -30,8 +30,8 @@ const UpdateEtudiant = ({ targetModel, etudiant, getAllDesigners }) => {
       await getAllDesigners();
       cancelModel.current.click();
       Swal.fire({
-        title: data.message,
-        text: data.message,
+        title: 'Etudiant modifié',
+        text: 'Etudiant modifié avec succes',
         icon: "success",
       });
       console.log(data);

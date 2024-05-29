@@ -10,6 +10,8 @@ export default function AllEtudiant() {
     const [etudiants, setEtudiants] = useState([]);
     const [deleteLoading, setDeleteLoading] = useState(false);
     const { setErrors } = useAppContext();
+    const [alerts, setAlerts] = useState([]);
+
     const getAllDesigners = async () => {
         try {
             const { data } = await axiosClient.get("admin/etudiants");
@@ -58,8 +60,34 @@ export default function AllEtudiant() {
         document.title = "Tous les etudiants - OFPPT";
         getAllDesigners();
     }, []);
+
+    const getAlerts = async () => {
+        try {
+            const { data } = await axiosClient.get("admin/alerts");
+            setAlerts(data);
+            console.log(data);
+            setErrors(null);
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    useEffect(() => {
+        getAlerts();
+    }, []);
     return (
         <div className="container mt-5 pt-5">
+            <div className="row g-3 w-75 m-auto">
+                {
+                    alerts?.map((alert) => {
+                        return (
+                            <div key={alert?.id} className="alert alert-danger" role="alert">
+                                <strong>{alert?.etudiant?.nom} {alert?.etudiant?.prenom}</strong> {alert?.duree} H
+                            </div>
+                        )
+                    })
+                }
+            </div>
             <button
                 type="button"
                 className="btn btn-primary mb-3"
@@ -103,7 +131,7 @@ export default function AllEtudiant() {
                                             +212 {etudiant?.numero_parent}
                                         </td>
                                         <td>
-                                            {etudiant?.filiere}
+                                            {etudiant?.filiere?.nom}
                                         </td>
                                         <td>
                                             {etudiant?.designer}

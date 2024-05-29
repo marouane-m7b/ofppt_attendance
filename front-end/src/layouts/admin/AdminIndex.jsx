@@ -68,14 +68,20 @@ const AdminIndex = () => {
               >
                 Management Filieres
               </NavLink>
+              <NavLink
+                className="nav-link"
+                to="/administrateur/validateurs-managment"
+              >
+                Management Formateur
+              </NavLink>
               {/* </li> */}
               {/* <li className="nav-item ms-lg-5 ps-lg-2"> */}
-              <NavLink
+              {/* <NavLink
                 className="nav-link"
                 to="/administrateur/questions-managment"
               >
                 Management Exam
-              </NavLink>
+              </NavLink> */}
               {/* </li> */}
               {/* <li className="nav-item ms-lg-5 ps-lg-2"> */}
               <button

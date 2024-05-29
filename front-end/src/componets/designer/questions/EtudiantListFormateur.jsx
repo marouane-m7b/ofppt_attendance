@@ -59,13 +59,6 @@ export default function EtudiantListFormateur() {
     };
     return (
         <>
-            <div className="container mt-5 pt-5">
-                <CreateAbsence
-                    role="designer"
-                    targetModel="CreateAbsence"
-                    getAllDesigners={getAllDesigners}
-                />
-            </div>
             <div className="row g-3 w-75 m-auto">
                 <div className="d-flex align-items-center justify-content-between">
                     <h1 className="text-center">List Etudiant</h1>
@@ -94,6 +87,13 @@ export default function EtudiantListFormateur() {
                 ) : (
                     "loading List..."
                 )}
+            </div>
+            <div className="container mt-5 pt-5">
+                <CreateAbsence
+                    role="designer"
+                    targetModel="CreateAbsence"
+                    getAllDesigners={getAllDesigners}
+                />
             </div>
         </>
     )

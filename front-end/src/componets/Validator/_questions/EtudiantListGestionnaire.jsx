@@ -33,7 +33,7 @@ export default function EtudiantListGestionnaire() {
                             <th>{etudiant?.nom}</th>
                             <th>{etudiant?.prenom}</th>
                             <th>{etudiant?.cin}</th>
-                            <th>{etudiant?.filiere}</th>
+                            <th>{etudiant?.filiere?.nom}</th>
                             <th>{etudiant?.numero_stagiaire}</th>
                             <th>{etudiant?.numero_parent}</th>
                         </tr>
@@ -63,7 +63,6 @@ export default function EtudiantListGestionnaire() {
         try {
             const { data } = await axiosClient.get("validator/alerts");
             setAlerts(data);
-            console.log(data[0]);
             setErrors(null);
         } catch (error) {
             console.error(error);
@@ -119,6 +118,8 @@ export default function EtudiantListGestionnaire() {
                 <CreateAbsence
                     targetModel="CreateAbsence"
                     getAllDesigners={getAllDesigners}
+                    getAlerts={getAlerts}
+                    role="validator"
                 />
             </div>
         </>

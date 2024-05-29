@@ -39,7 +39,7 @@ const ValidateurIndex = () => {
           </button>
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-              <li className="nav-item me-lg-5">
+              {/* <li className="nav-item me-lg-5">
                 <NavLink
                   className="nav-link"
                   to="/validateur/questions-meanagment"
@@ -54,7 +54,7 @@ const ValidateurIndex = () => {
                 >
                   Question Déja Validé
                 </NavLink>
-              </li>
+              </li> */}
               <li className="nav-item ms-lg-5 ps-lg-2">
                 <button
                   className="nav-link"

@@ -43,17 +43,17 @@ const ConcepteurIndex = () => {
                   className="nav-link"
                   to="/concepteur/ajouter-questions"
                 >
-                  Ajouter questions
+                  Ajouter Etudiant
                 </NavLink>
               </li>
-              <li className="nav-item ms-lg-5 ps-lg-2">
+              {/* <li className="nav-item ms-lg-5 ps-lg-2">
                 <NavLink
                   className="nav-link"
                   to="/concepteur/voir-questions"
                 >
                   Voir les questions
                 </NavLink>
-              </li>
+              </li> */}
               <li className="nav-item ms-lg-5 ps-lg-2">
                 <button
                   className="nav-link"

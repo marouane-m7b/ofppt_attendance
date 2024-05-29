@@ -27,8 +27,8 @@ const CreateEtudiant = ({ targetModel, getAllDesigners }) => {
 
       console.log(data);
       Swal.fire({
-        title: data.message,
-        text: data.message,
+        title: 'Etudiant ajouté',
+        text: 'Etudiant ajoute avec succes',
         icon: "success",
         timer: 1500
       })

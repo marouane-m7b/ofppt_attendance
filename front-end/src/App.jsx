@@ -26,7 +26,6 @@ import AllSecteurs from "./componets/admin/secteurs/AllSecteurs";
 import AllFilieres from "./componets/admin/filieres/AllFilieres";
 import AdminQuestion from "./componets/admin/questions/AdminQuestion";
 import DesignerQuestion from "./componets/designer/questions/DesignerQuestion";
-import EtudiantList from "./componets/designer/questions/EtudiantListFormateur";
 import EtudiantListFormateur from "./componets/designer/questions/EtudiantListFormateur";
 import EtudiantListGestionnaire from "./componets/Validator/_questions/EtudiantListGestionnaire";
 import AllEtudiant from "./componets/admin/etudiants/AllEtudiant";
