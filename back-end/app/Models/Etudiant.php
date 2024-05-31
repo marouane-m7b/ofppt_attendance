@@ -19,9 +19,9 @@ class Etudiant extends Model
         return $this->hasMany(Alert::class);
     }
 
-    public function designers()
+    public function group()
     {
-        return $this->belongsTo(Designer::class);
+        return $this->belongsTo(Group::class);
     }
 
     public function filiere()

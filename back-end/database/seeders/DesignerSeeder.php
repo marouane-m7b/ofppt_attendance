@@ -50,6 +50,7 @@ class DesignerSeeder extends Seeder
             ['first_name' => 'Abdelghani', 'last_name' => 'Ennaciri', 'email' => 'abdelghani.ennaciri@ofppt.ma', 'password' => Hash::make('ofppt')],
             ['first_name' => 'Salaheddine', 'last_name' => 'Bahri', 'email' => 'salaheddine.bahri@ofppt.ma', 'password' => Hash::make('ofppt')],
             ['first_name' => 'Moussa', 'last_name' => 'Essaadaoui', 'email' => 'moussa.essaadaoui@ofppt.ma', 'password' => Hash::make('ofppt')],
+            ['first_name' => 'Yassine', 'last_name' => 'Dabachine', 'email' => 'yassine.dabachine@ofppt.ma', 'password' => Hash::make('ofppt')],
         ];
 
         foreach ($data as $designerData) {

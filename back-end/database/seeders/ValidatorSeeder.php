@@ -33,6 +33,7 @@ class ValidatorSeeder extends Seeder
             ['first_name' => 'Ayoub', 'last_name' => 'Rajil', 'email' => 'ayoub.rajil@ofppt.ma', 'password' => Hash::make('ofppt')],
             ['first_name' => 'Khalid', 'last_name' => 'Naji', 'email' => 'khalid.naji@ofppt.ma', 'password' => Hash::make('ofppt')],
             ['first_name' => 'Salaheddine', 'last_name' => 'Bahri', 'email' => 'salaheddine.bahri@ofppt.ma', 'password' => Hash::make('ofppt')],
+            ['first_name' => 'Rajae', 'last_name' => 'Bahri', 'email' => 'rajae.bahri@ofppt.ma', 'password' => Hash::make('ofppt')],
         ];
 
         foreach ($data as $validatorData) {
