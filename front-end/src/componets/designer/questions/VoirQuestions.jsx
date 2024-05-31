@@ -96,7 +96,7 @@ const AddQuestions = () => {
                   <td>{question.commentaire}</td>
                   <td>
                     <Link
-                      to={`/concepteur/voir-questions/${question.id}`}
+                      to={`/concepteur/questions/${question.id}`}
                       className="btn btn-primary"
                     >
                       Afficher

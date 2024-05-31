@@ -103,7 +103,7 @@ export default function AllEtudiant() {
                                             +212 {etudiant?.numero_parent}
                                         </td>
                                         <td>
-                                            {etudiant?.filiere}
+                                            {etudiant?.filiere?.nom}
                                         </td>
                                         <td>
                                             {etudiant?.designer}

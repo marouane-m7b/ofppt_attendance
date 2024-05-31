@@ -16,8 +16,8 @@ import AdministrateurLogin from "./componets/Auth/admin/AdministrateurLogin";
 
 //Layouts
 import GuestIndex from "./layouts/Guest/GuestIndex";
-import ConcepteurIndex from "./layouts/designer/ConcepteurIndex";
-import ValidateurIndex from "./layouts/Validator/ValidateurIndex";
+import ConcepteurIndex from "./layouts/formateur/FormateurIndex";
+import ValidateurIndex from "./layouts/gestionnaire/GestionnaireIndex";
 import AdminIndex from "./layouts/admin/AdminIndex";
 import AllQuestionsValidated from "./componets/Validator/_questions/AllQuestionsValidated";
 import QuestionValidation from "./componets/Validator/_questions/QuestionValidation";
@@ -30,55 +30,104 @@ import EtudiantList from "./componets/designer/questions/EtudiantListFormateur";
 import EtudiantListFormateur from "./componets/designer/questions/EtudiantListFormateur";
 import EtudiantListGestionnaire from "./componets/Validator/_questions/EtudiantListGestionnaire";
 import AllEtudiant from "./componets/admin/etudiants/AllEtudiant";
+import { useState } from "react";
+import Topbar from "./scenes/global/Topbar";
+import Sidebar from "./scenes/global/Sidebar";
+import Dashboard from "./scenes/dashboard";
+import Team from "./scenes/team";
+import Invoices from "./scenes/invoices";
+import Contacts from "./scenes/contacts";
+import Bar from "./scenes/bar";
+import Form from "./scenes/form";
+import Line from "./scenes/line";
+import Pie from "./scenes/pie";
+import FAQ from "./scenes/faq";
+import Geography from "./scenes/geography";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { ColorModeContext, useMode } from "./theme";
+import DashboardAdmin from "./layouts/admin/dashboard";
+import FormateurIndex from "./layouts/formateur/FormateurIndex";
+import DashboardFormateur from "./layouts/formateur/dashboard";
+import DashboardGestionnaire from "./layouts/gestionnaire/dashboard";
 
 function App() {
+  const [theme, colorMode] = useMode();
+  const [isSidebar, setIsSidebar] = useState(true);
+
   return (
     <>
-      <Routes>
-        <Route path="/" element={<GuestIndex />}>
-          <Route index element={<GuestHome />} />
-          <Route path="concepteur/login" element={<ConcepteurLogin />} />
-          <Route path="validateur/login" element={<ValidateurLogin />} />
-          <Route
-            path="administrateur/login"
-            element={<AdministrateurLogin />}
-          />
-        </Route>
-        <Route path="/administrateur" element={<AdminIndex />}>
-          <Route
-            index
-            element={<Navigate to={"/administrateur/etudiant-managment"} />}
-          />
-          <Route path="etudiant-managment" element={<AllEtudiant />} />
-          <Route path="validateurs-managment" element={<AllValidators />} />
-          <Route path="questions-managment" element={<AllAdminQuestions />} />
-          <Route path="questions-managment/:id" element={<AdminQuestion />} />
-          <Route path="secteurs-managment" element={<AllSecteurs />} />
-          <Route path="filieres-managment" element={<AllFilieres />} />
-        </Route>
+      <ColorModeContext.Provider value={colorMode}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Routes>
+            <Route path="/" element={<GuestIndex />}>
+              <Route index element={<GuestHome />} />
+              <Route path="concepteur/login" element={<ConcepteurLogin />} />
+              <Route path="validateur/login" element={<ValidateurLogin />} />
+              <Route
+                path="administrateur/login"
+                element={<AdministrateurLogin />}
+              />
+            </Route>
+            <Route path="/administrateur" element={<AdminIndex />}>
+              <Route
+                index
+                element={<DashboardAdmin />}
+              />
+              <Route path="etudiants" element={<AllEtudiant />} />
+              <Route path="validateurs" element={<AllValidators />} />
+              <Route path="designers" element={<AllDesigners />} />
+              <Route path="questions" element={<AllAdminQuestions />} />
+              <Route path="questions/:id" element={<AdminQuestion />} />
+              <Route path="secteurs" element={<AllSecteurs />} />
+              <Route path="filieres" element={<AllFilieres />} />
+            </Route>
 
-        <Route path="/concepteur" element={<ConcepteurIndex />}>
-          <Route
-            index
-            element={<Navigate to={"/concepteur/list-etudiants"} />}
-          />
-          <Route path="list-etudiants" element={<EtudiantListFormateur />} />
-          <Route path="voir-questions" element={<VoirQuestions />} />
-          <Route path="voir-questions/:id" element={<DesignerQuestion />} />
-        </Route>
+            <Route path="/concepteur" element={<FormateurIndex />}>
+              <Route
+                index
+                element={<DashboardFormateur />}
+              />
+              <Route path="etudiants" element={<EtudiantListFormateur />} />
+              <Route path="questions" element={<VoirQuestions />} />
+              <Route path="questions/:id" element={<DesignerQuestion />} />
+            </Route>
 
-        <Route path="/validateur" element={<ValidateurIndex />}>
-          <Route
-            index
-            element={<Navigate to={"/validateur/list-etudiants"} />}
-          />
-          <Route path="list-etudiants" element={<EtudiantListGestionnaire />} />
-          <Route path="questions-meanagment" element={<AllQuestions />} />
-          <Route path="questions-meanagment/:id" element={<QuestionValidation />} />
-          <Route path="questions-validated" element={<AllQuestionsValidated />} />
-        </Route>
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+            <Route path="/validateur" element={<ValidateurIndex />}>
+              <Route
+                index
+                element={<DashboardGestionnaire />}
+              />
+              <Route path="etudiants" element={<EtudiantListGestionnaire />} />
+              <Route path="questions-meanagment" element={<AllQuestions />} />
+              <Route path="questions-meanagment/:id" element={<QuestionValidation />} />
+              <Route path="questions-validated" element={<AllQuestionsValidated />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+          {/* 
+          <div className="app">
+          <Sidebar isSidebar={isSidebar} />
+            <main className="content">
+              <Topbar setIsSidebar={setIsSidebar} />
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/team" element={<Team />} />
+                <Route path="/contacts" element={<Contacts />} />
+                <Route path="/invoices" element={<Invoices />} />
+                <Route path="/form" element={<Form />} />
+                <Route path="/bar" element={<Bar />} />
+                <Route path="/pie" element={<Pie />} />
+                <Route path="/line" element={<Line />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/geography" element={<Geography />} />
+              </Routes>
+            </main>
+          </div>
+            */}
+        </ThemeProvider>
+
+      </ColorModeContext.Provider>
     </>
   );
 }

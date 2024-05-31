@@ -33,7 +33,7 @@ export default function EtudiantListGestionnaire() {
                             <th>{etudiant?.nom}</th>
                             <th>{etudiant?.prenom}</th>
                             <th>{etudiant?.cin}</th>
-                            <th>{etudiant?.filiere}</th>
+                            <th>{etudiant?.filiere?.nom}</th>
                             <th>{etudiant?.numero_stagiaire}</th>
                             <th>{etudiant?.numero_parent}</th>
                         </tr>

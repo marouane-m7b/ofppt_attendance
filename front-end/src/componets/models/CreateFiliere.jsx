@@ -106,7 +106,7 @@ const CreateFiliere = ({ targetModel, getAllFilieres }) => {
                   Secteur <span className="text text-danger">*</span>
                 </label>
                 <br />
-                <select name="secteur" id="secteur" className="form-select">
+                <select defaultValue={""}  name="secteur" id="secteur" className="form-select">
                   <option value="">Selectionner une secteur</option>
                   {secteurs?.map((secteur) => (
                     <option key={secteur.id} value={secteur.id}>

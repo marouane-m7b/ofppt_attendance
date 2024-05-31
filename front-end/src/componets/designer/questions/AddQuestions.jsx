@@ -59,7 +59,7 @@ const AddQuestions = () => {
         setErrors(data.errors);
         return;
       }
-      navigateTo("/concepteur/voir-questions", { replace: true });
+      navigateTo("/concepteur/questions", { replace: true });
       Swal.fire({
         text: data.message,
         icon: "success",
@@ -127,7 +127,7 @@ const AddQuestions = () => {
               Secteur <span className="text text-danger">*</span>
             </label>
             <br />
-            <select name="secteur_id" id="secteur_id" className="form-select" onChange={(e) => setSecteurId(e.target.value)}>
+            <select defaultValue={""} name="secteur_id" id="secteur_id" className="form-select" onChange={(e) => setSecteurId(e.target.value)}>
               {secteurs?.map((secteur) => (
                 <option key={secteur.id} value={secteur.id}>
                   {secteur.nom}
@@ -142,7 +142,7 @@ const AddQuestions = () => {
               Filiere <span className="text text-danger">*</span>
             </label>
             <br />
-            <select name="filiere_id" id="filiere_id" className="form-select">
+            <select defaultValue={""}  name="filiere_id" id="filiere_id" className="form-select">
               {filieres?.map((filiere) => (
                 <option key={filiere.id} value={filiere.id}>
                   {filiere.nom}

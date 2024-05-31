@@ -136,7 +136,7 @@ const CreateEtudiant = ({ targetModel, getAllDesigners }) => {
                 <label className="form-label" htmlFor="form2Example2">
                   Formateur <span className="text text-danger">*</span>
                 </label>
-                <select className={`form-select form-select-lg ${(errors?.designer_id ? " is-invalid" : "")}`}
+                <select defaultValue={""}  className={`form-select form-select-lg ${(errors?.designer_id ? " is-invalid" : "")}`}
                   name="designer" id="form2Example2"
                 >
                   <option selected defaultValue={null}>Select one</option>
@@ -151,7 +151,7 @@ const CreateEtudiant = ({ targetModel, getAllDesigners }) => {
                 <label className="form-label" htmlFor="form2Example2">
                   Filiere <span className="text text-danger">*</span>
                 </label>
-                <select className={`form-select form-select-lg ${(errors?.designer_id ? " is-invalid" : "")}`}
+                <select defaultValue={""}  className={`form-select form-select-lg ${(errors?.designer_id ? " is-invalid" : "")}`}
                   name="filiere" id="form2Example2"
                 >
                   <option selected>Select one</option>

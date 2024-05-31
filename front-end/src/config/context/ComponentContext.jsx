@@ -42,7 +42,7 @@ const ComponentContext = ({ children }) => {
     }
     try {
       const { data } = await axiosClient.get(`/${guard}/profile`);
-      setUser(data.user);
+      setUser(data);
       return true;
     } catch (error) {
       console.log(error);
