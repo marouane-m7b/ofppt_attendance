@@ -1,19 +1,19 @@
 import { useState } from "react";
 import { useAppContext } from "../../../config/context/ComponentContext";
 
-const ConcepteurLogin = () => {
+const GestionnaireLogin = () => {
   const [loading, setLoading] = useState(false);
 
-  const { handleLogin, navigateTo, user, errors } = useAppContext();
+  const { handleLogin, navigateTo, errors } = useAppContext();
   const login = async (e) => {
     setLoading(true);
     e.preventDefault();
     try {
       const state = await handleLogin(
         { email: e.target.email.value, password: e.target.password.value },
-        "designer"
+        "validator"
       );
-      state && navigateTo("/concepteur", { replace: true });
+      state && navigateTo("/validateur", { replace: true });
     } catch (error) {
       console.log(error);
     } finally {
@@ -105,4 +105,4 @@ const ConcepteurLogin = () => {
   );
 };
 
-export default ConcepteurLogin;
+export default GestionnaireLogin;

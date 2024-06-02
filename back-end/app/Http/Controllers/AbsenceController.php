@@ -88,6 +88,13 @@ class AbsenceController extends Controller
 
     public function store(Request $request)
     {
+        $designer = request()->user("designer");
+        $validateur = request()->user("validator");
+
+        if (!$designer && !$validateur) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
         $data = $request->all();
 
         $validator = Validator::make($data, [
@@ -108,10 +115,10 @@ class AbsenceController extends Controller
                 ->first();
 
             if ($existingAbsence) {
-                return response()->json(['message' => 'Attendance has already been taken today for this session.'], 400);
+                return response()->json(['message' => "La présence a déjà été enregistrée aujourd'hui pour cette séance et ce groupe"], 400);
             }
 
-            Absence::create([
+            $absence = new Absence([
                 'date' => $absenceData['date'],
                 'seance' => $absenceData['seance'],
                 'statut' => $absenceData['statut'],
@@ -119,12 +126,23 @@ class AbsenceController extends Controller
                 'teacher_id' => auth()->user()->id,
             ]);
 
+            if ($validateur) {
+                $absence->validator_id = $validateur->id;
+            }
+
+            if ($designer) {
+                $absence->designer_id = $designer->id;
+            }
+
+            $absence->save();
+
+
             if ($absenceData['statut'] == 'Absent') {
                 $this->checkAndCreateAlert($absenceData['etudiant_id']);
             }
         }
 
-        return response()->json(['message' => 'Absences recorded successfully.']);
+        return response()->json(['message' => 'Absences enregistrées avec succès.']);
     }
 
     private function checkAndCreateAlert($etudiantId)
@@ -189,7 +207,8 @@ class AbsenceController extends Controller
                 'etudiants.numero_parent',
                 'filieres.nom as filiere',
                 'groups.nom as groupe',
-                'absences.statut'
+                'absences.statut',
+                'absences.is_justified',
             )
             ->where('absences.date', $validated['date'])
             ->where('absences.seance', $validated['seance'])

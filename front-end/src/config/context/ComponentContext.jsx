@@ -1,12 +1,15 @@
 import React, { createContext, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosClient } from "../Api/AxiosClient";
+import { errorToast, successToast } from "../Toasts/toasts";
+import { Toaster } from "react-hot-toast";
+import PropTypes from "prop-types";
 const Context = createContext({
   user: {},
   errors: {},
-  handleLogin: () => {},
-  navigateTo: () => {},
-  setErrors: () => {},
+  handleLogin: () => { },
+  navigateTo: () => { },
+  setErrors: () => { },
 });
 
 const ComponentContext = ({ children }) => {
@@ -56,10 +59,12 @@ const ComponentContext = ({ children }) => {
         "ud",
         JSON.stringify({ role: guard, _token: data.token })
       );
+      successToast("Connexion reussie");
       const state = await getUser(guard);
       if (state) return true;
       else return false;
     } catch (error) {
+      errorToast("Echec de la connexion");
       setErrors(error.response.data.errors);
       console.log(error);
       return false;
@@ -75,9 +80,34 @@ const ComponentContext = ({ children }) => {
         setErrors,
       }}
     >
-      {loading ? "Loading..." : children}
+      {loading ? "Loading..." :
+        <>
+          <Toaster
+            toastOptions={{
+              success: {
+                style: {
+                  background: "green",
+                },
+              },
+              error: {
+                style: {
+                  background: "#CC0000",
+                },
+              },
+              style: {
+                color: "white",
+                zIndex: 99999,
+              },
+            }}
+          />
+          {children}
+        </>}
     </Context.Provider>
   );
+};
+
+ComponentContext.propTypes = {
+  children: PropTypes.node,
 };
 
 export default ComponentContext;

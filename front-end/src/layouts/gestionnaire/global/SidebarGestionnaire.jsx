@@ -145,7 +145,7 @@ const SidebarGestionnaire = () => {
               setSelected={setSelected}
             />
             <Item
-              title="Absences"
+              title="Absences Historiques"
               to="/validateur/absences"
               icon={<ContactsOutlinedIcon />}
               selected={selected}

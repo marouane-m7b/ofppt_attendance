@@ -5,12 +5,8 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import GuestHome from "./componets/Guest/GuestHome";
 import AllDesigners from "./componets/admin/_designers/AllDesigners";
 import AllValidators from "./componets/admin/_validators/AllValidators";
-import AddQuestions from "./componets/designer/questions/AddQuestions";
-import VoirQuestions from "./componets/designer/questions/VoirQuestions";
 
 // Auth Components
-import ConcepteurLogin from "./componets/Auth/designer/ConcepteurLogin";
-import ValidateurLogin from "./componets/Auth/Validator/ValidateurLogin";
 import AdministrateurLogin from "./componets/Auth/admin/AdministrateurLogin";
 
 //Layouts
@@ -22,10 +18,7 @@ import AllAdminQuestions from "./componets/admin/questions/AllAdminQuestions";
 import AllSecteurs from "./componets/admin/secteurs/AllSecteurs";
 import AllFilieres from "./componets/admin/filieres/AllFilieres";
 import AdminQuestion from "./componets/admin/questions/AdminQuestion";
-import DesignerQuestion from "./componets/designer/questions/DesignerQuestion";
-import EtudiantList from "./componets/designer/questions/EtudiantListFormateur";
-import EtudiantListFormateur from "./componets/designer/questions/EtudiantListFormateur";
-import EtudiantListGestionnaire from "./componets/Validator/EtudiantListGestionnaire";
+import EtudiantListFormateur from "./componets/formateur/etudiants/EtudiantListFormateur";
 import AllEtudiant from "./componets/admin/etudiants/AllEtudiant";
 import { useState } from "react";
 import Topbar from "./scenes/global/Topbar";
@@ -46,7 +39,11 @@ import DashboardAdmin from "./layouts/admin/dashboard";
 import FormateurIndex from "./layouts/formateur/FormateurIndex";
 import DashboardFormateur from "./layouts/formateur/dashboard";
 import DashboardGestionnaire from "./layouts/gestionnaire/dashboard";
-import AbsencesByDaySeanceGroup from "./componets/Validator/AbsencesByDaySeanceGroup";
+import FormateurLogin from "./componets/Auth/formateur/FormateurLogin";
+import GestionnaireLogin from "./componets/Auth/gestionnaire/GestionnaireLogin";
+import { ToastBar, Toaster } from "react-hot-toast";
+import EtudiantListGestionnaire from "./componets/gestionnaire/etudiants/EtudiantListGestionnaire";
+import AbsencesByDaySeanceGroup from "./componets/gestionnaire/absences/AbsencesByDaySeanceGroup";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -60,8 +57,8 @@ function App() {
           <Routes>
             <Route path="/" element={<GuestIndex />}>
               <Route index element={<GuestHome />} />
-              <Route path="concepteur/login" element={<ConcepteurLogin />} />
-              <Route path="validateur/login" element={<ValidateurLogin />} />
+              <Route path="formateur/login" element={<FormateurLogin />} />
+              <Route path="gestionnaire/login" element={<GestionnaireLogin />} />
               <Route
                 path="administrateur/login"
                 element={<AdministrateurLogin />}
@@ -87,8 +84,6 @@ function App() {
                 element={<DashboardFormateur />}
               />
               <Route path="etudiants" element={<EtudiantListFormateur />} />
-              <Route path="questions" element={<VoirQuestions />} />
-              <Route path="questions/:id" element={<DesignerQuestion />} />
               <Route path="team" element={<Team />} />
               <Route path="contacts" element={<Contacts />} />
               <Route path="invoices" element={<Invoices />} />

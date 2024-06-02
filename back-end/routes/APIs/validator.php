@@ -10,6 +10,7 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\ValidatorController;
 
 Route::middleware(['auth:validator'])->group(function () {
+    Route::get('/etudiants/group/{id}', [EtudiantController::class, 'getEtudiantsByGroup']);
     Route::get('/etudiants', [EtudiantController::class, 'index']);
     Route::get('/alerts', [AlertController::class, 'index']);
     Route::get('/absencesByDaySeanceGroup', [AbsenceController::class, 'absencesByDaySeanceGroup']);

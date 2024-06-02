@@ -48,7 +48,7 @@ class EtudiantController extends Controller
         $designer = Designer::find($request->designer_id);
         if (!$designer) {
             return response()->json(['message1' => 'Designer not found'], 404);
-        } 
+        }
 
         $etudiant = new Etudiant();
         $etudiant->cin = $request->cin;
@@ -87,7 +87,7 @@ class EtudiantController extends Controller
             'filiere_id' => 'required',
             'designer_id' => 'required',
         ];
-        
+
         $validate = Validator::make($request->all(), $rules);
 
         if ($validate->fails()) {
@@ -126,5 +126,11 @@ class EtudiantController extends Controller
         $etudiant->delete();
 
         return response()->json(['message' => 'Etudiant deleted successfully'], 200);
+    }
+
+    public function getEtudiantsByGroup($id)
+    {
+        $etudiants = Etudiant::where('group_id', $id)->with('group.filiere')->get();
+        return response()->json($etudiants);
     }
 }

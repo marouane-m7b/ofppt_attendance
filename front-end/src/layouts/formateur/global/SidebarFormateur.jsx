@@ -153,14 +153,6 @@ const SidebarFormateur = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            <Item
-              title="Questions"
-              to="/concepteur/questions"
-              icon={<ContactsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-
             <Typography
               variant="h6"
               color={colors.grey[300]}

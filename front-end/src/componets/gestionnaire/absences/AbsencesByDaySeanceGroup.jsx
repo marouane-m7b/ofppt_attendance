@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
-import { axiosClient } from '../../config/Api/AxiosClient';
-import { Box, Typography, Select, MenuItem, TextField, Button } from '@mui/material';
+import { axiosClient } from '../../../config/Api/AxiosClient';
+import { Box, Select, MenuItem, TextField, Button } from '@mui/material';
 import moment from 'moment';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
-import { tokens } from '../../theme';
+import { tokens } from '../../../theme';
 import { useTheme } from '@mui/material';
 
 export default function AbsencesByDaySeanceGroup() {
@@ -82,11 +82,24 @@ export default function AbsencesByDaySeanceGroup() {
             field: 'statut',
             headerName: 'Statut',
             width: 120,
-            renderCell: (params) => (
-                <span style={{ color: params.value === 'Présent' ? 'green' : 'red' }}>
-                    {params.value}
-                </span>
-            ),
+            renderCell: (params) => {
+                const isJustified = params.row.is_justified;
+                const status = params.value;
+                console.log(params.row);
+                console.log("status", status);
+                console.log("isJustified", isJustified);
+                if (status === 'Absent' && isJustified === 1) {
+                    return <span style={{ color: 'blue' }}>
+                        Absence Justifié
+                    </span>
+                }
+
+                return (
+                    <span style={{ color: status === 'Présent' ? 'green' : 'red' }}>
+                        {status}
+                    </span>
+                );
+            },
         },
     ];
 
@@ -100,14 +113,12 @@ export default function AbsencesByDaySeanceGroup() {
         numero_stagiaire: etudiant.numero_stagiaire,
         numero_parent: etudiant.numero_parent,
         statut: etudiant.statut,
+        is_justified: etudiant.is_justified,
     }));
 
     return (
         <Box sx={{ height: 400, width: '100%' }}>
-            <Typography variant="h4" gutterBottom>
-                Absences for {moment(date).format('YYYY-MM-DD')}
-            </Typography>
-            <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+            <Box display="flex" justifyContent="space-between" m="20px">
                 <DatePicker
                     selected={date}
                     onChange={(newDate) => setDate(newDate)}
@@ -127,7 +138,7 @@ export default function AbsencesByDaySeanceGroup() {
                         </MenuItem>
                     ))}
                 </Select>
-                <Button variant="contained" color="primary" onClick={handleFetchAbsences}>
+                <Button variant="contained" color="primary" onClick={handleFetchAbsences} sx={{ backgroundColor: colors.greenAccent[400] }}>
                     Voir les absences
                 </Button>
             </Box>

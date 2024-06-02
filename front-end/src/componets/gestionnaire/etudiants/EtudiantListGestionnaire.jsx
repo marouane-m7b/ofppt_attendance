@@ -1,20 +1,24 @@
 import { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { axiosClient } from '../../../config/Api/AxiosClient';
-import { Box, Typography, Select, MenuItem } from '@mui/material';
+import { Box, Typography, Select, MenuItem, TextField } from '@mui/material';
 import Checkbox from '@mui/material/Checkbox';
 import Button from '@mui/material/Button';
+import DatePicker from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
 import moment from 'moment';
 import { tokens } from '../../../theme';
 import { useTheme } from '@mui/material';
+import { errorToast, successToast } from '../../../config/Toasts/toasts';
 
-export default function EtudiantListFormateur() {
+export default function EtudiantListGestionnaire() {
     const [loadingPage, setLoadingPage] = useState(true);
     const [etudiants, setEtudiants] = useState([]);
+    const [groups, setGroups] = useState([]);
+    const [selectedGroup, setSelectedGroup] = useState([]);
     const [absenceData, setAbsenceData] = useState({});
     const [seance, setSeance] = useState('s1');
-    const today = moment().format('YYYY-MM-DD');
-
+    const [selectedDate, setSelectedDate] = useState(new Date());
 
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -22,9 +26,8 @@ export default function EtudiantListFormateur() {
     const getEtudiants = async () => {
         try {
             setLoadingPage(true);
-            const { data } = await axiosClient.get("designer/etudiants");
+            const { data } = await axiosClient.get(`validator/etudiants/group/${selectedGroup}`);
             setEtudiants(data);
-            // Initialize absenceData with all students set to false (Absent)
             const initialAbsenceData = {};
             data.forEach(etudiant => {
                 initialAbsenceData[etudiant.id] = false;
@@ -37,6 +40,15 @@ export default function EtudiantListFormateur() {
         }
     };
 
+    const getGroups = async () => {
+        try {
+            const { data } = await axiosClient.get("validator/groups");
+            setGroups(data);
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
     const handleCheckboxChange = (id, checked) => {
         setAbsenceData({
             ...absenceData,
@@ -48,25 +60,40 @@ export default function EtudiantListFormateur() {
         setSeance(event.target.value);
     };
 
+    const handleGroupChange = (event) => {
+        setSelectedGroup(event.target.value);
+    };
+
     const handleSubmit = async () => {
         const absences = etudiants.map(etudiant => ({
             etudiant_id: etudiant.id,
             statut: absenceData[etudiant.id] ? 'Présent' : 'Absent',
-            date: today,
+            date: moment(selectedDate).format('YYYY-MM-DD'),
             seance,
         }));
 
         try {
-            const response = await axiosClient.post('/designer/absences', absences);
-            alert(response.data.message);
+            const response = await axiosClient.post('/validator/absences', absences);
+            successToast(response.data.message, 1500, 'top-center');
         } catch (error) {
             console.error(error);
+            errorToast(error.response.data.message, 1500, 'top-center');
         }
     };
 
     useEffect(() => {
-        getEtudiants();
+        getGroups();
     }, []);
+
+    useEffect(() => {
+        setSelectedGroup(groups[0]?.id);
+    }, [groups]);
+
+    useEffect(() => {
+        if (selectedGroup) {
+            getEtudiants();
+        }
+    }, [selectedGroup]);
 
     const columns = [
         { field: 'nom', headerName: 'Nom', width: 150 },
@@ -104,7 +131,12 @@ export default function EtudiantListFormateur() {
         <Box sx={{ height: 400, width: '100%' }}>
             <Box display="flex" justifyContent="space-between" m="20px">
                 <Typography variant="h4">
-                    Aujourd&apos;hui {today}
+                    <DatePicker
+                        selected={selectedDate}
+                        onChange={(newDate) => setSelectedDate(newDate)}
+                        dateFormat="yyyy-MM-dd"
+                        customInput={<TextField label="Select Date" />}
+                    />
                 </Typography>
                 <Select value={seance} onChange={handleSeanceChange}>
                     <MenuItem value="s1">Séance 1</MenuItem>
@@ -112,6 +144,16 @@ export default function EtudiantListFormateur() {
                     <MenuItem value="s3">Séance 3</MenuItem>
                     <MenuItem value="s4">Séance 4</MenuItem>
                 </Select>
+                <Select value={selectedGroup} onChange={handleGroupChange}>
+                    {groups.map((group) => (
+                        <MenuItem key={group.id} value={group.id}>
+                            {group.nom}
+                        </MenuItem>
+                    ))}
+                </Select>
+                <Button variant="contained" color="primary" onClick={handleSubmit} sx={{ backgroundColor: colors.greenAccent[400] }}>
+                    Marquer les absences
+                </Button>
             </Box>
             <Box
                 m="40px 0 0 0"
@@ -135,7 +177,7 @@ export default function EtudiantListFormateur() {
                     },
                     "& .MuiDataGrid-footerContainer": {
                         borderTop: "none",
-                        backgroundColor: colors.blueAccent[700],
+                        backgroundColor: colors.grey[900],
                     },
                     "& .MuiCheckbox-root": {
                         color: `${colors.greenAccent[200]} !important`,
@@ -150,9 +192,6 @@ export default function EtudiantListFormateur() {
                     checkboxSelection={false}
                 />
             </Box>
-            <Button variant="contained" color="primary" onClick={handleSubmit} sx={{ mt: 3, padding: 1 }}>
-                Submit Absences
-            </Button>
         </Box>
     );
 }

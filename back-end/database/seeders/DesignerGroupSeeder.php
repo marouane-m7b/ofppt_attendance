@@ -15,11 +15,11 @@ class DesignerGroupSeeder extends Seeder
     {
         $designer_group = [
             [
-                'designer_id' => 26,
+                'designer_id' => 35,
                 'group_id' => 1,
             ],
             [
-                'designer_id' => 26,
+                'designer_id' => 35,
                 'group_id' => 2,
             ],
         ];

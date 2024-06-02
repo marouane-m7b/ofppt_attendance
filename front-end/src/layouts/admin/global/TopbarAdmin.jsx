@@ -11,6 +11,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { axiosClient } from "../../../config/Api/AxiosClient";
 import { useAppContext } from "../../../config/context/ComponentContext";
 import AutorenewIcon from '@mui/icons-material/Autorenew';
+import { errorToast, successToast } from "../../../config/Toasts/toasts";
 
 const TopbarAdmin = () => {
   const [logoutLoading, setLogoutLoading] = useState(false);
@@ -21,11 +22,18 @@ const TopbarAdmin = () => {
   const colorMode = useContext(ColorModeContext);
 
   const handleLogout = async () => {
-    setLogoutLoading(true);
-    await axiosClient.post("admin/logout");
-    setLogoutLoading(false);
-    localStorage.removeItem("ud");
-    navigateTo("/");
+    try {
+      setLogoutLoading(true);
+      await axiosClient.post("admin/logout");
+      localStorage.removeItem("ud");
+      navigateTo("/");
+      successToast("Vous avez été deconnecté avec succès");
+    } catch (error) {
+      console.error(error);
+      errorToast("Une erreur est survenue");
+    } finally {
+      setLogoutLoading(false);
+    }
   }
 
   return (
