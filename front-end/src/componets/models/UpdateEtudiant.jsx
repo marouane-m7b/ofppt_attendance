@@ -1,8 +1,8 @@
 import { useRef, useState } from "react";
 import { useAppContext } from "../../config/context/ComponentContext";
 import { axiosClient } from "../../config/Api/AxiosClient";
-import Swal from "sweetalert2";
 import PropTypes from "prop-types";
+import { errorToast, successToast } from "../../config/Toasts/toasts";
 
 const UpdateEtudiant = ({ targetModel, etudiant, getAllDesigners, groups }) => {
   const { setErrors, errors } = useAppContext();
@@ -27,14 +27,10 @@ const UpdateEtudiant = ({ targetModel, etudiant, getAllDesigners, groups }) => {
       );
       await getAllDesigners();
       cancelModel.current.click();
-      Swal.fire({
-        title: data.message,
-        text: data.message,
-        icon: "success",
-      });
+      successToast("Etudiant modifie avec success");
       console.log(data);
     } catch (error) {
-      console.log(error);
+      errorToast("Une erreur est survenue");
       setErrors(error.response.data.errors);
     } finally {
       setLoading(false);
@@ -104,7 +100,7 @@ const UpdateEtudiant = ({ targetModel, etudiant, getAllDesigners, groups }) => {
                 <label className="form-label" htmlFor="form2Example2">
                   Groupe <span className="text text-danger">*</span>
                 </label>
-                <select className={`form-select form-select-lg ${(errors?.designer_id ? " is-invalid" : "")}`}
+                <select className={`form-select form-select-lg ${(errors?.group_id ? " is-invalid" : "")}`}
                   defaultValue={etudiant?.group_id}
                   name="group" id="form2Example2"
                 >
@@ -113,7 +109,7 @@ const UpdateEtudiant = ({ targetModel, etudiant, getAllDesigners, groups }) => {
                     <option key={group?.id} value={group?.id}>{group?.nom}</option>
                   ))}
                 </select>
-                <span className="text text-danger">{errors?.message1}</span>
+                <span className="text text-danger">{errors?.group_id}</span>
               </div>
 
               <div data-mdb-input-init className="form-outline mb-4">
@@ -177,7 +173,7 @@ UpdateEtudiant.propTypes = {
   targetModel: PropTypes.object.isRequired,
   etudiant: PropTypes.object.isRequired,
   getAllDesigners: PropTypes.func.isRequired,
-  groups: PropTypes.func.isRequired,
+  groups: PropTypes.array.isRequired,
 };
 
 export default UpdateEtudiant;

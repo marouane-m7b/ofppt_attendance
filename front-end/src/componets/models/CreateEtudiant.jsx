@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useAppContext } from "../../config/context/ComponentContext";
 import { axiosClient } from "../../config/Api/AxiosClient";
 import PropTypes from "prop-types";
-import Swal from "sweetalert2";
+import { errorToast, successToast } from "../../config/Toasts/toasts";
 
-const CreateEtudiant = ({ targetModel, getAllDesigners }) => {
+const CreateEtudiant = ({ targetModel, getAllDesigners, groups }) => {
   const { setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
   const cancelModel = useRef();
@@ -12,69 +12,29 @@ const CreateEtudiant = ({ targetModel, getAllDesigners }) => {
     setLoading(true);
 
     e.preventDefault();
-    const { cin, designer, filiere, nom, prenom, numero_parent, numero_stagiaire } = e.target.elements;
+    const { cin, group, nom, prenom, numero_parent, numero_stagiaire } = e.target.elements;
 
     try {
       const data = await axiosClient.post("admin/etudiants", {
         nom: nom?.value,
         prenom: prenom?.value,
         cin: cin?.value,
-        designer_id: designer?.value,
-        filiere_id: filiere?.value,
+        group_id: group?.value,
         numero_parent: numero_parent?.value,
         numero_stagiaire: numero_stagiaire?.value,
       });
 
       console.log(data);
-      Swal.fire({
-        title: data.message,
-        text: data.message,
-        icon: "success",
-        timer: 1500
-      })
+      successToast("Etudiant ajoute avec success");
       await getAllDesigners();
       cancelModel.current.click();
     } catch (error) {
-      console.error(error);
       setErrors(error.response.data);
-      console.log(error.response.data);
+      errorToast("Une erreur est survenue");
     } finally {
       setLoading(false);
     }
   };
-  const [formateurs, setFormateurs] = useState([]);
-  const [filieres, setFilieres] = useState([]);
-  const [etudiants, setEtudiants] = useState([
-    {
-      nom: 'zakaria',
-      prenom: 'el houmidi',
-      filiere: 'full stack',
-      cin: 'bj2020',
-      numero_telephone: '0632287513',
-      numero_parent: '0632287513',
-    },
-    {
-      nom: 'marwan',
-      prenom: 'mahboub',
-      filiere: 'full stack',
-      cin: 'bj2020',
-      numero_telephone: '0632287513',
-      numero_parent: '0632287513',
-    }
-  ]);
-
-  const getFormateur = async () => {
-    const { data } = await axiosClient.get("admin/designers");
-    setFormateurs(data);
-  };
-  const getFiliere = async () => {
-    const { data } = await axiosClient.get("admin/filieres");
-    setFilieres(data);
-  };
-  useEffect(() => {
-    getFormateur()
-    getFiliere()
-  }, [])
 
   return (
     <div
@@ -134,32 +94,18 @@ const CreateEtudiant = ({ targetModel, getAllDesigners }) => {
 
               <div data-mdb-input-init className="form-outline mb-4">
                 <label className="form-label" htmlFor="form2Example2">
-                  Formateur <span className="text text-danger">*</span>
+                  Groupe <span className="text text-danger">*</span>
                 </label>
-                <select defaultValue={""}  className={`form-select form-select-lg ${(errors?.designer_id ? " is-invalid" : "")}`}
-                  name="designer" id="form2Example2"
+                <select className={`form-select form-select-lg ${(errors?.group_id ? " is-invalid" : "")}`}
+                  defaultValue={groups[0]?.id}
+                  name="group" id="form2Example2"
                 >
                   <option selected defaultValue={null}>Select one</option>
-                  {formateurs.map((formateur) => (
-                    <option key={formateur?.id} value={formateur?.id}>{formateur?.first_name} {formateur?.last_name}</option>
+                  {groups.map((group) => (
+                    <option key={group?.id} value={group?.id}>{group?.nom}</option>
                   ))}
                 </select>
-                <span className="text text-danger">{errors?.message1}</span>
-              </div>
-
-              <div data-mdb-input-init className="form-outline mb-4">
-                <label className="form-label" htmlFor="form2Example2">
-                  Filiere <span className="text text-danger">*</span>
-                </label>
-                <select defaultValue={""}  className={`form-select form-select-lg ${(errors?.designer_id ? " is-invalid" : "")}`}
-                  name="filiere" id="form2Example2"
-                >
-                  <option selected>Select one</option>
-                  {filieres.map((filiere) => (
-                    <option key={filiere?.id} value={filiere?.id}>{filiere?.nom}</option>
-                  ))}
-                </select>
-                <span className="text text-danger">{errors?.message2}</span>
+                <span className="text text-danger">{errors?.group_id}</span>
               </div>
 
               <div data-mdb-input-init className="form-outline mb-4">
@@ -220,6 +166,7 @@ const CreateEtudiant = ({ targetModel, getAllDesigners }) => {
 CreateEtudiant.propTypes = {
   targetModel: PropTypes.string.isRequired,
   getAllDesigners: PropTypes.func.isRequired,
+  groups: PropTypes.array.isRequired,
 };
 
 export default CreateEtudiant;

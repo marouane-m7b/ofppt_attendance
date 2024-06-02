@@ -102,6 +102,7 @@ function App() {
               />
               <Route path="etudiants" element={<EtudiantListGestionnaire />} />
               <Route path="absences" element={<AbsencesByDaySeanceGroup />} />
+              <Route path="alert/:id" element={<h1>Alert</h1>} />
             </Route>
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

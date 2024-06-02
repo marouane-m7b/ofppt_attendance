@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useAppContext } from "../../../config/context/ComponentContext";
 import { axiosClient } from "../../../config/Api/AxiosClient";
-import Swal from "sweetalert2";
 import CreateEtudiant from "../../models/CreateEtudiant";
 import UpdateEtudiant from "../../models/UpdateEtudiant";
+import { successToast } from "../../../config/Toasts/toasts";
 
 export default function AllEtudiant() {
     const [etudiants, setEtudiants] = useState([]);
@@ -36,10 +36,7 @@ export default function AllEtudiant() {
             await axiosClient.delete(
                 "admin/etudiants/" + etudiant?.id
             );
-            Swal.fire({
-                text: "Etudiant supprime avec success",
-                icon: "success",
-            });
+            successToast("Etudiant supprime avec success");
             await getAllDesigners();
         } catch (error) {
             console.log(error);
@@ -80,6 +77,7 @@ export default function AllEtudiant() {
             <CreateEtudiant
                 targetModel="CreateEtudiant"
                 getAllDesigners={getAllDesigners}
+                groups={groups}
             />
             {!etudiants ? (
                 <h1 className="text-center mt-5 pt-5">Chargement...</h1>

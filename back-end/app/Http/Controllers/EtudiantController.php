@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Designer;
 use App\Models\Etudiant;
 use App\Models\Filiere;
+use App\Models\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -30,8 +31,7 @@ class EtudiantController extends Controller
             'prenom' => 'required',
             'numero_stagiaire' => 'required',
             'numero_parent' => 'required',
-            'filiere_id' => 'required',
-            'designer_id' => 'required',
+            'group_id' => 'required|exists:groups,id',
         ];
 
         $validate = Validator::make($request->all(), $rules);
@@ -40,24 +40,13 @@ class EtudiantController extends Controller
             return response()->json($validate->errors(), 400);
         }
 
-        $filiere = Filiere::find($request->filiere_id);
-        if (!$filiere) {
-            return response()->json(['message2' => 'Filiere not found'], 404);
-        }
-
-        $designer = Designer::find($request->designer_id);
-        if (!$designer) {
-            return response()->json(['message1' => 'Designer not found'], 404);
-        }
-
         $etudiant = new Etudiant();
         $etudiant->cin = $request->cin;
         $etudiant->nom = $request->nom;
         $etudiant->prenom = $request->prenom;
         $etudiant->numero_stagiaire = $request->numero_stagiaire;
         $etudiant->numero_parent = $request->numero_parent;
-        $etudiant->filiere_id = $request->filiere_id;
-        $etudiant->designer_id = $request->designer_id;
+        $etudiant->group_id = $request->group_id;
         $etudiant->save();
     }
 
@@ -84,19 +73,13 @@ class EtudiantController extends Controller
             'prenom' => 'required',
             'numero_stagiaire' => 'required',
             'numero_parent' => 'required',
-            'filiere_id' => 'required',
-            'designer_id' => 'required',
+            'group_id' => 'required|exists:groups,id',
         ];
 
         $validate = Validator::make($request->all(), $rules);
 
         if ($validate->fails()) {
             return response()->json($validate->errors(), 400);
-        }
-
-        $filiere = Filiere::find($request->filiere_id);
-        if (!$filiere) {
-            return response()->json(['message' => 'Filiere not found'], 404);
         }
 
         $etudiant = Etudiant::find($etudiant->id);
@@ -109,8 +92,7 @@ class EtudiantController extends Controller
         $etudiant->prenom = $request->prenom;
         $etudiant->numero_stagiaire = $request->numero_stagiaire;
         $etudiant->numero_parent = $request->numero_parent;
-        $etudiant->filiere_id = $request->filiere_id;
-        $etudiant->designer_id = $request->designer_id;
+        $etudiant->group_id = $request->group_id;
         $etudiant->save();
     }
 

@@ -1,27 +1,54 @@
-import { Box, IconButton, useTheme } from "@mui/material";
-import { useContext, useState } from "react";
+import { Avatar, Box, Divider, IconButton, ListItemIcon, Menu, MenuItem, useTheme } from "@mui/material";
+import { useContext, useEffect, useState } from "react";
 import { ColorModeContext, tokens } from "../../../theme";
 import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
 import DarkModeOutlinedIcon from "@mui/icons-material/DarkModeOutlined";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { axiosClient } from "../../../config/Api/AxiosClient";
 import { useAppContext } from "../../../config/context/ComponentContext";
-import AutorenewIcon from '@mui/icons-material/Autorenew';
 import { errorToast, successToast } from "../../../config/Toasts/toasts";
+import Settings from '@mui/icons-material/Settings';
+import Logout from '@mui/icons-material/Logout';
+import DangerousIcon from '@mui/icons-material/Dangerous';
 
 const TopbarGestionnaire = () => {
   const [logoutLoading, setLogoutLoading] = useState(false);
+  const [alerts, setAlerts] = useState([]);
+
   const { navigateTo } = useAppContext();
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [anchorElProfile, setAnchorElProfile] = useState(null);
+  const open = Boolean(anchorEl);
+  const openProfile = Boolean(anchorElProfile);
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
+  const handleRouteAlert = (id) => {
+    navigateTo(`/validateur/alert/${id}`)
+    handleClose();
+  }
+  const handleClickProfile = (event) => {
+    setAnchorElProfile(event.currentTarget);
+  };
+  const handleCloseProfile = () => {
+    setAnchorElProfile(null);
+  };
 
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const colorMode = useContext(ColorModeContext);
 
   const handleLogout = async () => {
+    handleCloseProfile();
     try {
       setLogoutLoading(true);
       await axiosClient.post("validator/logout");
@@ -35,6 +62,19 @@ const TopbarGestionnaire = () => {
       setLogoutLoading(false);
     }
   }
+
+  const getAlerts = async () => {
+    try {
+      const { data } = await axiosClient.get("validator/alerts");
+      setAlerts(data);
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
+  useEffect(() => {
+    getAlerts();
+  }, []);
 
 
   return (
@@ -50,7 +90,6 @@ const TopbarGestionnaire = () => {
           <SearchIcon />
         </IconButton>
       </Box>
-
       {/* ICONS */}
       <Box display="flex">
         <IconButton onClick={colorMode.toggleColorMode}>
@@ -60,15 +99,123 @@ const TopbarGestionnaire = () => {
             <LightModeOutlinedIcon />
           )}
         </IconButton>
-        <IconButton>
+        <IconButton
+          onClick={handleClick}
+          size="small"
+          aria-controls={open ? 'account-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+        >
           <NotificationsOutlinedIcon />
         </IconButton>
-        <IconButton>
-          <SettingsOutlinedIcon />
+        <Menu
+          anchorEl={anchorEl}
+          id="account-menu"
+          open={open}
+          onClose={handleClose}
+          onClick={handleClose}
+          PaperProps={{
+            elevation: 0,
+            sx: {
+              overflow: 'visible',
+              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+              mt: 1.5,
+              '& .MuiAvatar-root': {
+                width: 32,
+                height: 32,
+                ml: -0.5,
+                mr: 1,
+              },
+              '&::before': {
+                content: '""',
+                display: 'block',
+                position: 'absolute',
+                top: 0,
+                right: 14,
+                width: 10,
+                height: 10,
+                bgcolor: 'background.paper',
+                transform: 'translateY(-50%) rotate(45deg)',
+                zIndex: 0,
+              },
+            },
+          }}
+          transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        >
+          {alerts.map((alert) => {
+            return (
+              <>
+                <MenuItem key={alert?.id} onClick={()=>handleRouteAlert(alert?.id)}>
+                  <DangerousIcon sx={{ mr: 1 }} />
+                  {alert?.etudiant?.nom} {alert?.etudiant?.prenom} {alert?.commentaire}
+                </MenuItem>
+                <Divider />
+              </>
+            )
+          })}
+        </Menu>
+        <IconButton
+          onClick={handleClickProfile}
+          size="small"
+          aria-controls={open ? 'account-menu' : undefined}
+          aria-haspopup="true"
+          aria-expanded={open ? 'true' : undefined}
+        >
+          <PersonOutlinedIcon />
         </IconButton>
-        <IconButton onClick={handleLogout}>
-          {logoutLoading ? <AutorenewIcon /> : <PersonOutlinedIcon />}
-        </IconButton>
+        <Menu
+          anchorEl={anchorElProfile}
+          id="account-menu"
+          open={openProfile}
+          onClose={handleCloseProfile}
+          onClick={handleCloseProfile}
+          PaperProps={{
+            elevation: 0,
+            sx: {
+              overflow: 'visible',
+              filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
+              mt: 1.5,
+              '& .MuiAvatar-root': {
+                width: 32,
+                height: 32,
+                ml: -0.5,
+                mr: 1,
+              },
+              '&::before': {
+                content: '""',
+                display: 'block',
+                position: 'absolute',
+                top: 0,
+                right: 14,
+                width: 10,
+                height: 10,
+                bgcolor: 'background.paper',
+                transform: 'translateY(-50%) rotate(45deg)',
+                zIndex: 0,
+              },
+            },
+          }}
+          transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+          anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        >
+          <MenuItem onClick={handleCloseProfile}>
+            <Avatar /> Profile
+          </MenuItem>
+          <Divider />
+          <MenuItem onClick={handleCloseProfile}>
+            <ListItemIcon>
+              <Settings fontSize="small" />
+            </ListItemIcon>
+            Paramétres
+          </MenuItem>
+          <MenuItem onClick={handleLogout}>
+            <ListItemIcon>
+              <Logout fontSize="small" />
+            </ListItemIcon>
+            Déconnexion
+          </MenuItem>
+        </Menu>
       </Box>
     </Box>
   );

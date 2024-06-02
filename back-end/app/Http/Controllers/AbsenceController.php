@@ -115,7 +115,7 @@ class AbsenceController extends Controller
                 ->first();
 
             if ($existingAbsence) {
-                return response()->json(['message' => "La présence a déjà été enregistrée aujourd'hui pour cette séance et ce groupe"], 400);
+                return response()->json(['message' => "La présence a déjà été enregistrée ce jour pour cette séance et ce groupe"], 400);
             }
 
             $absence = new Absence([
@@ -152,11 +152,11 @@ class AbsenceController extends Controller
             ->where('statut', 'Absent')
             ->sum('duree');
 
-        if ($totalDuree > 7) {
+        if ($totalDuree > 20) {
             Alert::create([
                 'etudiant_id' => $etudiantId,
                 'duree' => $totalDuree,
-                'commentaire' => "Passer 7 hours d'absence",
+                'commentaire' => "Dépasser 20 hours d'absence",
                 'is_validated' => false,
             ]);
         }

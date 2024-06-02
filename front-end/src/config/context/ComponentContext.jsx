@@ -60,6 +60,7 @@ const ComponentContext = ({ children }) => {
         JSON.stringify({ role: guard, _token: data.token })
       );
       successToast("Connexion reussie");
+      setErrors({});
       const state = await getUser(guard);
       if (state) return true;
       else return false;
