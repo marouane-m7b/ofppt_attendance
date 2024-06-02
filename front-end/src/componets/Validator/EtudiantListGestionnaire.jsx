@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
-import CreateAbsence from "../../models/CreateAbsence";
-import { axiosClient } from "../../../config/Api/AxiosClient";
+import CreateAbsence from "../models/CreateAbsence";
+import { axiosClient } from "../../config/Api/AxiosClient";
 
 export default function EtudiantListGestionnaire() {
     const [loadingPage, setLoadingPage] = useState(false)

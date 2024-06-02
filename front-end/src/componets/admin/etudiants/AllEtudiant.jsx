@@ -3,12 +3,12 @@ import { useAppContext } from "../../../config/context/ComponentContext";
 import { axiosClient } from "../../../config/Api/AxiosClient";
 import Swal from "sweetalert2";
 import CreateEtudiant from "../../models/CreateEtudiant";
-import { Link } from "react-router-dom";
 import UpdateEtudiant from "../../models/UpdateEtudiant";
 
 export default function AllEtudiant() {
     const [etudiants, setEtudiants] = useState([]);
     const [deleteLoading, setDeleteLoading] = useState(false);
+    const [groups, setGroups] = useState([]);
     const { setErrors } = useAppContext();
     const getAllDesigners = async () => {
         try {
@@ -58,6 +58,15 @@ export default function AllEtudiant() {
         document.title = "Tous les etudiants - OFPPT";
         getAllDesigners();
     }, []);
+
+
+    const getGroup = async () => {
+        const { data } = await axiosClient.get("admin/groups");
+        setGroups(data);
+    };
+    useEffect(() => {
+        getGroup()
+    }, [])
     return (
         <div className="container mt-5 pt-5">
             <button
@@ -103,10 +112,10 @@ export default function AllEtudiant() {
                                             +212 {etudiant?.numero_parent}
                                         </td>
                                         <td>
-                                            {etudiant?.filiere?.nom}
+                                            {etudiant?.group?.nom}
                                         </td>
                                         <td>
-                                            {etudiant?.designer}
+                                            {etudiant?.group?.filiere?.nom}
                                         </td>
                                         <td>
                                             <div className="d-flex gap-1 flex-nowrap">
@@ -131,6 +140,7 @@ export default function AllEtudiant() {
                                                     targetModel={"UpdateEtudiant" + etudiant?.id}
                                                     getAllDesigners={getAllDesigners}
                                                     etudiant={etudiant}
+                                                    groups={groups}
                                                 />
                                             </div>
                                         </td>

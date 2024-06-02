@@ -145,15 +145,8 @@ const SidebarGestionnaire = () => {
               setSelected={setSelected}
             />
             <Item
-              title="Question"
-              to="/validateur/questions-meanagment"
-              icon={<ContactsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Question Valide"
-              to="/validateur/questions-validated"
+              title="Absences"
+              to="/validateur/absences"
               icon={<ContactsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}

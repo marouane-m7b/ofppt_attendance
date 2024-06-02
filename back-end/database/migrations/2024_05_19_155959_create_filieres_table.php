@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('nom');
             $table->string('code');
-            $table->string('secteur_id');
+            $table->foreignId('secteur_id')->constrained('secteurs')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
         });
     }

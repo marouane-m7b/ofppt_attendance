@@ -1,21 +1,66 @@
-import { useEffect, useState } from "react"
-import CreateAbsence from "../../models/CreateAbsence";
-import { axiosClient } from "../../../config/Api/AxiosClient";
+import { useEffect, useState } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+import { axiosClient } from '../../../config/Api/AxiosClient';
+import { Box, Typography, Select, MenuItem } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
+import Button from '@mui/material/Button';
+import moment from 'moment';
+import { tokens } from '../../../theme';
+import { useTheme } from '@mui/material';
 
 export default function EtudiantListFormateur() {
-    const [loadingPage, setLoadingPage] = useState(false)
-    const [loading, setLoading] = useState(false)
-    const [errors, setErrors] = useState([]);
-    const [absence, setAbsence] = useState([]);
+    const [loadingPage, setLoadingPage] = useState(true);
     const [etudiants, setEtudiants] = useState([]);
+    const [absenceData, setAbsenceData] = useState({});
+    const [seance, setSeance] = useState('s1');
+    const today = moment().format('YYYY-MM-DD');
+
+
+    const theme = useTheme();
+    const colors = tokens(theme.palette.mode);
 
     const getEtudiants = async () => {
         try {
+            setLoadingPage(true);
             const { data } = await axiosClient.get("designer/etudiants");
             setEtudiants(data);
-            setErrors(null);
+            // Initialize absenceData with all students set to false (Absent)
+            const initialAbsenceData = {};
+            data.forEach(etudiant => {
+                initialAbsenceData[etudiant.id] = false;
+            });
+            setAbsenceData(initialAbsenceData);
+            setLoadingPage(false);
         } catch (error) {
+            setLoadingPage(false);
             console.log(error);
+        }
+    };
+
+    const handleCheckboxChange = (id, checked) => {
+        setAbsenceData({
+            ...absenceData,
+            [id]: checked,
+        });
+    };
+
+    const handleSeanceChange = (event) => {
+        setSeance(event.target.value);
+    };
+
+    const handleSubmit = async () => {
+        const absences = etudiants.map(etudiant => ({
+            etudiant_id: etudiant.id,
+            statut: absenceData[etudiant.id] ? 'Présent' : 'Absent',
+            date: today,
+            seance,
+        }));
+
+        try {
+            const response = await axiosClient.post('/designer/absences', absences);
+            alert(response.data.message);
+        } catch (error) {
+            console.error(error);
         }
     };
 
@@ -23,78 +68,91 @@ export default function EtudiantListFormateur() {
         getEtudiants();
     }, []);
 
-    const displayEtudiant = () => {
-        if (etudiants?.length > 0) {
-            return (
-                etudiants?.map((etudiant) => {
-                    return (
-                        <tr key={etudiant?.id}>
-                            <th>{etudiant?.nom}</th>
-                            <th>{etudiant?.prenom}</th>
-                            <th>{etudiant?.filiere?.nom}</th>
-                            <th>{etudiant?.cin}</th>
-                            <th>{etudiant?.numero_stagiaire}</th>
-                            <th>{etudiant?.numero_parent}</th>
-                        </tr>
-                    )
-                })
-            )
-        } else {
-            return (
-                <tr key={0}>
-                    <td colSpan={5}>No etudiant</td>
-                </tr>
-            )
-        }
-    }
-
-    const getAllDesigners = async () => {
-        try {
-            const { data } = await axiosClient.get("admin/designers");
-            setAbsence(data);
-            setErrors(null);
-        } catch (error) {
-            console.log(error);
-        }
-    };
-    return (
-        <>
-            <div className="container mt-5 pt-5">
-                <CreateAbsence
-                    role="designer"
-                    targetModel="CreateAbsence"
-                    getAllDesigners={getAllDesigners}
+    const columns = [
+        { field: 'nom', headerName: 'Nom', width: 150 },
+        { field: 'prenom', headerName: 'Prenom', width: 150 },
+        { field: 'filiere', headerName: 'Filiere', width: 150 },
+        { field: 'groupe', headerName: 'Groupe', width: 150 },
+        { field: 'cin', headerName: 'Cin', width: 150 },
+        { field: 'numero_stagiaire', headerName: 'Numero de Telephone', width: 160 },
+        { field: 'numero_parent', headerName: 'Numero de Parent', width: 160 },
+        {
+            field: 'absence',
+            headerName: 'Présent',
+            width: 120,
+            renderCell: (params) => (
+                <Checkbox
+                    checked={absenceData[params.row.id] || false}
+                    onChange={(e) => handleCheckboxChange(params.row.id, e.target.checked)}
                 />
-            </div>
-            <div className="row g-3 w-75 m-auto">
-                <div className="d-flex align-items-center justify-content-between">
-                    <h1 className="text-center">List Etudiant</h1>
-                    <button
-                        className="btn btn-primary btn-sm shadow-sm"
-                        data-bs-toggle="modal"
-                        data-bs-target="#CreateAbsence">Ajouter</button>
-                </div>
-                {!loadingPage ? (
-                    <table className="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>Nom</th>
-                                <th>Prenom</th>
-                                <th>Filiere</th>
-                                <th>Cin</th>
-                                <th>Numero de Telephone</th>
-                                <th>Numero de Parent</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {displayEtudiant()}
-                        </tbody>
-                    </table>
+            ),
+        },
+    ];
 
-                ) : (
-                    "loading List..."
-                )}
-            </div>
-        </>
-    )
+    const rows = etudiants.map((etudiant) => ({
+        id: etudiant.id,
+        nom: etudiant.nom,
+        prenom: etudiant.prenom,
+        filiere: etudiant.group?.filiere?.nom,
+        groupe: etudiant.group?.nom,
+        cin: etudiant.cin,
+        numero_stagiaire: etudiant.numero_stagiaire,
+        numero_parent: etudiant.numero_parent,
+    }));
+
+    return (
+        <Box sx={{ height: 400, width: '100%' }}>
+            <Box display="flex" justifyContent="space-between" m="20px">
+                <Typography variant="h4">
+                    Aujourd&apos;hui {today}
+                </Typography>
+                <Select value={seance} onChange={handleSeanceChange}>
+                    <MenuItem value="s1">Séance 1</MenuItem>
+                    <MenuItem value="s2">Séance 2</MenuItem>
+                    <MenuItem value="s3">Séance 3</MenuItem>
+                    <MenuItem value="s4">Séance 4</MenuItem>
+                </Select>
+            </Box>
+            <Box
+                m="40px 0 0 0"
+                height="65vh"
+                sx={{
+                    "& .MuiDataGrid-root": {
+                        border: "none",
+                    },
+                    "& .MuiDataGrid-cell": {
+                        borderBottom: "none",
+                    },
+                    "& .name-column--cell": {
+                        color: colors.greenAccent[300],
+                    },
+                    "& .MuiDataGrid-columnHeaders": {
+                        backgroundColor: colors.blueAccent[700],
+                        borderBottom: "none",
+                    },
+                    "& .MuiDataGrid-virtualScroller": {
+                        backgroundColor: colors.primary[400],
+                    },
+                    "& .MuiDataGrid-footerContainer": {
+                        borderTop: "none",
+                        backgroundColor: colors.blueAccent[700],
+                    },
+                    "& .MuiCheckbox-root": {
+                        color: `${colors.greenAccent[200]} !important`,
+                    },
+                }}
+            >
+                <DataGrid
+                    rows={rows}
+                    columns={columns}
+                    pageSize={5}
+                    loading={loadingPage}
+                    checkboxSelection={false}
+                />
+            </Box>
+            <Button variant="contained" color="primary" onClick={handleSubmit} sx={{ mt: 3, padding: 1 }}>
+                Submit Absences
+            </Button>
+        </Box>
+    );
 }

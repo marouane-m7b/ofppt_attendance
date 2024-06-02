@@ -1,19 +1,18 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useAppContext } from "../../config/context/ComponentContext";
 import { axiosClient } from "../../config/Api/AxiosClient";
 import Swal from "sweetalert2";
+import PropTypes from "prop-types";
 
-const UpdateEtudiant = ({ targetModel, etudiant, getAllDesigners }) => {
-  const { navigateTo, setErrors, errors } = useAppContext();
+const UpdateEtudiant = ({ targetModel, etudiant, getAllDesigners, groups }) => {
+  const { setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
   const cancelModel = useRef();
-  const [formateurs, setFormateurs] = useState([]);
-  const [filieres, setFilieres] = useState([]);
 
   const updateEtudiant = async (e) => {
     setLoading(true);
     e.preventDefault();
-    const { cin, designer, filiere, nom, prenom, numero_parent, numero_stagiaire } = e.target.elements;
+    const { cin, nom, prenom, numero_parent, numero_stagiaire, group } = e.target.elements;
     try {
       const { data } = await axiosClient.put(
         "admin/etudiants/" + etudiant?.id,
@@ -21,8 +20,7 @@ const UpdateEtudiant = ({ targetModel, etudiant, getAllDesigners }) => {
           nom: nom?.value,
           prenom: prenom?.value,
           cin: cin?.value,
-          designer_id: designer?.value,
-          filiere_id: filiere?.value,
+          group_id: group?.value,
           numero_parent: numero_parent?.value,
           numero_stagiaire: numero_stagiaire?.value,
         }
@@ -42,18 +40,6 @@ const UpdateEtudiant = ({ targetModel, etudiant, getAllDesigners }) => {
       setLoading(false);
     }
   };
-  const getFormateur = async () => {
-    const { data } = await axiosClient.get("admin/designers");
-    setFormateurs(data);
-  };
-  const getFiliere = async () => {
-    const { data } = await axiosClient.get("admin/filieres");
-    setFilieres(data);
-  };
-  useEffect(() => {
-    getFormateur()
-    getFiliere()
-  }, [])
 
   return (
     <div
@@ -116,34 +102,18 @@ const UpdateEtudiant = ({ targetModel, etudiant, getAllDesigners }) => {
 
               <div data-mdb-input-init className="form-outline mb-4">
                 <label className="form-label" htmlFor="form2Example2">
-                  Formateur <span className="text text-danger">*</span>
+                  Groupe <span className="text text-danger">*</span>
                 </label>
                 <select className={`form-select form-select-lg ${(errors?.designer_id ? " is-invalid" : "")}`}
-                  defaultValue={etudiant?.designer_id}
-                  name="designer" id="form2Example2"
+                  defaultValue={etudiant?.group_id}
+                  name="group" id="form2Example2"
                 >
                   <option selected defaultValue={null}>Select one</option>
-                  {formateurs.map((formateur) => (
-                    <option key={formateur?.id} value={formateur?.id}>{formateur?.first_name} {formateur?.last_name}</option>
+                  {groups.map((group) => (
+                    <option key={group?.id} value={group?.id}>{group?.nom}</option>
                   ))}
                 </select>
                 <span className="text text-danger">{errors?.message1}</span>
-              </div>
-
-              <div data-mdb-input-init className="form-outline mb-4">
-                <label className="form-label" htmlFor="form2Example2">
-                  Filiere <span className="text text-danger">*</span>
-                </label>
-                <select className={`form-select form-select-lg ${(errors?.designer_id ? " is-invalid" : "")}`}
-                  defaultValue={etudiant?.filiere_id}
-                  name="filiere" id="form2Example2"
-                >
-                  <option selected>Select one</option>
-                  {filieres.map((filiere) => (
-                    <option key={filiere?.id} value={filiere?.id}>{filiere?.nom}</option>
-                  ))}
-                </select>
-                <span className="text text-danger">{errors?.message2}</span>
               </div>
 
               <div data-mdb-input-init className="form-outline mb-4">
@@ -201,6 +171,13 @@ const UpdateEtudiant = ({ targetModel, etudiant, getAllDesigners }) => {
       </div>
     </div>
   );
+};
+
+UpdateEtudiant.propTypes = {
+  targetModel: PropTypes.object.isRequired,
+  etudiant: PropTypes.object.isRequired,
+  getAllDesigners: PropTypes.func.isRequired,
+  groups: PropTypes.func.isRequired,
 };
 
 export default UpdateEtudiant;

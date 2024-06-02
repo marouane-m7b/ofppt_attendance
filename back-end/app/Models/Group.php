@@ -18,4 +18,9 @@ class Group extends Model
     {
         return $this->hasMany(Etudiant::class);
     }
+
+    public function filiere()
+    {
+        return $this->belongsTo(Filiere::class);
+    }
 }

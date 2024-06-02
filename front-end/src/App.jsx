@@ -7,7 +7,6 @@ import AllDesigners from "./componets/admin/_designers/AllDesigners";
 import AllValidators from "./componets/admin/_validators/AllValidators";
 import AddQuestions from "./componets/designer/questions/AddQuestions";
 import VoirQuestions from "./componets/designer/questions/VoirQuestions";
-import AllQuestions from "./componets/Validator/_questions/AllQuestions";
 
 // Auth Components
 import ConcepteurLogin from "./componets/Auth/designer/ConcepteurLogin";
@@ -19,8 +18,6 @@ import GuestIndex from "./layouts/Guest/GuestIndex";
 import ConcepteurIndex from "./layouts/formateur/FormateurIndex";
 import ValidateurIndex from "./layouts/gestionnaire/GestionnaireIndex";
 import AdminIndex from "./layouts/admin/AdminIndex";
-import AllQuestionsValidated from "./componets/Validator/_questions/AllQuestionsValidated";
-import QuestionValidation from "./componets/Validator/_questions/QuestionValidation";
 import AllAdminQuestions from "./componets/admin/questions/AllAdminQuestions";
 import AllSecteurs from "./componets/admin/secteurs/AllSecteurs";
 import AllFilieres from "./componets/admin/filieres/AllFilieres";
@@ -28,7 +25,7 @@ import AdminQuestion from "./componets/admin/questions/AdminQuestion";
 import DesignerQuestion from "./componets/designer/questions/DesignerQuestion";
 import EtudiantList from "./componets/designer/questions/EtudiantListFormateur";
 import EtudiantListFormateur from "./componets/designer/questions/EtudiantListFormateur";
-import EtudiantListGestionnaire from "./componets/Validator/_questions/EtudiantListGestionnaire";
+import EtudiantListGestionnaire from "./componets/Validator/EtudiantListGestionnaire";
 import AllEtudiant from "./componets/admin/etudiants/AllEtudiant";
 import { useState } from "react";
 import Topbar from "./scenes/global/Topbar";
@@ -49,6 +46,7 @@ import DashboardAdmin from "./layouts/admin/dashboard";
 import FormateurIndex from "./layouts/formateur/FormateurIndex";
 import DashboardFormateur from "./layouts/formateur/dashboard";
 import DashboardGestionnaire from "./layouts/gestionnaire/dashboard";
+import AbsencesByDaySeanceGroup from "./componets/Validator/AbsencesByDaySeanceGroup";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -108,9 +106,7 @@ function App() {
                 element={<DashboardGestionnaire />}
               />
               <Route path="etudiants" element={<EtudiantListGestionnaire />} />
-              <Route path="questions-meanagment" element={<AllQuestions />} />
-              <Route path="questions-meanagment/:id" element={<QuestionValidation />} />
-              <Route path="questions-validated" element={<AllQuestionsValidated />} />
+              <Route path="absences" element={<AbsencesByDaySeanceGroup />} />
             </Route>
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

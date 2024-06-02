@@ -15,7 +15,7 @@ class EtudiantController extends Controller
      */
     public function index()
     {
-        $etudiants = Etudiant::all()->load('filiere');
+        $etudiants = Etudiant::all()->load('group.filiere');
         return response()->json($etudiants);
     }
 
