@@ -17,6 +17,7 @@ class DatabaseSeeder extends Seeder
             AdminSeeder::class,
             SecteurSeeder::class,
             FiliereSeeder::class,
+            ClasseSeeder::class,
             DesignerSeeder::class,
             ValidatorSeeder::class,
             EtudiantSeeder::class,

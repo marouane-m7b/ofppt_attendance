@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Classe;
 use App\Models\Designer;
 use App\Models\Etudiant;
 use App\Models\Filiere;
@@ -23,7 +24,7 @@ class EtudiantSeeder extends Seeder
                 'numero_stagiaire' => 1001,
                 'numero_parent' => 2001,
                 'filiere_id' => Filiere::where('nom', 'Automatisation et Instrumentation Industrielle')->first()->id,
-                'designer_id' => Designer::inRandomOrder()->first()->id,
+                'classe_id' => Classe::inRandomOrder()->first()->id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

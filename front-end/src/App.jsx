@@ -29,6 +29,7 @@ import DesignerQuestion from "./componets/designer/questions/DesignerQuestion";
 import EtudiantListFormateur from "./componets/designer/questions/EtudiantListFormateur";
 import EtudiantListGestionnaire from "./componets/Validator/_questions/EtudiantListGestionnaire";
 import AllEtudiant from "./componets/admin/etudiants/AllEtudiant";
+import ListGroupe from "./componets/designer/questions/ListGroupe";
 
 function App() {
   return (
@@ -57,11 +58,12 @@ function App() {
         </Route>
 
         <Route path="/concepteur" element={<ConcepteurIndex />}>
-          <Route
+          {/* <Route
             index
-            element={<Navigate to={"/concepteur/list-etudiants"} />}
-          />
-          <Route path="list-etudiants" element={<EtudiantListFormateur />} />
+            element={<Navigate to={"/list-classes"} />}
+          /> */}
+          <Route path="classe/:id" element={<EtudiantListFormateur />} />
+          <Route index path="list-classes" element={<ListGroupe />} />
           <Route path="voir-questions" element={<VoirQuestions />} />
           <Route path="voir-questions/:id" element={<DesignerQuestion />} />
         </Route>

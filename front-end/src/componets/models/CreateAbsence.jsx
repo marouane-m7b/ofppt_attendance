@@ -13,14 +13,12 @@ const CreateAbsence = ({ targetModel, getAllDesigners, role, getAlerts }) => {
     e.preventDefault();
     const { etudiant, commentaire, duree } = e.target.elements;
 
-    console.log(commentaire);
     try {
       const { data } = await axiosClient.post(`${`/${role}/absences`}`, {
         etudiant_id: etudiant?.value,
         commentaire: commentaire?.value,
         duree: duree?.value,
       });
-      console.log(data);
       Swal.fire({
         text: data.message,
         icon: "success",
@@ -41,7 +39,6 @@ const CreateAbsence = ({ targetModel, getAllDesigners, role, getAlerts }) => {
     try {
       const { data } = await axiosClient.get(`${`/${role}/etudiants`}`);
       setEtudiants(data);
-      console.log(data);
       setErrors(null);
     } catch (error) {
       console.log(error);

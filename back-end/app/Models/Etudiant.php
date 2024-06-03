@@ -28,4 +28,9 @@ class Etudiant extends Model
     {
         return $this->belongsTo(Filiere::class);
     }
+
+    public function classes()
+    {
+        return $this->belongsTo(Classe::class);
+    }
 }

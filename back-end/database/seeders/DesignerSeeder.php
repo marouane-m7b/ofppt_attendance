@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Classe;
 use App\Models\Designer;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
