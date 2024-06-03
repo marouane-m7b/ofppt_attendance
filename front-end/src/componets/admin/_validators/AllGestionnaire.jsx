@@ -5,12 +5,13 @@ import { useAppContext } from "../../../config/context/ComponentContext";
 import UpdateValidator from "../../models/UpdateValidator";
 import CreateValidator from "../../models/CreateValidator";
 import Swal from "sweetalert2";
+import { errorToast, successToast } from "../../../config/Toasts/toasts";
 
-const AllValidators = () => {
+const AllGestionnaires = () => {
   const [validators, setValidators] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const { setErrors } = useAppContext();
-  const getAllValidators = async () => {
+  const getAllGestionnaires = async () => {
     try {
       const { data } = await axiosClient.get("admin/validators");
       setValidators(data);
@@ -33,14 +34,10 @@ const AllValidators = () => {
   ></span>`;
     try {
       await axiosClient.delete("admin/validators/" + validator?.id);
-      Swal.fire({
-        icon: "success",
-        title: "Gestionnaire supprime avec success",
-        timer: 1500,
-      });
-      await getAllValidators();
+      successToast("Le gestionnaire a bien été supprimé");
+      await getAllGestionnaires();
     } catch (error) {
-      console.log(error);
+      errorToast(error.response.data.message);
     } finally {
       document.getElementById(
         "deleteBtnValidator" + validator?.id
@@ -54,7 +51,7 @@ const AllValidators = () => {
 
   useEffect(() => {
     document.title = "Tous les gestionnaires - OFPPT";
-    getAllValidators();
+    getAllGestionnaires();
   }, []);
 
   const handleReset = async (validator) => {
@@ -66,7 +63,7 @@ const AllValidators = () => {
         timer: 1500,
       });
       "", "", "success"
-      await getAllValidators();
+      await getAllGestionnaires();
     } catch (error) {
       Swal.fire("Une erreur est survenue !", error.response.data.message, "error");
       console.log(error);
@@ -85,7 +82,7 @@ const AllValidators = () => {
       </button>
       <CreateValidator
         targetModel="CreateValidator"
-        getAllValidators={getAllValidators}
+        getAllGestionnaires={getAllGestionnaires}
       />
       {!validators ? (
         <h1 className="text-center mt-5 pt-5">Chargement...</h1>
@@ -131,7 +128,7 @@ const AllValidators = () => {
                       </button>
                       <UpdateValidator
                         targetModel={"UpdateValidator" + validator?.id}
-                        getAllValidators={getAllValidators}
+                        getAllGestionnaires={getAllGestionnaires}
                         validator={validator}
                       />
                       <button
@@ -155,4 +152,4 @@ const AllValidators = () => {
   );
 };
 
-export default AllValidators;
+export default AllGestionnaires;

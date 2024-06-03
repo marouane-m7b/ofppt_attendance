@@ -4,7 +4,7 @@ import { axiosClient } from "../../config/Api/AxiosClient";
 import Swal from "sweetalert2";
 import PropTypes from "prop-types";
 
-const UpdateValidator = ({ targetModel, validator, getAllValidators }) => {
+const UpdateValidator = ({ targetModel, validator, getAllGestionnaires }) => {
   const { setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
   const cancelModel = useRef();
@@ -22,7 +22,7 @@ const UpdateValidator = ({ targetModel, validator, getAllValidators }) => {
           email: email.value,
         }
       );
-      await getAllValidators();
+      await getAllGestionnaires();
       cancelModel.current.click();
       Swal.fire({
         // title: ,
@@ -145,7 +145,7 @@ const UpdateValidator = ({ targetModel, validator, getAllValidators }) => {
 UpdateValidator.propTypes = {
   targetModel: PropTypes.string.isRequired,
   validator: PropTypes.object.isRequired,
-  getAllValidators: PropTypes.func.isRequired,
+  getAllGestionnaires: PropTypes.func.isRequired,
 };
 
 export default UpdateValidator;

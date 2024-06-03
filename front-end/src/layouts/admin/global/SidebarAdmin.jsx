@@ -151,7 +151,7 @@ const SidebarAdmin = () => {
             />
             <Item
               title="Gestionnaire"
-              to="/administrateur/validateurs"
+              to="/administrateur/gestionnaires"
               icon={<ContactsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}

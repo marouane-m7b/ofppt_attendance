@@ -1,10 +1,10 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useAppContext } from "../../config/context/ComponentContext";
 import { axiosClient } from "../../config/Api/AxiosClient";
 import Swal from "sweetalert2";
 import PropTypes from "prop-types";
 
-const CreateValidator = ({ targetModel, getAllValidators }) => {
+const CreateValidator = ({ targetModel, getAllGestionnaires }) => {
   const { setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
   const cancelModel = useRef();
@@ -18,7 +18,7 @@ const CreateValidator = ({ targetModel, getAllValidators }) => {
         last_name: last_name.value,
         email: email.value,
       });
-      await getAllValidators();
+      await getAllGestionnaires();
       cancelModel.current.click();
       Swal.fire({
         title: data.message,
@@ -137,7 +137,7 @@ const CreateValidator = ({ targetModel, getAllValidators }) => {
 
 CreateValidator.propTypes = {
   targetModel: PropTypes.string.isRequired,
-  getAllValidators: PropTypes.func.isRequired,
+  getAllGestionnaires: PropTypes.func.isRequired,
 }
 
 export default CreateValidator;

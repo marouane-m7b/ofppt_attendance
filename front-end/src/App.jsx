@@ -4,7 +4,6 @@ import { Routes, Route, Navigate } from "react-router-dom";
 // Pages
 import GuestHome from "./componets/Guest/GuestHome";
 import AllDesigners from "./componets/admin/_designers/AllDesigners";
-import AllValidators from "./componets/admin/_validators/AllValidators";
 
 // Auth Components
 import AdministrateurLogin from "./componets/Auth/admin/AdministrateurLogin";
@@ -44,6 +43,7 @@ import GestionnaireLogin from "./componets/Auth/gestionnaire/GestionnaireLogin";
 import { ToastBar, Toaster } from "react-hot-toast";
 import EtudiantListGestionnaire from "./componets/gestionnaire/etudiants/EtudiantListGestionnaire";
 import AbsencesByDaySeanceGroup from "./componets/gestionnaire/absences/AbsencesByDaySeanceGroup";
+import AllGestionnaires from "./componets/admin/_validators/AllGestionnaire";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -70,7 +70,7 @@ function App() {
                 element={<DashboardAdmin />}
               />
               <Route path="etudiants" element={<AllEtudiant />} />
-              <Route path="validateurs" element={<AllValidators />} />
+              <Route path="gestionnaires" element={<AllGestionnaires />} />
               <Route path="designers" element={<AllDesigners />} />
               <Route path="questions" element={<AllAdminQuestions />} />
               <Route path="questions/:id" element={<AdminQuestion />} />

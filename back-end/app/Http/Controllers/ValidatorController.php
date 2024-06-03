@@ -55,7 +55,7 @@ class ValidatorController extends Controller
             'email' => 'required|email|unique:validators,email',
         ]);
 
-        $password = 'ofppt';
+        $password = Str::random(8);
 
         $validator = new Validator();
         $validator->fill($request->all());
@@ -96,7 +96,8 @@ class ValidatorController extends Controller
     public function resetPassword($id)
     {
         $validator = Validator::find($id);
-        $validator->password = Hash::make('ofppt');
+        $password = Str::random(8);
+        $validator->password = Hash::make($password);
         $validator->save();
         return response()->json($validator, 200);
     }

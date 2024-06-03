@@ -65,7 +65,7 @@ class DesignerController extends Controller
             'email' => 'required|string|email|max:255|unique:designers',
         ]);
 
-        $password = "ofppt";
+        $password = Str::random(8);
 
         $designer = new Designer();
         $designer->first_name = $request->first_name;
@@ -116,9 +116,9 @@ class DesignerController extends Controller
     public function resetPassword($id)
     {
         $validator = Designer::find($id);
-        $validator->password = Hash::make('ofppt');
+        $password = Str::random(8);
+        $validator->password = Hash::make($password);
         $validator->save();
         return response()->json($validator, 200);
     }
-
 }
