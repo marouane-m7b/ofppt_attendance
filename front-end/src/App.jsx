@@ -13,10 +13,8 @@ import GuestIndex from "./layouts/Guest/GuestIndex";
 import ConcepteurIndex from "./layouts/formateur/FormateurIndex";
 import ValidateurIndex from "./layouts/gestionnaire/GestionnaireIndex";
 import AdminIndex from "./layouts/admin/AdminIndex";
-import AllAdminQuestions from "./componets/admin/questions/AllAdminQuestions";
 import AllSecteurs from "./componets/admin/secteurs/AllSecteurs";
 import AllFilieres from "./componets/admin/filieres/AllFilieres";
-import AdminQuestion from "./componets/admin/questions/AdminQuestion";
 import EtudiantListFormateur from "./componets/formateur/etudiants/EtudiantListFormateur";
 import AllEtudiant from "./componets/admin/etudiants/AllEtudiant";
 import { useState } from "react";
@@ -72,8 +70,6 @@ function App() {
               <Route path="etudiants" element={<AllEtudiant />} />
               <Route path="gestionnaires" element={<AllGestionnaires />} />
               <Route path="designers" element={<AllDesigners />} />
-              <Route path="questions" element={<AllAdminQuestions />} />
-              <Route path="questions/:id" element={<AdminQuestion />} />
               <Route path="secteurs" element={<AllSecteurs />} />
               <Route path="filieres" element={<AllFilieres />} />
             </Route>

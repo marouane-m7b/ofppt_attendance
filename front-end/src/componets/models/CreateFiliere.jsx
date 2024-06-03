@@ -1,14 +1,13 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useAppContext } from "../../config/context/ComponentContext";
 import { axiosClient } from "../../config/Api/AxiosClient";
-import Swal from "sweetalert2";
 import PropTypes from "prop-types";
+import { errorToast, successToast } from "../../config/Toasts/toasts";
 
-const CreateFiliere = ({ targetModel, getAllFilieres }) => {
+const CreateFiliere = ({ targetModel, getAllFilieres, secteurs }) => {
   const { setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
   const cancelModel = useRef();
-  const [secteurs, setSecteurs] = useState([]);
 
   const addFiliere = async (e) => {
     setLoading(true);
@@ -22,31 +21,15 @@ const CreateFiliere = ({ targetModel, getAllFilieres }) => {
       });
       await getAllFilieres();
       cancelModel.current.click();
-      console.log(data.message);
-      Swal.fire({
-        title: data.message,
-        icon: "success",
-      });
+      successToast("Filière ajoute avec succes");
       console.log(data);
     } catch (error) {
-      setErrors(error.response.data);
+      errorToast('Une erreur est survenue');
+      setErrors(error?.response?.data);
     } finally {
       setLoading(false);
     }
   };
-
-  const getSecteurs = async () => {
-    try {
-      const { data } = await axiosClient.get("/secteur");
-      setSecteurs(data);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    getSecteurs();
-  }, []);
 
   return (
     <div
@@ -106,7 +89,7 @@ const CreateFiliere = ({ targetModel, getAllFilieres }) => {
                   Secteur <span className="text text-danger">*</span>
                 </label>
                 <br />
-                <select defaultValue={""}  name="secteur" id="secteur" className="form-select">
+                <select defaultValue={""} name="secteur" id="secteur" className="form-select">
                   <option value="">Selectionner une secteur</option>
                   {secteurs?.map((secteur) => (
                     <option key={secteur.id} value={secteur.id}>
@@ -153,6 +136,7 @@ const CreateFiliere = ({ targetModel, getAllFilieres }) => {
 CreateFiliere.propTypes = {
   targetModel: PropTypes.string.isRequired,
   getAllFilieres: PropTypes.func.isRequired,
+  secteurs: PropTypes.array.isRequired,
 };
 
 export default CreateFiliere;

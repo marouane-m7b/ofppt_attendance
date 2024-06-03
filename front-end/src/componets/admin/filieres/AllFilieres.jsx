@@ -1,12 +1,13 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { axiosClient } from "../../../config/Api/AxiosClient";
 import { useAppContext } from "../../../config/context/ComponentContext";
 import CreateFiliere from "../../models/CreateFiliere";
 import UpdateFiliere from "../../models/UpdateFiliere";
 
 const AllFilieres = () => {
-  const [filieres, setFilieres] = React.useState(null);
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [filieres, setFilieres] = useState(null);
+  const [secteurs, setSecteurs] = useState([]);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const { setErrors } = useAppContext();
   const getAllFilieres = async () => {
     try {
@@ -45,9 +46,19 @@ const AllFilieres = () => {
     }
   };
 
+  const getSecteurs = async () => {
+    try {
+      const { data } = await axiosClient.get("/secteur");
+      setSecteurs(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   useEffect(() => {
     document.title = "Tous les validateurs - OFPPT";
     getAllFilieres();
+    getSecteurs();
   }, []);
 
   return (
@@ -63,6 +74,7 @@ const AllFilieres = () => {
       <CreateFiliere
         targetModel="CreateFiliere"
         getAllFilieres={getAllFilieres}
+        secteurs={secteurs}
       />
       {!filieres ? (
         <h1 className="text-center mt-5 pt-5">Chargement...</h1>
@@ -106,6 +118,7 @@ const AllFilieres = () => {
                         targetModel={"UpdateFiliere" + filiere.id}
                         getAllFilieres={getAllFilieres}
                         filiere={filiere}
+                        secteurs={secteurs}
                       />
                     </div>
                   </td>
