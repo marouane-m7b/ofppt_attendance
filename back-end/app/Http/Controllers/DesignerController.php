@@ -74,7 +74,7 @@ class DesignerController extends Controller
         $designer->password = Hash::make($password);
         $designer->save();
 
-        return response()->json(['message' => 'Concepteur cree avec succes', 'password' => $password], 201);
+        return response()->json(['message' => 'Concepteur crée avec succés ', 'password' => $password], 201);
     }
 
     /**
@@ -119,6 +119,6 @@ class DesignerController extends Controller
         $password = Str::random(8);
         $validator->password = Hash::make($password);
         $validator->save();
-        return response()->json($validator, 200);
+        return response()->json(['message' => 'Mot de passe mis à jour avec succes', 'password' => $password], 201);
     }
 }
