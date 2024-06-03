@@ -13,12 +13,12 @@ import { errorToast, successToast } from "../../../config/Toasts/toasts";
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
 import DangerousIcon from '@mui/icons-material/Dangerous';
+import DoneAllIcon from '@mui/icons-material/DoneAll';
 
 const TopbarGestionnaire = () => {
   const [logoutLoading, setLogoutLoading] = useState(false);
-  const [alerts, setAlerts] = useState([]);
 
-  const { navigateTo } = useAppContext();
+  const { navigateTo, alerts } = useAppContext();
 
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorElProfile, setAnchorElProfile] = useState(null);
@@ -33,7 +33,7 @@ const TopbarGestionnaire = () => {
   };
 
   const handleRouteAlert = (id) => {
-    navigateTo(`/validateur/alert/${id}`)
+    navigateTo(`/gestionnaire/alert/${id}`)
     handleClose();
   }
   const handleClickProfile = (event) => {
@@ -62,19 +62,6 @@ const TopbarGestionnaire = () => {
       setLogoutLoading(false);
     }
   }
-
-  const getAlerts = async () => {
-    try {
-      const { data } = await axiosClient.get("validator/alerts");
-      setAlerts(data);
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  useEffect(() => {
-    getAlerts();
-  }, []);
 
 
   return (
@@ -143,17 +130,20 @@ const TopbarGestionnaire = () => {
           transformOrigin={{ horizontal: 'right', vertical: 'top' }}
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
-          {alerts.map((alert) => {
+          {alerts.length > 0 ? alerts.map((alert) => {
             return (
               <>
-                <MenuItem key={alert?.id} onClick={()=>handleRouteAlert(alert?.id)}>
+                <MenuItem key={alert?.id} onClick={() => handleRouteAlert(alert?.id)}>
                   <DangerousIcon sx={{ mr: 1 }} />
                   {alert?.etudiant?.nom} {alert?.etudiant?.prenom} {alert?.commentaire}
                 </MenuItem>
                 <Divider />
               </>
             )
-          })}
+          }) : <MenuItem>
+            <DoneAllIcon sx={{ mr: 1 }} />
+            Aucune alertes !
+          </MenuItem>}
         </Menu>
         <IconButton
           onClick={handleClickProfile}

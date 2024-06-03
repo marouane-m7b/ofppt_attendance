@@ -71,17 +71,17 @@ export default function AbsencesByDaySeanceGroup() {
     };
 
     const columns = [
-        { field: 'nom', headerName: 'Nom', width: 150 },
-        { field: 'prenom', headerName: 'Prenom', width: 150 },
-        { field: 'filiere', headerName: 'Filiere', width: 150 },
-        { field: 'groupe', headerName: 'Groupe', width: 150 },
-        { field: 'cin', headerName: 'Cin', width: 150 },
-        { field: 'numero_stagiaire', headerName: 'Numero de Telephone', width: 165 },
-        { field: 'numero_parent', headerName: 'Numero de Parent', width: 165 },
+        { field: 'nom', headerName: 'Nom', flex: 1 },
+        { field: 'prenom', headerName: 'Prenom', flex: 1 },
+        { field: 'filiere', headerName: 'Filiere', flex: 1 },
+        { field: 'groupe', headerName: 'Groupe', flex: 1 },
+        { field: 'cin', headerName: 'Cin', flex: 1 },
+        { field: 'numero_stagiaire', headerName: 'Numero de Telephone', flex: 1 },
+        { field: 'numero_parent', headerName: 'Numero de Parent', flex: 1 },
         {
             field: 'statut',
             headerName: 'Statut',
-            width: 120,
+            flex: 1,
             renderCell: (params) => {
                 const isJustified = params.row.is_justified;
                 const status = params.value;
@@ -118,7 +118,7 @@ export default function AbsencesByDaySeanceGroup() {
 
     return (
         <Box sx={{ height: 400, width: '100%' }}>
-            <Box display="flex" justifyContent="space-between" m="20px">
+            <Box display="flex" justifyContent="space-between" sx={{ ml: 2, mr: 3, mb: 3, mt: 2, width: '96%' }}>
                 <DatePicker
                     selected={date}
                     onChange={(newDate) => setDate(newDate)}
@@ -143,32 +143,10 @@ export default function AbsencesByDaySeanceGroup() {
                 </Button>
             </Box>
             <Box
-                m="40px 0 0 0"
-                height="70vh"
                 sx={{
-                    "& .MuiDataGrid-root": {
-                        border: "none",
-                    },
-                    "& .MuiDataGrid-cell": {
-                        borderBottom: "none",
-                    },
-                    "& .name-column--cell": {
-                        color: colors.greenAccent[300],
-                    },
-                    "& .MuiDataGrid-columnHeaders": {
-                        backgroundColor: colors.blueAccent[700],
-                        borderBottom: "none",
-                    },
-                    "& .MuiDataGrid-virtualScroller": {
-                        backgroundColor: colors.primary[400],
-                    },
-                    "& .MuiDataGrid-footerContainer": {
-                        borderTop: "none",
-                        backgroundColor: colors.grey[900],
-                    },
-                    "& .MuiCheckbox-root": {
-                        color: `${colors.greenAccent[200]} !important`,
-                    },
+                    height: 600,
+                    width: '96%',
+                    ml: 2,
                 }}
             >
                 <DataGrid

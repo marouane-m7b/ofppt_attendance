@@ -10,17 +10,11 @@ import AdministrateurLogin from "./componets/Auth/admin/AdministrateurLogin";
 
 //Layouts
 import GuestIndex from "./layouts/Guest/GuestIndex";
-import ConcepteurIndex from "./layouts/formateur/FormateurIndex";
-import ValidateurIndex from "./layouts/gestionnaire/GestionnaireIndex";
 import AdminIndex from "./layouts/admin/AdminIndex";
 import AllSecteurs from "./componets/admin/secteurs/AllSecteurs";
 import AllFilieres from "./componets/admin/filieres/AllFilieres";
 import EtudiantListFormateur from "./componets/formateur/etudiants/EtudiantListFormateur";
 import AllEtudiant from "./componets/admin/etudiants/AllEtudiant";
-import { useState } from "react";
-import Topbar from "./scenes/global/Topbar";
-import Sidebar from "./scenes/global/Sidebar";
-import Dashboard from "./scenes/dashboard";
 import Team from "./scenes/team";
 import Invoices from "./scenes/invoices";
 import Contacts from "./scenes/contacts";
@@ -38,14 +32,13 @@ import DashboardFormateur from "./layouts/formateur/dashboard";
 import DashboardGestionnaire from "./layouts/gestionnaire/dashboard";
 import FormateurLogin from "./componets/Auth/formateur/FormateurLogin";
 import GestionnaireLogin from "./componets/Auth/gestionnaire/GestionnaireLogin";
-import { ToastBar, Toaster } from "react-hot-toast";
 import EtudiantListGestionnaire from "./componets/gestionnaire/etudiants/EtudiantListGestionnaire";
 import AbsencesByDaySeanceGroup from "./componets/gestionnaire/absences/AbsencesByDaySeanceGroup";
 import AllGestionnaires from "./componets/admin/_validators/AllGestionnaire";
+import GestionnaireIndex from "./layouts/gestionnaire/GestionnaireIndex";
 
 function App() {
   const [theme, colorMode] = useMode();
-  const [isSidebar, setIsSidebar] = useState(true);
 
   return (
     <>
@@ -91,7 +84,7 @@ function App() {
               <Route path="geography" element={<Geography />} />
             </Route>
 
-            <Route path="/validateur" element={<ValidateurIndex />}>
+            <Route path="/gestionnaire" element={<GestionnaireIndex />}>
               <Route
                 index
                 element={<DashboardGestionnaire />}

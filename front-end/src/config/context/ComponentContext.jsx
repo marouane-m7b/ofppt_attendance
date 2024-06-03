@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { axiosClient } from "../Api/AxiosClient";
 import { errorToast, successToast } from "../Toasts/toasts";
@@ -7,15 +7,17 @@ import PropTypes from "prop-types";
 const Context = createContext({
   user: {},
   errors: {},
+  alerts: [],
   handleLogin: () => { },
   navigateTo: () => { },
   setErrors: () => { },
 });
 
 const ComponentContext = ({ children }) => {
-  const [user, setUser] = React.useState({});
-  const [loading, setLoading] = React.useState(true);
-  const [errors, setErrors] = React.useState({});
+  const [user, setUser] = useState({});
+  const [loading, setLoading] = useState(true);
+  const [errors, setErrors] = useState({});
+  const [alerts, setAlerts] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,6 +36,23 @@ const ComponentContext = ({ children }) => {
     }
     fetchUser();
   }, []);
+
+  useEffect(() => {
+    async function fetchAlerts(role) {
+      try {
+        const { data } = await axiosClient.get(`${role}/alerts`);
+        setAlerts(data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    if (user.role === "admin") {
+      fetchAlerts("admin");
+    }
+    if (user.role === "validator") {
+      fetchAlerts("validator");
+    }
+  }, [user]);
 
   const getUser = async (guard) => {
     const ud = JSON.parse(localStorage.getItem("ud"));
@@ -79,6 +98,7 @@ const ComponentContext = ({ children }) => {
         navigateTo: navigate,
         errors,
         setErrors,
+        alerts,
       }}
     >
       {loading ? "Loading..." :

@@ -44,7 +44,6 @@ const SidebarGestionnaire = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
   const { user } = useAppContext();
-  console.log(user);
 
   return (
     <Box
@@ -124,7 +123,7 @@ const SidebarGestionnaire = () => {
           <Box paddingLeft={isCollapsed ? undefined : "10%"}>
             <Item
               title="Dashboard"
-              to="/validateur"
+              to="/gestionnaire"
               icon={<HomeOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
@@ -139,14 +138,14 @@ const SidebarGestionnaire = () => {
             </Typography>
             <Item
               title="Etudiants"
-              to="/validateur/etudiants"
+              to="/gestionnaire/etudiants"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Absences Historiques"
-              to="/validateur/absences"
+              to="/gestionnaire/absences"
               icon={<ContactsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
