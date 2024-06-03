@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Divider, Typography, Box, Button, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Grid } from '@mui/material';
 import { Check, Cancel } from '@mui/icons-material';
 
-const AlertList = () => {
+const AlertDetails = () => {
     const { id } = useParams();
     const { alerts } = useAppContext();
     const [alert, setAlert] = useState({});
@@ -55,42 +55,52 @@ const AlertList = () => {
                     </Grid>
                 </Grid>
                 <Divider sx={{ my: 3 }} />
-                <Typography variant="h5" gutterBottom>
-                    Absences
-                </Typography>
-                <List>
-                    {etudiant?.absences?.map(absence => (
-                        <ListItem key={absence?.id} alignItems="flex-start">
-                            <ListItemAvatar>
-                                <Avatar>{absence?.seance?.charAt(0)}</Avatar>
-                            </ListItemAvatar>
-                            <ListItemText
-                                primary={`Séance: ${absence?.seance === 's1' ? '8:00 - 11:00' : (absence?.seance === 's2' ? '11:00 - 13:30' : (absence?.seance === 's3' ? '13:30 - 16:00' : '16:00 - 18:30'))}`}
-                                secondary={
-                                    <>
-                                        <Typography component="span" variant="body2" color="text.primary">
-                                            {absence?.date}
-                                        </Typography>
-                                        <Typography variant="body2" color="text.secondary">
-                                            Absence réalisée par {absence?.designer ? 'formateur: ' + absence?.designer?.first_name + ' ' + absence?.designer?.last_name : 'gestionnaire: ' + absence?.validator?.first_name + ' ' + absence?.validator?.last_name}
-                                        </Typography>
-                                    </>
-                                }
-                            />
-                        </ListItem>
-                    ))}
-                </List>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
-                    <Button variant="contained" color="error" startIcon={<Cancel />}>
-                        Annuler
+                {etudiant?.absences?.length > 0 && (
+                    <>
+                        <Typography variant="h5" gutterBottom>
+                            Absences
+                        </Typography>
+                        <List>
+                            {etudiant?.absences?.map(absence => (
+                                <ListItem key={absence?.id} alignItems="flex-start">
+                                    <ListItemAvatar>
+                                        <Avatar>{absence?.seance?.charAt(0)}</Avatar>
+                                    </ListItemAvatar>
+                                    <ListItemText
+                                        primary={`Séance: ${absence?.seance === 's1' ? '8:00 - 11:00' : (absence?.seance === 's2' ? '11:00 - 13:30' : (absence?.seance === 's3' ? '13:30 - 16:00' : '16:00 - 18:30'))}`}
+                                        secondary={
+                                            <>
+                                                <Typography component="span" variant="body2" color="text.primary">
+                                                    {absence?.date}
+                                                </Typography>
+                                                <Typography variant="body2" color="text.secondary">
+                                                    Absence réalisée par {absence?.designer ? 'formateur: ' + absence?.designer?.first_name + ' ' + absence?.designer?.last_name : 'gestionnaire: ' + absence?.validator?.first_name + ' ' + absence?.validator?.last_name}
+                                                </Typography>
+                                            </>
+                                        }
+                                    />
+                                </ListItem>
+                            ))}
+                        </List>
+                    </>
+                )}
+                {alert.is_validated ? (
+                    <Button variant="contained" color="secondary" disabled>
+                        Problème déjà résolu
                     </Button>
-                    <Button variant="contained" color="primary" startIcon={<Check />}>
-                        Valider
-                    </Button>
-                </Box>
+                ) : (
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
+                        <Button variant="contained" color="error" startIcon={<Cancel />}>
+                            Annuler
+                        </Button>
+                        <Button variant="contained" color="primary" startIcon={<Check />}>
+                            Valider
+                        </Button>
+                    </Box>
+                )}
             </Paper>
         </Box>
     );
 };
 
-export default AlertList;
+export default AlertDetails;

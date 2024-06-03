@@ -16,7 +16,7 @@ class AlertController extends Controller
             $query->where('is_justified', false)
                   ->where('statut', 'Absent');
         }, 'etudiant.absences.designer', 'etudiant.absences.validator', 'etudiant.group.filiere'])
-        ->where('is_validated', false)
+        // ->where('is_validated', false)
         ->get();
     
         return response()->json($alerts);

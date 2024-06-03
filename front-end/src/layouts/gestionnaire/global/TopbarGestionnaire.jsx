@@ -12,8 +12,9 @@ import { useAppContext } from "../../../config/context/ComponentContext";
 import { errorToast, successToast } from "../../../config/Toasts/toasts";
 import Settings from '@mui/icons-material/Settings';
 import Logout from '@mui/icons-material/Logout';
-import DangerousIcon from '@mui/icons-material/Dangerous';
+import WarningIcon from '@mui/icons-material/Warning';
 import DoneAllIcon from '@mui/icons-material/DoneAll';
+import CheckIcon from '@mui/icons-material/Check';
 
 const TopbarGestionnaire = () => {
   const [logoutLoading, setLogoutLoading] = useState(false);
@@ -35,6 +36,10 @@ const TopbarGestionnaire = () => {
   const handleRouteAlert = (id) => {
     navigateTo(`/gestionnaire/alert/${id}`)
     handleClose();
+  }
+
+  const handleRouteAllAlerts = () => {
+    navigateTo(`/gestionnaire/alerts`)
   }
   const handleClickProfile = (event) => {
     setAnchorElProfile(event.currentTarget);
@@ -130,13 +135,25 @@ const TopbarGestionnaire = () => {
           transformOrigin={{ horizontal: 'right', vertical: 'top' }}
           anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
         >
-          {alerts.length > 0 ? alerts.map((alert) => {
-            return (
+          {alerts?.length > 0 ? alerts?.map((alert, index) => {
+            if (index < 5) {
+              return (
                 <MenuItem key={alert?.id} onClick={() => handleRouteAlert(alert?.id)} sx={{ p: 1 }}>
-                  <DangerousIcon sx={{ mr: 1 }} />
+                  {alert?.is_validated ? <CheckIcon sx={{ mr: 1 }} color="success" /> : <WarningIcon color="error" sx={{ mr: 1 }} />}
                   {alert?.etudiant?.nom} {alert?.etudiant?.prenom} {alert?.commentaire}
                 </MenuItem>
-            )
+              )
+            }
+            if (index === 5) {
+              return (
+                <MenuItem key={alert?.id} onClick={() => handleRouteAllAlerts()} sx={{ p: 1 }}>
+                  Afficher toutes les alertes
+                </MenuItem>
+              )
+            }
+            if (index >= 5) {
+              return null;
+            }
           }) : <MenuItem>
             <DoneAllIcon sx={{ mr: 1 }} />
             Aucune alertes !
