@@ -1,15 +1,15 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useAppContext } from "../../config/context/ComponentContext";
 import { axiosClient } from "../../config/Api/AxiosClient";
+import { Modal, Box, TextField, Button, Typography, CircularProgress } from '@mui/material';
 import PropTypes from "prop-types";
 import { errorToast, successToast } from "../../config/Toasts/toasts";
 
-const UpdateFiliere = ({ targetModel, filiere, getAllFilieres, secteurs }) => {
+const UpdateFiliere = ({ open, onClose, filiere, getAllFilieres, secteurs }) => {
   const { setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
-  const cancelModel = useRef();
 
-  const UpdateFiliere = async (e) => {
+  const updateFiliere = async (e) => {
     setLoading(true);
     e.preventDefault();
     const { nom, code, secteur } = e.target.elements;
@@ -23,8 +23,8 @@ const UpdateFiliere = ({ targetModel, filiere, getAllFilieres, secteurs }) => {
         }
       );
       await getAllFilieres();
-      cancelModel.current.click();
-      successToast("Filière modifie avec succes");
+      onClose();
+      successToast("Filière modifiée avec succès");
     } catch (error) {
       errorToast('Une erreur est survenue');
       setErrors(error?.response?.data);
@@ -34,111 +34,65 @@ const UpdateFiliere = ({ targetModel, filiere, getAllFilieres, secteurs }) => {
   };
 
   return (
-    <div
-      className="modal fade"
-      id={targetModel}
-      tabIndex={-1}
-      aria-labelledby="UpdateFiliere"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h1 className="modal-title fs-5" id="UpdateFiliere">
-              Modifier Une Filière
-            </h1>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            />
-          </div>
-          <div className="modal-body">
-            <form onSubmit={UpdateFiliere}>
-              <div data-mdb-input-init className="form-outline mb-4">
-                <label className="form-label" htmlFor="form2Example1">
-                  Nom <span className="text text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="form2Example1"
-                  className={
-                    "form-control" + (errors?.nom ? " is-invalid" : "")
-                  }
-                  defaultValue={filiere?.nom}
-                  name="nom"
-                />
-                <span className="text text-danger">{errors?.nom}</span>
-              </div>
-
-              <div data-mdb-input-init className="form-outline mb-4">
-                <label className="form-label" htmlFor="form2Example2">
-                  Code <span className="text text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="form2Example2"
-                  className={
-                    "form-control" + (errors?.code ? " is-invalid" : "")
-                  }
-                  defaultValue={filiere?.code}
-                  name="code"
-                />
-                <span className="text text-danger">{errors?.code}</span>
-              </div>
-
-              <div data-mdb-input-init className="form-outline mb-4">
-                <label className="form-label" htmlFor="form2Example2">
-                  Secteur <span className="text text-danger">*</span>
-                </label>
-                <br />
-                <select defaultValue={filiere?.secteur_id} name="secteur" id="secteur" className="form-select">
-                  <option value="">Selectionner une secteur</option>
-                  {secteurs?.map((secteur) => (
-                    <option key={secteur.id} value={secteur.id}>
-                      {secteur.nom}
-                    </option>
-                  ))}
-                </select>
-                <span className="text text-danger">{errors?.secteur_id}</span>
-              </div>
-
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  ref={cancelModel}
-                  className="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  Annuler
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <span
-                      className="spinner-border spinner-border-sm"
-                      role="status"
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    "Modifier"
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Modal open={open} onClose={onClose}>
+      <Box sx={{ p: 4, backgroundColor: 'white', borderRadius: 1, maxWidth: 400, margin: 'auto', mt: 5 }}>
+        <Typography variant="h6" component="h2" gutterBottom>
+          Modifier Une Filière
+        </Typography>
+        <form onSubmit={updateFiliere}>
+          <TextField
+            label="Nom"
+            name="nom"
+            defaultValue={filiere?.nom}
+            fullWidth
+            margin="normal"
+            error={!!errors?.nom}
+            helperText={errors?.nom}
+          />
+          <TextField
+            label="Code"
+            name="code"
+            defaultValue={filiere?.code}
+            fullWidth
+            margin="normal"
+            error={!!errors?.code}
+            helperText={errors?.code}
+          />
+          <TextField
+            select
+            label="Secteur"
+            name="secteur"
+            defaultValue={filiere?.secteur_id}
+            fullWidth
+            margin="normal"
+            SelectProps={{
+              native: true,
+            }}
+          >
+            <option value="">Sélectionner un secteur</option>
+            {secteurs.map((secteur) => (
+              <option key={secteur.id} value={secteur.id}>
+                {secteur.nom}
+              </option>
+            ))}
+          </TextField>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <Button onClick={onClose} variant="contained" color="secondary" sx={{ mr: 1 }}>
+              Annuler
+            </Button>
+            <Button type="submit" variant="contained" color="primary" disabled={loading}>
+              {loading ? <CircularProgress size={12} /> : 'Modifier'}
+            </Button>
+          </Box>
+        </form>
+      </Box>
+    </Modal>
   );
 };
 
 UpdateFiliere.propTypes = {
-  targetModel: PropTypes.string.isRequired,
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
   filiere: PropTypes.object.isRequired,
   getAllFilieres: PropTypes.func.isRequired,
   secteurs: PropTypes.array.isRequired,

@@ -1,15 +1,15 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { useAppContext } from "../../config/context/ComponentContext";
 import { axiosClient } from "../../config/Api/AxiosClient";
 import Swal from "sweetalert2";
+import { Modal, Box, TextField, Button, Typography, CircularProgress } from '@mui/material';
 import PropTypes from "prop-types";
 
-const CreateSecteur = ({ targetModel, getAllSecteurs }) => {
+const CreateSecteur = ({ open, onClose, getAllSecteurs }) => {
   const { setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
-  const cancelModel = useRef();
 
-  const addDesigner = async (e) => {
+  const addSecteur = async (e) => {
     setLoading(true);
     e.preventDefault();
     const { nom } = e.target.elements;
@@ -18,13 +18,11 @@ const CreateSecteur = ({ targetModel, getAllSecteurs }) => {
         nom: nom.value,
       });
       await getAllSecteurs();
-      cancelModel.current.click();
-      console.log(data.message);
+      onClose();
       Swal.fire({
         title: data.message,
         icon: "success",
       });
-      console.log(data);
     } catch (error) {
       setErrors(error.response.data);
     } finally {
@@ -33,79 +31,38 @@ const CreateSecteur = ({ targetModel, getAllSecteurs }) => {
   };
 
   return (
-    <div
-      className="modal fade"
-      id={targetModel}
-      tabIndex={-1}
-      aria-labelledby="CreateSecteur"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h1 className="modal-title fs-5" id="CreateSecteur">
-              Ajouter Une Secteur
-            </h1>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            />
-          </div>
-          <div className="modal-body">
-            <form onSubmit={addDesigner}>
-              <div data-mdb-input-init className="form-outline mb-4">
-                <label className="form-label" htmlFor="form2Example1">
-                  Nom <span className="text text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="form2Example1"
-                  className={
-                    "form-control" + (errors?.nom ? " is-invalid" : "")
-                  }
-                  name="nom"
-                />
-                <span className="text text-danger">{errors?.nom}</span>
-              </div>
-
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  ref={cancelModel}
-                  className="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  Annuler
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <span
-                      className="spinner-border spinner-border-sm"
-                      role="status"
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    "Ajouter"
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Modal open={open} onClose={onClose}>
+      <Box sx={{ p: 4, backgroundColor: 'white', borderRadius: 1, maxWidth: 400, margin: 'auto', mt: 5 }}>
+        <Typography variant="h6" component="h2" gutterBottom>
+          Ajouter Une Secteur
+        </Typography>
+        <form onSubmit={addSecteur}>
+          <TextField
+            label="Nom"
+            name="nom"
+            fullWidth
+            margin="normal"
+            error={!!errors?.nom}
+            helperText={errors?.nom}
+          />
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <Button onClick={onClose} variant="contained" color="secondary" sx={{ mr: 1 }}>
+              Annuler
+            </Button>
+            <Button type="submit" variant="contained" color="primary" disabled={loading}>
+              {loading ? <CircularProgress size={12} /> : 'Ajouter'}
+            </Button>
+          </Box>
+        </form>
+      </Box>
+    </Modal>
   );
 };
 
 CreateSecteur.propTypes = {
-  targetModel: PropTypes.string.isRequired,
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
   getAllSecteurs: PropTypes.func.isRequired,
-};
+}
 
 export default CreateSecteur;
