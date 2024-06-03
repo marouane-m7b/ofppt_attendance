@@ -1,13 +1,14 @@
-import { useRef, useState } from "react";
+import React, { useState } from "react";
 import { useAppContext } from "../../config/context/ComponentContext";
 import { axiosClient } from "../../config/Api/AxiosClient";
 import Swal from "sweetalert2";
+import { Modal, Box, TextField, Button, Typography } from '@mui/material';
 import PropTypes from "prop-types";
 
-const CreateValidator = ({ targetModel, getAllGestionnaires }) => {
+const CreateValidator = ({ open, onClose, getAllGestionnaires }) => {
   const { setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
-  const cancelModel = useRef();
+
   const addValidator = async (e) => {
     setLoading(true);
     e.preventDefault();
@@ -19,15 +20,13 @@ const CreateValidator = ({ targetModel, getAllGestionnaires }) => {
         email: email.value,
       });
       await getAllGestionnaires();
-      cancelModel.current.click();
+      onClose();
       Swal.fire({
         title: data.message,
         text: "Mote de passe : " + data.password,
         icon: "success",
       });
-      console.log(data);
     } catch (error) {
-      console.log(error);
       setErrors(error.response.data.errors);
     } finally {
       setLoading(false);
@@ -35,108 +34,54 @@ const CreateValidator = ({ targetModel, getAllGestionnaires }) => {
   };
 
   return (
-    <div
-      className="modal fade"
-      id={targetModel}
-      tabIndex={-1}
-      aria-labelledby="CreateValidator"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h1 className="modal-title fs-5" id="CreateValidator">
-              Ajouter Une Gestionnaire
-            </h1>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            />
-          </div>
-          <div className="modal-body">
-            <form onSubmit={addValidator}>
-              <div data-mdb-input-init className="form-outline mb-4">
-                <label className="form-label" htmlFor="form2Example1">
-                  Nom <span className="text text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="form2Example1"
-                  className={
-                    "form-control" + (errors?.first_name ? " is-invalid" : "")
-                  }
-                  name="first_name"
-                />
-                <span className="text text-danger">{errors?.first_name}</span>
-              </div>
-
-              <div data-mdb-input-init className="form-outline mb-4">
-                <label className="form-label" htmlFor="form2Example2">
-                  Prenom <span className="text text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="form2Example2"
-                  className={
-                    "form-control" + (errors?.last_name ? " is-invalid" : "")
-                  }
-                  name="last_name"
-                />
-                <span className="text text-danger">{errors?.last_name}</span>
-              </div>
-
-              <div data-mdb-input-init className="form-outline mb-4">
-                <label className="form-label" htmlFor="form2Example2">
-                  E-mail <span className="text text-danger">*</span>
-                </label>
-                <input
-                  type="email"
-                  id="form2Example2"
-                  className={
-                    "form-control" + (errors?.email ? " is-invalid" : "")
-                  }
-                  name="email"
-                />
-                <span className="text text-danger">{errors?.email}</span>
-              </div>
-
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  ref={cancelModel}
-                  className="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  Annuler
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <span
-                      className="spinner-border spinner-border-sm"
-                      role="status"
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    "Ajouter"
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Modal open={open} onClose={onClose}>
+      <Box sx={{ p: 4, backgroundColor: 'white', borderRadius: 1, maxWidth: 400, margin: 'auto', mt: 5 }}>
+        <Typography variant="h6" component="h2" gutterBottom>
+          Ajouter Une Gestionnaire
+        </Typography>
+        <form onSubmit={addValidator}>
+          <TextField 
+            label="Nom" 
+            name="first_name" 
+            fullWidth 
+            margin="normal" 
+            error={!!errors?.first_name} 
+            helperText={errors?.first_name}
+          />
+          <TextField 
+            label="Prenom" 
+            name="last_name" 
+            fullWidth 
+            margin="normal" 
+            error={!!errors?.last_name} 
+            helperText={errors?.last_name}
+          />
+          <TextField 
+            label="E-mail" 
+            name="email" 
+            type="email" 
+            fullWidth 
+            margin="normal" 
+            error={!!errors?.email} 
+            helperText={errors?.email}
+          />
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <Button onClick={onClose} variant="contained" color="secondary" sx={{ mr: 1 }}>
+              Annuler
+            </Button>
+            <Button type="submit" variant="contained" color="primary" disabled={loading}>
+              {loading ? 'Ajout...' : 'Ajouter'}
+            </Button>
+          </Box>
+        </form>
+      </Box>
+    </Modal>
   );
 };
 
 CreateValidator.propTypes = {
-  targetModel: PropTypes.string.isRequired,
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
   getAllGestionnaires: PropTypes.func.isRequired,
 }
 

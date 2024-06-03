@@ -14,6 +14,7 @@ import { tokens } from "../../../theme";
 const AllDesigners = () => {
   const [designers, setDesigners] = useState(null);
   const [deleteLoading, setDeleteLoading] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
   const { setErrors } = useAppContext();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -29,48 +30,52 @@ const AllDesigners = () => {
   };
 
   const deleteDesigner = async (designer) => {
-    setDeleteLoading(true);
     try {
+      setDeleteLoading(true);
       await axiosClient.delete("admin/designers/" + designer?.id);
-      await getAllDesigners();
-    } catch (error) {
-      console.log(error);
-    } finally {
       setDeleteLoading(false);
       handleCloseConfirmDelete();
+      successToast("Le formateur a bien été supprimé");
+      await getAllDesigners();
+    } catch (error) {
+      setDeleteLoading(false);
+      handleCloseConfirmDelete();
+      errorToast("Une erreur est survenue");
     }
   };
 
   useEffect(() => {
-    document.title = "Tous les concepteurs - OFPPT";
+    document.title = "Tous les formateurs - OFPPT";
     getAllDesigners();
   }, []);
 
   const handleReset = async (designer) => {
     try {
+      setResetLoading(true);
       const { data } = await axiosClient.put("admin/reset-designer/" + designer?.id);
       successToast(data.message + " Mot de passe : " + data.password, 5000, "top-right");
+      setResetLoading(false);
+      handleCloseConfirmReset();
       await getAllDesigners();
     } catch (error) {
-      errorToast("Une erreur est survenue");
-      console.log(error);
-    } finally {
+      setResetLoading(false);
       handleCloseConfirmReset();
+      errorToast("Une erreur est survenue");
     }
   };
 
   const columns = [
     { field: 'first_name', headerName: 'Nom', flex: 2 },
     { field: 'last_name', headerName: 'Prenom', flex: 2 },
-    { 
-      field: 'email', 
-      headerName: 'E-mail', 
-      flex: 3, 
+    {
+      field: 'email',
+      headerName: 'E-mail',
+      flex: 3,
       // renderCell: (params) => <a href={"mailto:" + params.value}>{params.value}</a> 
     },
-    { 
-      field: 'actions', 
-      headerName: 'Les Actions', 
+    {
+      field: 'actions',
+      headerName: 'Les Actions',
       flex: 1,
       renderCell: (params) => {
         const designer = params.row;
@@ -82,7 +87,7 @@ const AllDesigners = () => {
             <IconButton sx={{ color: colors.redAccent[500] }} onClick={() => handleOpenConfirmDelete(designer)}>
               <DeleteIcon />
             </IconButton>
-            <IconButton  sx={{ color: colors.blueAccent[500] }} onClick={() => handleOpenConfirmReset(designer)}>
+            <IconButton sx={{ color: colors.blueAccent[500] }} onClick={() => handleOpenConfirmReset(designer)}>
               <LockResetIcon />
             </IconButton>
           </Box>
@@ -121,7 +126,7 @@ const AllDesigners = () => {
   return (
     <Box sx={{ mt: 1, pt: 2, px: 3 }}>
       <Button variant="contained" color="primary" onClick={handleOpenCreate} sx={{ mb: 3 }}>
-        Ajouter une concepteur
+        Ajouter une formateur
       </Button>
       <Modal open={openCreate} onClose={handleCloseCreate}>
         <Box sx={{ ...modalStyle }}>
@@ -130,23 +135,23 @@ const AllDesigners = () => {
       </Modal>
       <Modal open={openUpdate} onClose={handleCloseUpdate}>
         <Box sx={{ ...modalStyle }}>
-          <UpdateDesigner 
-            getAllDesigners={getAllDesigners} 
-            handleClose={handleCloseUpdate} 
-            designer={currentDesigner} 
+          <UpdateDesigner
+            getAllDesigners={getAllDesigners}
+            handleClose={handleCloseUpdate}
+            designer={currentDesigner}
           />
         </Box>
       </Modal>
       <Modal open={openConfirmDelete} onClose={handleCloseConfirmDelete}>
         <Box sx={{ ...modalStyle }}>
           <Typography variant="h6">Confirmer la suppression</Typography>
-          <Typography variant="body1" sx={{ mt: 2 }}>Voulez-vous vraiment supprimer ce concepteur ?</Typography>
+          <Typography variant="body1" sx={{ mt: 2 }}>Voulez-vous vraiment supprimer ce formateur ?</Typography>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
             <Button onClick={handleCloseConfirmDelete} variant="contained" color="secondary" sx={{ mr: 2 }}>
               Annuler
             </Button>
             <Button onClick={() => deleteDesigner(currentDesigner)} variant="contained" color="error" disabled={deleteLoading}>
-              {deleteLoading ? <CircularProgress size={24} /> : 'Supprimer'}
+              {deleteLoading ? <CircularProgress size={12} /> : 'Supprimer'}
             </Button>
           </Box>
         </Box>
@@ -154,13 +159,13 @@ const AllDesigners = () => {
       <Modal open={openConfirmReset} onClose={handleCloseConfirmReset}>
         <Box sx={{ ...modalStyle }}>
           <Typography variant="h6">Confirmer la réinitialisation</Typography>
-          <Typography variant="body1" sx={{ mt: 2 }}>Voulez-vous vraiment réinitialiser le mot de passe de ce concepteur ?</Typography>
+          <Typography variant="body1" sx={{ mt: 2 }}>Voulez-vous vraiment réinitialiser le mot de passe de ce formateur ?</Typography>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
             <Button onClick={handleCloseConfirmReset} variant="contained" color="secondary" sx={{ mr: 2 }}>
               Annuler
             </Button>
-            <Button onClick={() => handleReset(currentDesigner)} variant="contained" color="primary">
-              Réinitialiser
+            <Button onClick={() => handleReset(currentDesigner)} variant="contained" color="primary" disabled={resetLoading}>
+              {resetLoading ? <CircularProgress size={12} /> : "Réinitialiser"}
             </Button>
           </Box>
         </Box>
@@ -168,15 +173,14 @@ const AllDesigners = () => {
       {!designers ? (
         <Typography variant="h4" align="center" sx={{ mt: 5, pt: 5 }}>Chargement...</Typography>
       ) : (
-        <DataGrid
-          rows={designers}
-          columns={columns}
-          pageSize={5}
-          rowsPerPageOptions={[5]}
-          autoHeight
-          disableSelectionOnClick
-          getRowId={(row) => row.id}
-        />
+        <Box sx={{ height: 600, width: '99%' }}>
+          <DataGrid
+            rows={designers}
+            columns={columns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+          />
+        </Box>
       )}
     </Box>
   );

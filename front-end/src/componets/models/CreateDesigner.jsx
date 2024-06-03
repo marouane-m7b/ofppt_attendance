@@ -32,7 +32,7 @@ const CreateDesigner = ({ getAllDesigners, handleClose }) => {
 
   return (
     <Box component="form" onSubmit={addDesigner} sx={{ p: 2 }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>Ajouter Une Concepteur</Typography>
+      <Typography variant="h6" sx={{ mb: 2 }}>Ajouter Une Formateur</Typography>
       <TextField
         label="Nom"
         fullWidth

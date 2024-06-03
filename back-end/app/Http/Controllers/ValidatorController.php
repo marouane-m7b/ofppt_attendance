@@ -62,10 +62,10 @@ class ValidatorController extends Controller
         $validator->password = Hash::make($password);
         $validator->save();
 
-        return response()->json(['message' => 'Validator created successfully', 'password' => $password], 201);
+        return response()->json(['message' => 'Validateur créé avec succès', 'password' => $password], 201);
     }
 
-    // Show method to display the specified validator
+    // Afficher la méthode pour afficher le validateur spécifié
     public function show(Validator $validator)
     {
         return response()->json(['validator' => $validator], 200);
@@ -78,19 +78,18 @@ class ValidatorController extends Controller
             'first_name' => 'string',
             'last_name' => 'string',
             'email' => 'email|unique:validators,email,' . $validator->id,
-            'password' => 'string|min:6',
         ]);
 
         $validator->update($request->all());
 
-        return response()->json(['message' => 'Validator updated successfully'], 200);
+        return response()->json(['message' => 'Validateur mis à jour avec succès'], 200);
     }
 
     // Destroy method to delete the specified validator
     public function destroy(Validator $validator)
     {
         $validator->delete();
-        return response()->json(['message' => 'Validator deleted successfully'], 200);
+        return response()->json(['message' => 'Validateur supprimé avec succès'], 200);
     }
 
     public function resetPassword($id)
@@ -99,6 +98,7 @@ class ValidatorController extends Controller
         $password = Str::random(8);
         $validator->password = Hash::make($password);
         $validator->save();
-        return response()->json($validator, 200);
+
+        return response()->json(['message' => 'Mot de passe mis à jour', 'password' => $password], 201);
     }
 }

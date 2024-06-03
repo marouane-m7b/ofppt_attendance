@@ -35,7 +35,7 @@ const UpdateDesigner = ({ designer, getAllDesigners, handleClose }) => {
 
   return (
     <Box component="form" onSubmit={updateDesigner} sx={{ p: 2 }}>
-      <Typography variant="h6" sx={{ mb: 2 }}>Modifier Une Concepteur</Typography>
+      <Typography variant="h6" sx={{ mb: 2 }}>Modifier Une Formateur</Typography>
       <TextField
         label="Nom"
         fullWidth

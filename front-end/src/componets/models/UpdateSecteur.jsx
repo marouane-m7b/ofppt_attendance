@@ -12,13 +12,12 @@ const UpdateSecteur = ({ targetModel, secteur, getAllSecteurs }) => {
   const UpdateSecteur = async (e) => {
     setLoading(true);
     e.preventDefault();
-    const { nom, description } = e.target.elements;
+    const { nom } = e.target.elements;
     try {
       const { data } = await axiosClient.put(
         "admin/secteurs/" + secteur?.id,
         {
           nom: nom.value,
-          description: description.value,
         }
       );
       await getAllSecteurs();
@@ -74,22 +73,6 @@ const UpdateSecteur = ({ targetModel, secteur, getAllSecteurs }) => {
                   name="nom"
                 />
                 <span className="text text-danger">{errors?.nom}</span>
-              </div>
-
-              <div data-mdb-input-init className="form-outline mb-4">
-                <label className="form-label" htmlFor="form2Example2">
-                  Description <span className="text text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="form2Example2"
-                  defaultValue={secteur?.description}
-                  className={
-                    "form-control" + (errors?.description ? " is-invalid" : "")
-                  }
-                  name="description"
-                />
-                <span className="text text-danger">{errors?.description}</span>
               </div>
 
               <div className="modal-footer">

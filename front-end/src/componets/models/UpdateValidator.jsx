@@ -1,21 +1,21 @@
-import { useRef, useState } from "react";
+import React, { useState } from "react";
 import { useAppContext } from "../../config/context/ComponentContext";
 import { axiosClient } from "../../config/Api/AxiosClient";
 import Swal from "sweetalert2";
+import { Modal, Box, TextField, Button, Typography } from '@mui/material';
 import PropTypes from "prop-types";
 
-const UpdateValidator = ({ targetModel, validator, getAllGestionnaires }) => {
+const UpdateValidator = ({ open, onClose, validator, getAllGestionnaires }) => {
   const { setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
-  const cancelModel = useRef();
 
-  const UpdateValidator = async (e) => {
+  const updateValidator = async (e) => {
     setLoading(true);
     e.preventDefault();
     const { first_name, last_name, email } = e.target.elements;
     try {
       const { data } = await axiosClient.put(
-        "admin/validators/" + validator?.id,
+        "admin/validators/" + validator.id,
         {
           first_name: first_name.value,
           last_name: last_name.value,
@@ -23,15 +23,12 @@ const UpdateValidator = ({ targetModel, validator, getAllGestionnaires }) => {
         }
       );
       await getAllGestionnaires();
-      cancelModel.current.click();
+      onClose();
       Swal.fire({
-        // title: ,
         text: data.message,
         icon: "success",
       });
-      console.log(data);
     } catch (error) {
-      console.log(error);
       setErrors(error.response.data.errors);
     } finally {
       setLoading(false);
@@ -39,111 +36,57 @@ const UpdateValidator = ({ targetModel, validator, getAllGestionnaires }) => {
   };
 
   return (
-    <div
-      className="modal fade"
-      id={targetModel}
-      tabIndex={-1}
-      aria-labelledby="UpdateValidator"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h1 className="modal-title fs-5" id="UpdateValidator">
-              Modifier Une Validateur
-            </h1>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            />
-          </div>
-          <div className="modal-body">
-            <form onSubmit={UpdateValidator}>
-              <div data-mdb-input-init className="form-outline mb-4">
-                <label className="form-label" htmlFor="form2Example1">
-                  Nom <span className="text text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="form2Example1"
-                  defaultValue={validator?.first_name}
-                  className={
-                    "form-control" + (errors?.first_name ? " is-invalid" : "")
-                  }
-                  name="first_name"
-                />
-                <span className="text text-danger">{errors?.first_name}</span>
-              </div>
-
-              <div data-mdb-input-init className="form-outline mb-4">
-                <label className="form-label" htmlFor="form2Example2">
-                  Prenom <span className="text text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="form2Example2"
-                  defaultValue={validator?.last_name}
-                  className={
-                    "form-control" + (errors?.last_name ? " is-invalid" : "")
-                  }
-                  name="last_name"
-                />
-                <span className="text text-danger">{errors?.last_name}</span>
-              </div>
-
-              <div data-mdb-input-init className="form-outline mb-4">
-                <label className="form-label" htmlFor="form2Example2">
-                  E-mail <span className="text text-danger">*</span>
-                </label>
-                <input
-                  type="email"
-                  id="form2Example2"
-                  defaultValue={validator?.email}
-                  className={
-                    "form-control" + (errors?.email ? " is-invalid" : "")
-                  }
-                  name="email"
-                />
-                <span className="text text-danger">{errors?.email}</span>
-              </div>
-
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  ref={cancelModel}
-                  className="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  Annuler
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <span
-                      className="spinner-border spinner-border-sm"
-                      role="status"
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    "Modifier"
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Modal open={open} onClose={onClose}>
+      <Box sx={{ p: 4, backgroundColor: 'white', borderRadius: 1, maxWidth: 400, margin: 'auto', mt: 5 }}>
+        <Typography variant="h6" component="h2" gutterBottom>
+          Modifier Une Validateur
+        </Typography>
+        <form onSubmit={updateValidator}>
+          <TextField 
+            label="Nom" 
+            name="first_name" 
+            defaultValue={validator?.first_name} 
+            fullWidth 
+            margin="normal" 
+            error={!!errors?.first_name} 
+            helperText={errors?.first_name}
+          />
+          <TextField 
+            label="Prenom" 
+            name="last_name" 
+            defaultValue={validator?.last_name} 
+            fullWidth 
+            margin="normal" 
+            error={!!errors?.last_name} 
+            helperText={errors?.last_name}
+          />
+          <TextField 
+            label="E-mail" 
+            name="email" 
+            type="email" 
+            defaultValue={validator?.email} 
+            fullWidth 
+            margin="normal" 
+            error={!!errors?.email} 
+            helperText={errors?.email}
+          />
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <Button onClick={onClose} variant="contained" color="secondary" sx={{ mr: 1 }}>
+              Annuler
+            </Button>
+            <Button type="submit" variant="contained" color="primary" disabled={loading}>
+              {loading ? 'Modification...' : 'Modifier'}
+            </Button>
+          </Box>
+        </form>
+      </Box>
+    </Modal>
   );
 };
 
 UpdateValidator.propTypes = {
-  targetModel: PropTypes.string.isRequired,
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
   validator: PropTypes.object.isRequired,
   getAllGestionnaires: PropTypes.func.isRequired,
 };
