@@ -8,6 +8,7 @@ const Context = createContext({
   user: {},
   errors: {},
   alerts: [],
+  fetchAlerts: () => { },
   handleLogin: () => { },
   navigateTo: () => { },
   setErrors: () => { },
@@ -37,15 +38,17 @@ const ComponentContext = ({ children }) => {
     fetchUser();
   }, []);
 
-  useEffect(() => {
-    async function fetchAlerts(role) {
-      try {
-        const { data } = await axiosClient.get(`${role}/alerts`);
-        setAlerts(data);
-      } catch (error) {
-        console.error(error);
-      }
+
+  async function fetchAlerts(role) {
+    try {
+      const { data } = await axiosClient.get(`${role}/alerts`);
+      setAlerts(data);
+    } catch (error) {
+      console.error(error);
     }
+  }
+
+  useEffect(() => {
     if (user.role === "admin") {
       fetchAlerts("admin");
     }
@@ -99,6 +102,7 @@ const ComponentContext = ({ children }) => {
         errors,
         setErrors,
         alerts,
+        fetchAlerts,
       }}
     >
       {loading ? "Loading..." :

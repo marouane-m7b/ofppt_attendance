@@ -7,6 +7,7 @@ import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { tokens } from '../../../theme';
 import { useTheme } from '@mui/material';
+import { errorToast } from '../../../config/Toasts/toasts';
 
 export default function AbsencesByDaySeanceGroup() {
     const [loading, setLoading] = useState(false);
@@ -45,7 +46,7 @@ export default function AbsencesByDaySeanceGroup() {
             setEtudiants(data);
             setLoading(false);
         } catch (error) {
-            console.error(error);
+            errorToast(error.response.data.message, 1500, 'top-center');
             setLoading(false);
         }
     };
@@ -71,17 +72,17 @@ export default function AbsencesByDaySeanceGroup() {
     };
 
     const columns = [
-        { field: 'nom', headerName: 'Nom', flex: 1 },
-        { field: 'prenom', headerName: 'Prenom', flex: 1 },
-        { field: 'filiere', headerName: 'Filiere', flex: 1 },
-        { field: 'groupe', headerName: 'Groupe', flex: 1 },
-        { field: 'cin', headerName: 'Cin', flex: 1 },
-        { field: 'numero_stagiaire', headerName: 'Numero de Telephone', flex: 1 },
-        { field: 'numero_parent', headerName: 'Numero de Parent', flex: 1 },
+        { field: 'nom', headerName: 'Nom', flex: 0.8 },
+        { field: 'prenom', headerName: 'Prenom', flex: 0.8 },
+        { field: 'filiere', headerName: 'Filiere', flex: 1.7 },
+        { field: 'groupe', headerName: 'Groupe', flex: 0.6 },
+        { field: 'cin', headerName: 'Cin', flex: 0.6 },
+        { field: 'numero_stagiaire', headerName: 'Numero de Telephone', flex: 1.2 },
+        { field: 'numero_parent', headerName: 'Numero de Parent', flex: 1.2 },
         {
             field: 'statut',
             headerName: 'Statut',
-            flex: 1,
+            flex: 0.8,
             renderCell: (params) => {
                 const isJustified = params.row.is_justified;
                 const status = params.value;

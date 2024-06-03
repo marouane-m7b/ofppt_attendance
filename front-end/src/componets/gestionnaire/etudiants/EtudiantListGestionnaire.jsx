@@ -76,8 +76,8 @@ export default function EtudiantListGestionnaire() {
             const response = await axiosClient.post('/validator/absences', absences);
             successToast(response.data.message, 1500, 'top-center');
         } catch (error) {
-            console.error(error);
-            errorToast(error.response.data.message, 1500, 'top-center');
+            console.error(error.response.data.message);
+            errorToast(error.response.data.message ? error.response.data.message : 'La date est invalide', 1500, 'top-center');
         }
     };
 

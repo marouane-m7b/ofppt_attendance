@@ -1,5 +1,5 @@
 import { Avatar, Box, Divider, IconButton, ListItemIcon, Menu, MenuItem, useTheme } from "@mui/material";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { ColorModeContext, tokens } from "../../../theme";
 import InputBase from "@mui/material/InputBase";
 import LightModeOutlinedIcon from "@mui/icons-material/LightModeOutlined";
@@ -132,13 +132,10 @@ const TopbarGestionnaire = () => {
         >
           {alerts.length > 0 ? alerts.map((alert) => {
             return (
-              <>
-                <MenuItem key={alert?.id} onClick={() => handleRouteAlert(alert?.id)}>
+                <MenuItem key={alert?.id} onClick={() => handleRouteAlert(alert?.id)} sx={{ p: 1 }}>
                   <DangerousIcon sx={{ mr: 1 }} />
                   {alert?.etudiant?.nom} {alert?.etudiant?.prenom} {alert?.commentaire}
                 </MenuItem>
-                <Divider />
-              </>
             )
           }) : <MenuItem>
             <DoneAllIcon sx={{ mr: 1 }} />

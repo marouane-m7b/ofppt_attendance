@@ -100,7 +100,7 @@ class AbsenceController extends Controller
         $validator = Validator::make($data, [
             '*.etudiant_id' => 'required|exists:etudiants,id',
             '*.statut' => 'required|in:Présent,Absent',
-            '*.date' => 'required|date',
+            '*.date' =>  ['required', 'date', 'before_or_equal:today'],
             '*.seance' => 'required|in:s1,s2,s3,s4',
         ]);
 
@@ -189,7 +189,7 @@ class AbsenceController extends Controller
     public function absencesByDaySeanceGroup(Request $request)
     {
         $validated = $request->validate([
-            'date' => 'required|date',
+            'date' => ['required', 'date', 'before_or_equal:today'],
             'seance' => 'required|in:s1,s2,s3,s4',
             'group_id' => 'required|exists:groups,id',
         ]);

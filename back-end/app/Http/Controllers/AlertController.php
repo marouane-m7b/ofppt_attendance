@@ -12,9 +12,17 @@ class AlertController extends Controller
      */
     public function index()
     {
-        $alerts = Alert::with(['etudiant.absences.designer', 'etudiant.absences.validator'])->get();
+        $alerts = Alert::with(['etudiant.absences' => function($query) {
+            $query->where('is_justified', false)
+                  ->where('statut', 'Absent');
+        }, 'etudiant.absences.designer', 'etudiant.absences.validator', 'etudiant.group.filiere'])
+        ->where('is_validated', false)
+        ->get();
+    
         return response()->json($alerts);
     }
+    
+    
 
     /**
      * Show the form for creating a new resource.

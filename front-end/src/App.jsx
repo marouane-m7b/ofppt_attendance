@@ -36,6 +36,7 @@ import EtudiantListGestionnaire from "./componets/gestionnaire/etudiants/Etudian
 import AbsencesByDaySeanceGroup from "./componets/gestionnaire/absences/AbsencesByDaySeanceGroup";
 import AllGestionnaires from "./componets/admin/_validators/AllGestionnaire";
 import GestionnaireIndex from "./layouts/gestionnaire/GestionnaireIndex";
+import AlertList from "./componets/gestionnaire/alerts/AlertList";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -91,7 +92,7 @@ function App() {
               />
               <Route path="etudiants" element={<EtudiantListGestionnaire />} />
               <Route path="absences" element={<AbsencesByDaySeanceGroup />} />
-              <Route path="alert/:id" element={<h1>Alert</h1>} />
+              <Route path="alert/:id" element={<AlertList />} />
             </Route>
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>
