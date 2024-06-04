@@ -3,15 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Designer;
-use App\Models\Question;
-use App\Models\Validator;
-use App\Mail\QuestionMail;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\Validator as ValidatorFunc;
 
 class DesignerController extends Controller
 {
@@ -63,6 +57,7 @@ class DesignerController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:designers',
+            'is_cgcp' => 'required|boolean',
         ]);
 
         $password = Str::random(8);
@@ -71,6 +66,7 @@ class DesignerController extends Controller
         $designer->first_name = $request->first_name;
         $designer->last_name = $request->last_name;
         $designer->email = $request->email;
+        $designer->is_cgcp = $request->is_cgcp;
         $designer->password = Hash::make($password);
         $designer->save();
 
@@ -94,11 +90,13 @@ class DesignerController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:designers,email,' . $designer->id,
+            'is_cgcp' => 'required|boolean',
         ]);
 
         $designer->first_name = $request->first_name;
         $designer->last_name = $request->last_name;
         $designer->email = $request->email;
+        $designer->is_cgcp = $request->is_cgcp;
         $designer->save();
 
         return response()->json(['message' => 'Concepteur mis a jour avec succes'], 201);

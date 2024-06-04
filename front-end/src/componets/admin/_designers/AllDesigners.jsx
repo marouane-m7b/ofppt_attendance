@@ -65,8 +65,9 @@ const AllDesigners = () => {
   };
 
   const columns = [
-    { field: 'first_name', headerName: 'Nom', flex: 2 },
-    { field: 'last_name', headerName: 'Prenom', flex: 2 },
+    { field: 'first_name', headerName: 'Nom', flex: 1.5 },
+    { field: 'last_name', headerName: 'Prenom', flex: 1.5 },
+    { field: 'is_cgcp', headerName: 'CGCP', flex: 0.6, renderCell: (params) => params.value ? 'Oui' : 'Non' },
     {
       field: 'email',
       headerName: 'E-mail',
@@ -76,7 +77,7 @@ const AllDesigners = () => {
     {
       field: 'actions',
       headerName: 'Les Actions',
-      flex: 1,
+      flex: 1.1,
       renderCell: (params) => {
         const designer = params.row;
         return (

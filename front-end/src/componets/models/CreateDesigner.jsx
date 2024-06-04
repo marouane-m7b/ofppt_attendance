@@ -2,22 +2,28 @@ import { useState } from "react";
 import { useAppContext } from "../../config/context/ComponentContext";
 import { axiosClient } from "../../config/Api/AxiosClient";
 import PropTypes from "prop-types";
-import { Box, Button, CircularProgress, TextField, Typography } from "@mui/material";
+import { Box, Button, Checkbox, CircularProgress, FormControlLabel, TextField, Typography } from "@mui/material";
 import { errorToast, successToast } from "../../config/Toasts/toasts";
 
 const CreateDesigner = ({ getAllDesigners, handleClose }) => {
   const { setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
+  const [isCgcp, setIsCgcp] = useState(false);
+
+  const handleCheckboxChange = (event) => {
+    setIsCgcp(event.target.checked);
+  };
 
   const addDesigner = async (e) => {
     setLoading(true);
     e.preventDefault();
-    const { first_name, last_name, email } = e.target.elements;
+    const { first_name, is_cgcp, last_name, email } = e.target.elements;
     try {
       const { data } = await axiosClient.post("admin/designers", {
         first_name: first_name.value,
         last_name: last_name.value,
         email: email.value,
+        is_cgcp: is_cgcp.checked,
       });
       await getAllDesigners();
       handleClose();
@@ -57,12 +63,23 @@ const CreateDesigner = ({ getAllDesigners, handleClose }) => {
         helperText={errors?.email}
         margin="normal"
       />
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={isCgcp}
+            onChange={handleCheckboxChange}
+            name="is_cgcp"
+            color="primary"
+          />
+        }
+        label="CGCP"
+      />
       <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
         <Button onClick={handleClose} variant="contained" color="secondary" sx={{ mr: 2 }}>
           Annuler
         </Button>
         <Button type="submit" variant="contained" color="primary" disabled={loading}>
-          {loading ? <CircularProgress size={24} /> : 'Ajouter'}
+          {loading ? <CircularProgress size={12} /> : 'Ajouter'}
         </Button>
       </Box>
     </Box>
