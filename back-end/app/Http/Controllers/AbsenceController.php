@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Models\Absence;
 use App\Models\Alert;
+use App\Models\Designer;
 use App\Models\Etudiant;
+use App\Models\Validator;
+use App\Notifications\ExcessiveAbsenceNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Validator as ValidatorData;
 
 class AbsenceController extends Controller
 {
@@ -98,7 +101,7 @@ class AbsenceController extends Controller
 
         $data = $request->all();
 
-        $validator = Validator::make($data, [
+        $validator = ValidatorData::make($data, [
             '*.etudiant_id' => 'required|exists:etudiants,id',
             '*.statut' => 'required|in:Présent,Absent',
             '*.date' =>  ['required', 'date', 'before_or_equal:today'],
@@ -148,18 +151,34 @@ class AbsenceController extends Controller
 
     private function checkAndCreateAlert($etudiantId)
     {
+        $etudiant = Etudiant::find($etudiantId);
         $totalDuree = Absence::where('etudiant_id', $etudiantId)
             ->where('is_justified', 0)
             ->where('statut', 'Absent')
             ->sum('duree');
 
-        if ($totalDuree > 20) {
+        if ($totalDuree > 5) {
+            // Create the alert
             Alert::create([
                 'etudiant_id' => $etudiantId,
                 'duree' => $totalDuree,
-                'commentaire' => "Dépasser 20 hours d'absence",
+                'commentaire' => "Dépasser 20 heures d'absence",
                 'is_validated' => false,
             ]);
+
+            // Send notification to the student
+            $etudiant->notify(new ExcessiveAbsenceNotification($etudiant, $totalDuree, 'etudiant'));
+
+            // Get the consultant
+            $consultants = Validator::where('is_consultant', 1)->get();
+            foreach ($consultants as $consultant) {
+                $consultant->notify(new ExcessiveAbsenceNotification($etudiant, $totalDuree, 'consultant'));
+            }
+
+            $cgcps = Designer::where('is_cgcp', 1)->get();
+            foreach ($cgcps as $cgcp) {
+                $cgcp->notify(new ExcessiveAbsenceNotification($etudiant, $totalDuree, 'cgcp'));
+            }
         }
     }
 
