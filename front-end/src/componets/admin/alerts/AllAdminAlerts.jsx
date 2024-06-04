@@ -4,7 +4,7 @@ import { Card, CardContent, Typography, Box, Icon } from '@mui/material';
 import WarningIcon from '@mui/icons-material/Warning';
 import CheckIcon from '@mui/icons-material/Check';
 
-function AllAlerts() {
+function AllAdminAlerts() {
     const { alerts } = useAppContext();
 
     return (
@@ -22,7 +22,7 @@ function AllAlerts() {
                         }
                     }}
                     component={Link}
-                    to={`/gestionnaire/alert/${alert.id}`}
+                    to={`/administrateur/alert/${alert.id}`}
                 >
                     <CardContent sx={{ display: 'flex', alignItems: 'center' }}>
                         <Box sx={{ mr: 2 }}>
@@ -52,4 +52,4 @@ function AllAlerts() {
     );
 }
 
-export default AllAlerts;
+export default AllAdminAlerts;

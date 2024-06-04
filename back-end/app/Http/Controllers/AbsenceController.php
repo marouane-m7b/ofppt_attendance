@@ -90,8 +90,9 @@ class AbsenceController extends Controller
     {
         $designer = request()->user("designer");
         $validateur = request()->user("validator");
+        $admin = request()->user("admin");
 
-        if (!$designer && !$validateur) {
+        if (!$designer && !$validateur && !$admin) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 

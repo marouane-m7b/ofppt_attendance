@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Divider, Typography, Box, Button, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Grid } from '@mui/material';
 import { Check, Cancel } from '@mui/icons-material';
 
-const AlertDetails = () => {
+const AlertAdminDetails = () => {
     const { id } = useParams();
     const { alerts } = useAppContext();
     const [alert, setAlert] = useState({});
@@ -74,10 +74,7 @@ const AlertDetails = () => {
                                                     {absence?.date}
                                                 </Typography>
                                                 <Typography variant="body2" color="text.secondary">
-                                                    Absence réalisée par {absence?.designer || absence?.validator ?
-                                                        (absence?.designer ? 'formateur: ' + absence?.designer?.first_name + ' ' + absence?.designer?.last_name : 'gestionnaire: ' + absence?.validator?.first_name + ' ' + absence?.validator?.last_name)
-                                                        : 'administrateur'
-                                                    }
+                                                    Absence réalisée par {absence?.designer ? 'formateur: ' + absence?.designer?.first_name + ' ' + absence?.designer?.last_name : 'gestionnaire: ' + absence?.validator?.first_name + ' ' + absence?.validator?.last_name}
                                                 </Typography>
                                             </>
                                         }
@@ -106,4 +103,4 @@ const AlertDetails = () => {
     );
 };
 
-export default AlertDetails;
+export default AlertAdminDetails;

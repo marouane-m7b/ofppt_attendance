@@ -38,6 +38,10 @@ import AllGestionnaires from "./componets/admin/_validators/AllGestionnaire";
 import GestionnaireIndex from "./layouts/gestionnaire/GestionnaireIndex";
 import AlertDetails from "./componets/gestionnaire/alerts/AlertDetails";
 import AllAlerts from "./componets/gestionnaire/alerts/AllAlerts";
+import AllAdminAlerts from "./componets/admin/alerts/AllAdminAlerts";
+import AlertAdminDetails from "./componets/admin/alerts/AlertAdminDetails";
+import EtudiantListAdministrateur from "./componets/admin/absences/EtudiantListAdministrateur";
+import AbsencesByDaySeanceGroupAdmin from "./componets/admin/absences_historique/AbsencesByDaySeanceGroupAdmin";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -67,6 +71,10 @@ function App() {
               <Route path="designers" element={<AllDesigners />} />
               <Route path="secteurs" element={<AllSecteurs />} />
               <Route path="filieres" element={<AllFilieres />} />
+              <Route path="alerts" element={<AllAdminAlerts />} />
+              <Route path="alert/:id" element={<AlertAdminDetails />} />
+              <Route path="absences" element={<EtudiantListAdministrateur />} />
+              <Route path="absences_historiques" element={<AbsencesByDaySeanceGroupAdmin />} />
             </Route>
 
             <Route path="/concepteur" element={<FormateurIndex />}>

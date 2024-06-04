@@ -185,6 +185,28 @@ const SidebarAdmin = () => {
               setSelected={setSelected}
             />
 
+            <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: "15px 0 5px 20px" }}
+            >
+              Absences
+            </Typography>
+            <Item
+              title="Marquer les absences"
+              to="/administrateur/absences"
+              icon={<PeopleOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Item
+              title="Absences Historiques"
+              to="/administrateur/absences_historiques"
+              icon={<ContactsOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
             {/* <Typography
               variant="h6"
               color={colors.grey[300]}

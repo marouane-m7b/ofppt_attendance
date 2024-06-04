@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AbsenceController;
 use App\Http\Controllers\AlertController;
 use App\Http\Controllers\DesignerController;
 use App\Http\Controllers\EtudiantController;
@@ -22,9 +23,12 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::put('/reset-designer/{id}', [DesignerController::class, 'resetPassword']);
     Route::get('/alerts', [AlertController::class, 'index']);
     Route::get('/groups', [GroupController::class, 'index']);
+    Route::get('/absencesByDaySeanceGroup', [AbsenceController::class, 'absencesByDaySeanceGroup']);
+    Route::get('/etudiants/group/{id}', [EtudiantController::class, 'getEtudiantsByGroup']);
     Route::apiResources([
-        'designers' => \App\Http\Controllers\DesignerController::class,
-        'validators' => \App\Http\Controllers\ValidatorController::class,
-        'etudiants' => \App\Http\Controllers\EtudiantController::class,
+        'designers' => DesignerController::class,
+        'validators' => ValidatorController::class,
+        'etudiants' => EtudiantController::class,
+        'absences' => AbsenceController::class
     ]);
 });
