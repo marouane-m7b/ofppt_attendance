@@ -12,12 +12,13 @@ const CreateEtudiant = ({ open, onClose, getAllEtudiants, groups }) => {
   const addEtudiant = async (e) => {
     setLoading(true);
     e.preventDefault();
-    const { cin, group, nom, prenom, numero_parent, numero_stagiaire } = e.target.elements;
+    const { cin, group, nom, prenom, email, numero_parent, numero_stagiaire } = e.target.elements;
     try {
       await axiosClient.post("admin/etudiants", {
         nom: nom.value,
         prenom: prenom.value,
         cin: cin.value,
+        email: email.value,
         group_id: group.value,
         numero_parent: numero_parent.value,
         numero_stagiaire: numero_stagiaire.value,
@@ -47,15 +48,23 @@ const CreateEtudiant = ({ open, onClose, getAllEtudiants, groups }) => {
             margin="normal"
             error={!!errors?.nom}
             helperText={errors?.nom}
-          />
-          <TextField
-            label="Prénom"
-            name="prenom"
-            fullWidth
-            margin="normal"
-            error={!!errors?.prenom}
-            helperText={errors?.prenom}
-          />
+            />
+            <TextField
+              label="Prénom"
+              name="prenom"
+              fullWidth
+              margin="normal"
+              error={!!errors?.prenom}
+              helperText={errors?.prenom}
+            />
+            <TextField
+              label="Email"
+              name="email"
+              fullWidth
+              margin="normal"
+              error={!!errors?.email}
+              helperText={errors?.email}
+            />
           <TextField
             label="CIN"
             name="cin"

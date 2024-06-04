@@ -2,10 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Designer;
 use App\Models\Etudiant;
-use App\Models\Filiere;
-use App\Models\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -29,6 +26,7 @@ class EtudiantController extends Controller
             'cin' => 'required',
             'nom' => 'required',
             'prenom' => 'required',
+            'email' => 'required',
             'numero_stagiaire' => 'required',
             'numero_parent' => 'required',
             'group_id' => 'required|exists:groups,id',
@@ -44,6 +42,7 @@ class EtudiantController extends Controller
         $etudiant->cin = $request->cin;
         $etudiant->nom = $request->nom;
         $etudiant->prenom = $request->prenom;
+        $etudiant->email = $request->email;
         $etudiant->numero_stagiaire = $request->numero_stagiaire;
         $etudiant->numero_parent = $request->numero_parent;
         $etudiant->group_id = $request->group_id;
@@ -71,6 +70,7 @@ class EtudiantController extends Controller
             'cin' => 'required',
             'nom' => 'required',
             'prenom' => 'required',
+            'email' => 'required',
             'numero_stagiaire' => 'required',
             'numero_parent' => 'required',
             'group_id' => 'required|exists:groups,id',
@@ -90,6 +90,7 @@ class EtudiantController extends Controller
         $etudiant->cin = $request->cin;
         $etudiant->nom = $request->nom;
         $etudiant->prenom = $request->prenom;
+        $etudiant->email = $request->email;
         $etudiant->numero_stagiaire = $request->numero_stagiaire;
         $etudiant->numero_parent = $request->numero_parent;
         $etudiant->group_id = $request->group_id;

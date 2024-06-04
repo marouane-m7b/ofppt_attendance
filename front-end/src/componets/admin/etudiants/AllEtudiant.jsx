@@ -57,12 +57,13 @@ export default function AllEtudiant() {
   }, []);
 
   const columns = [
-    { field: 'nom', headerName: 'Nom', flex: 1 },
-    { field: 'prenom', headerName: 'Prénom', flex: 1 },
-    { field: 'numero_stagiaire', headerName: 'Numéro Stagiaire', flex: 1, renderCell: (params) => `+212 ${params.row.numero_stagiaire}` },
-    { field: 'numero_parent', headerName: 'Numéro Parent', flex: 1, renderCell: (params) => `+212 ${params.row.numero_parent}` },
-    { field: 'group', headerName: 'Groupe', flex: 1, renderCell: (params) => params.row.group?.nom || '' },
-    { field: 'filiere', headerName: 'Filière', flex: 1, renderCell: (params) => params.row.group?.filiere?.nom || '' },
+    { field: 'nom', headerName: 'Nom', flex: 0.7 },
+    { field: 'prenom', headerName: 'Prénom', flex: 0.7 },
+    { field: 'email', headerName: 'Email', flex: 1.5 },
+    { field: 'numero_stagiaire', headerName: 'Numéro Stagiaire', flex: 0.9, renderCell: (params) => `+212 ${params.row.numero_stagiaire}` },
+    { field: 'numero_parent', headerName: 'Numéro Parent', flex: 0.9, renderCell: (params) => `+212 ${params.row.numero_parent}` },
+    { field: 'group', headerName: 'Groupe', flex: 0.5, renderCell: (params) => params.row.group?.nom || '' },
+    { field: 'filiere', headerName: 'Filière', flex: 1.4, renderCell: (params) => params.row.group?.filiere?.nom || '' },
     {
       field: 'actions',
       headerName: 'Les Actions',

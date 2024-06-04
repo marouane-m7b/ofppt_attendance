@@ -16,6 +16,7 @@ return new class extends Migration
             $table->string('cin');
             $table->string('nom');
             $table->string('prenom');
+            $table->string('email');
             $table->integer('numero_stagiaire');
             $table->integer('numero_parent');
             $table->foreignId('group_id')->constrained('groups')->cascadeOnDelete();

@@ -2,11 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Designer;
 use App\Models\Etudiant;
-use App\Models\Filiere;
 use App\Models\Group;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class EtudiantSeeder extends Seeder
@@ -21,6 +18,7 @@ class EtudiantSeeder extends Seeder
                 'cin' => 'BA' . mt_rand(10000, 99999),
                 'nom' => 'Mahboub',
                 'prenom' => 'Marouane',
+                'email' => 'Mahboub.Marouane@ofppt.ma',
                 'numero_stagiaire' => 1001,
                 'numero_parent' => 2001,
                 'group_id' => Group::where('nom', 'DD202')->first()->id,
@@ -31,6 +29,7 @@ class EtudiantSeeder extends Seeder
                 'cin' => 'BA' . mt_rand(10000, 99999),
                 'nom' => 'Asraoui',
                 'prenom' => 'Saad',
+                'email' => 'Asraoui.Saad@ofppt.ma',
                 'numero_stagiaire' => 1001,
                 'numero_parent' => 2001,
                 'group_id' => Group::where('nom', 'DD202')->first()->id,
@@ -41,6 +40,7 @@ class EtudiantSeeder extends Seeder
                 'cin' => 'BA' . mt_rand(10000, 99999),
                 'nom' => 'Laziz',
                 'prenom' => 'Wiam',
+                'email' => 'Laziz.Wiam@ofppt.ma',
                 'numero_stagiaire' => 1001,
                 'numero_parent' => 2001,
                 'group_id' => Group::where('nom', 'DD202')->first()->id,
@@ -51,6 +51,7 @@ class EtudiantSeeder extends Seeder
                 'cin' => 'BA' . mt_rand(10000, 99999),
                 'nom' => 'Rakik',
                 'prenom' => 'Salma',
+                'email' => 'Rakik.Salma@ofppt.ma',
                 'numero_stagiaire' => 1001,
                 'numero_parent' => 2001,
                 'group_id' => Group::where('nom', 'DD202')->first()->id,
@@ -61,6 +62,7 @@ class EtudiantSeeder extends Seeder
                 'cin' => 'BA' . mt_rand(10000, 99999),
                 'nom' => 'El Houmidi',
                 'prenom' => 'Zakaria',
+                'email' => 'ElHoumidi.Zakaria@ofppt.ma',
                 'numero_stagiaire' => 2000,
                 'numero_parent' => 3001,
                 'group_id' => Group::where('nom', 'DD202')->first()->id,
@@ -71,6 +73,7 @@ class EtudiantSeeder extends Seeder
                 'cin' => 'BA' . mt_rand(10000, 99999),
                 'nom' => 'Hamdy',
                 'prenom' => 'Yahya',
+                'email' => 'Hamdy.Yahya@ofppt.ma',
                 'numero_stagiaire' => 2000,
                 'numero_parent' => 3001,
                 'group_id' => Group::where('nom', 'DD202')->first()->id,
@@ -81,6 +84,7 @@ class EtudiantSeeder extends Seeder
                 'cin' => 'BA' . mt_rand(10000, 99999),
                 'nom' => 'Khalidi',
                 'prenom' => 'Zouhair',
+                'email' => 'Khalidi.Zouhair@ofppt.ma',
                 'numero_stagiaire' => 2000,
                 'numero_parent' => 3001,
                 'group_id' => Group::where('nom', 'DD202')->first()->id,
@@ -91,6 +95,7 @@ class EtudiantSeeder extends Seeder
                 'cin' => 'BA' . mt_rand(10000, 99999),
                 'nom' => 'Laassi',
                 'prenom' => 'Abdelhadi',
+                'email' => 'Laassi.Abdelhadi@ofppt.ma',
                 'numero_stagiaire' => 2000,
                 'numero_parent' => 3001,
                 'group_id' => Group::where('nom', 'DD201')->first()->id,
@@ -101,6 +106,7 @@ class EtudiantSeeder extends Seeder
                 'cin' => 'BA' . mt_rand(10000, 99999),
                 'nom' => 'Houmani',
                 'prenom' => 'Reda',
+                'email' => 'Houmani.Reda@ofppt.ma',
                 'numero_stagiaire' => 2000,
                 'numero_parent' => 3001,
                 'group_id' => Group::where('nom', 'DD201')->first()->id,
@@ -111,6 +117,7 @@ class EtudiantSeeder extends Seeder
                 'cin' => 'BA' . mt_rand(10000, 99999),
                 'nom' => 'Ibdrane',
                 'prenom' => 'Ayoub',
+                'email' => 'Ibdrane.Ayoub@ofppt.ma',
                 'numero_stagiaire' => 2000,
                 'numero_parent' => 3001,
                 'group_id' => Group::where('nom', 'DD201')->first()->id,
@@ -121,6 +128,7 @@ class EtudiantSeeder extends Seeder
                 'cin' => 'BA' . mt_rand(10000, 99999),
                 'nom' => 'Abouraja',
                 'prenom' => 'Salma',
+                'email' => 'Abouraja.Salma@ofppt.ma',
                 'numero_stagiaire' => 2000,
                 'numero_parent' => 3001,
                 'group_id' => Group::where('nom', 'DD201')->first()->id,
@@ -131,6 +139,7 @@ class EtudiantSeeder extends Seeder
                 'cin' => 'BA' . mt_rand(10000, 99999),
                 'nom' => 'Adiab',
                 'prenom' => 'Abderahmane',
+                'email' => 'Adiab.Abderahmane@ofppt.ma',
                 'numero_stagiaire' => 2000,
                 'numero_parent' => 3001,
                 'group_id' => Group::where('nom', 'DD201')->first()->id,
@@ -141,6 +150,7 @@ class EtudiantSeeder extends Seeder
                 'cin' => 'BA' . mt_rand(10000, 99999),
                 'nom' => 'Smoughen',
                 'prenom' => 'Oussama',
+                'email' => 'Smoughen.Oussama@ofppt.ma',
                 'numero_stagiaire' => 2000,
                 'numero_parent' => 3001,
                 'group_id' => Group::where('nom', 'DD201')->first()->id,
@@ -151,6 +161,7 @@ class EtudiantSeeder extends Seeder
                 'cin' => 'BA' . mt_rand(10000, 99999),
                 'nom' => 'Latifi',
                 'prenom' => 'Salah',
+                'email' => 'Latifi.Salah@ofppt.ma',
                 'numero_stagiaire' => 2000,
                 'numero_parent' => 3001,
                 'group_id' => Group::where('nom', 'DD201')->first()->id,
@@ -161,6 +172,7 @@ class EtudiantSeeder extends Seeder
                 'cin' => 'BA' . mt_rand(10000, 99999),
                 'nom' => 'Katane',
                 'prenom' => 'Souhaib',
+                'email' => 'Katane.Souhaib@ofppt.ma',
                 'numero_stagiaire' => 2000,
                 'numero_parent' => 3001,
                 'group_id' => Group::where('nom', 'DD201')->first()->id,

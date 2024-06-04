@@ -12,7 +12,7 @@ const UpdateEtudiant = ({ open, onClose, etudiant, getAllEtudiants, groups }) =>
   const updateEtudiant = async (e) => {
     setLoading(true);
     e.preventDefault();
-    const { cin, nom, prenom, numero_parent, numero_stagiaire, group } = e.target.elements;
+    const { cin, nom, prenom, email, numero_parent, numero_stagiaire, group } = e.target.elements;
     try {
       const { data } = await axiosClient.put(
         "admin/etudiants/" + etudiant.id,
@@ -20,6 +20,7 @@ const UpdateEtudiant = ({ open, onClose, etudiant, getAllEtudiants, groups }) =>
           nom: nom.value,
           prenom: prenom.value,
           cin: cin.value,
+          email: email.value,
           group_id: group.value,
           numero_parent: numero_parent.value,
           numero_stagiaire: numero_stagiaire.value,
@@ -61,6 +62,15 @@ const UpdateEtudiant = ({ open, onClose, etudiant, getAllEtudiants, groups }) =>
             margin="normal"
             error={!!errors?.prenom}
             helperText={errors?.prenom}
+          />
+          <TextField
+            label="Email"
+            name="email"
+            defaultValue={etudiant.email}
+            fullWidth
+            margin="normal"
+            error={!!errors?.email}
+            helperText={errors?.email}
           />
           <TextField
             label="CIN"
