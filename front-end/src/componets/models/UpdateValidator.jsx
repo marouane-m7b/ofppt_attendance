@@ -1,13 +1,19 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAppContext } from "../../config/context/ComponentContext";
 import { axiosClient } from "../../config/Api/AxiosClient";
-import Swal from "sweetalert2";
-import { Modal, Box, TextField, Button, Typography } from '@mui/material';
+import { Modal, Box, TextField, Button, Typography, FormControlLabel, Checkbox, CircularProgress } from '@mui/material';
 import PropTypes from "prop-types";
+import { errorToast, successToast } from "../../config/Toasts/toasts";
 
 const UpdateValidator = ({ open, onClose, validator, getAllGestionnaires }) => {
   const { setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
+  const [isConsultant, setIsConsultant] = useState(false);
+
+  const handleCheckboxChange = (event) => {
+    setIsConsultant(event.target.checked);
+  };
+
 
   const updateValidator = async (e) => {
     setLoading(true);
@@ -20,20 +26,25 @@ const UpdateValidator = ({ open, onClose, validator, getAllGestionnaires }) => {
           first_name: first_name.value,
           last_name: last_name.value,
           email: email.value,
+          is_consultant: isConsultant,
         }
       );
       await getAllGestionnaires();
       onClose();
-      Swal.fire({
-        text: data.message,
-        icon: "success",
-      });
+      successToast(data.message);
     } catch (error) {
+      errorToast("Une erreur est survenue");
       setErrors(error.response.data.errors);
     } finally {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (validator) {
+      setIsConsultant(validator.is_consultant);
+    }
+  }, [validator]);
 
   return (
     <Modal open={open} onClose={onClose}>
@@ -70,12 +81,23 @@ const UpdateValidator = ({ open, onClose, validator, getAllGestionnaires }) => {
             error={!!errors?.email} 
             helperText={errors?.email}
           />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={isConsultant}
+                onChange={handleCheckboxChange}
+                name="is_consultant"
+                color="primary"
+              />
+            }
+            label="Consultant"
+          />
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
             <Button onClick={onClose} variant="contained" color="secondary" sx={{ mr: 1 }}>
               Annuler
             </Button>
             <Button type="submit" variant="contained" color="primary" disabled={loading}>
-              {loading ? 'Modification...' : 'Modifier'}
+              {loading ? <CircularProgress size={12} color="success" /> : 'Modifier'}
             </Button>
           </Box>
         </form>

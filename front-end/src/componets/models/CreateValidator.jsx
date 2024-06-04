@@ -1,13 +1,18 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { useAppContext } from "../../config/context/ComponentContext";
 import { axiosClient } from "../../config/Api/AxiosClient";
-import Swal from "sweetalert2";
-import { Modal, Box, TextField, Button, Typography } from '@mui/material';
+import { Modal, Box, TextField, Button, Typography, Checkbox, FormControlLabel } from '@mui/material';
 import PropTypes from "prop-types";
+import { errorToast, successToast } from "../../config/Toasts/toasts";
 
 const CreateValidator = ({ open, onClose, getAllGestionnaires }) => {
   const { setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
+  const [isConsultant, setIsConsultant] = useState(false);
+
+  const handleCheckboxChange = (event) => {
+    setIsConsultant(event.target.checked);
+  };
 
   const addValidator = async (e) => {
     setLoading(true);
@@ -18,15 +23,13 @@ const CreateValidator = ({ open, onClose, getAllGestionnaires }) => {
         first_name: first_name.value,
         last_name: last_name.value,
         email: email.value,
+        is_consultant: isConsultant,
       });
       await getAllGestionnaires();
       onClose();
-      Swal.fire({
-        title: data.message,
-        text: "Mote de passe : " + data.password,
-        icon: "success",
-      });
+      successToast(data.message + " Mot de passe : " + data.password, 5000, "top-right");
     } catch (error) {
+      errorToast("Une erreur est survenue");
       setErrors(error.response.data.errors);
     } finally {
       setLoading(false);
@@ -40,30 +43,41 @@ const CreateValidator = ({ open, onClose, getAllGestionnaires }) => {
           Ajouter Une Gestionnaire
         </Typography>
         <form onSubmit={addValidator}>
-          <TextField 
-            label="Nom" 
-            name="first_name" 
-            fullWidth 
-            margin="normal" 
-            error={!!errors?.first_name} 
+          <TextField
+            label="Nom"
+            name="first_name"
+            fullWidth
+            margin="normal"
+            error={!!errors?.first_name}
             helperText={errors?.first_name}
           />
-          <TextField 
-            label="Prenom" 
-            name="last_name" 
-            fullWidth 
-            margin="normal" 
-            error={!!errors?.last_name} 
+          <TextField
+            label="Prenom"
+            name="last_name"
+            fullWidth
+            margin="normal"
+            error={!!errors?.last_name}
             helperText={errors?.last_name}
           />
-          <TextField 
-            label="E-mail" 
-            name="email" 
-            type="email" 
-            fullWidth 
-            margin="normal" 
-            error={!!errors?.email} 
+          <TextField
+            label="E-mail"
+            name="email"
+            type="email"
+            fullWidth
+            margin="normal"
+            error={!!errors?.email}
             helperText={errors?.email}
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={isConsultant}
+                onChange={handleCheckboxChange}
+                name="is_consultant"
+                color="primary"
+              />
+            }
+            label="Consultant"
           />
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
             <Button onClick={onClose} variant="contained" color="secondary" sx={{ mr: 1 }}>
