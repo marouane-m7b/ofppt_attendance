@@ -44,6 +44,7 @@ import EtudiantListAdministrateur from "./componets/admin/absences/EtudiantListA
 import AbsencesByDaySeanceGroupAdmin from "./componets/admin/absences_historique/AbsencesByDaySeanceGroupAdmin";
 import RendezVousGestionnaire from "./componets/gestionnaire/rendez_vous/RendezVousGestionnaire";
 import RendezVousAdmin from "./componets/admin/rendez_vous/RendezVousAdmin";
+import AllGroups from "./componets/admin/groups/AllGroups";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -73,6 +74,7 @@ function App() {
               <Route path="designers" element={<AllDesigners />} />
               <Route path="secteurs" element={<AllSecteurs />} />
               <Route path="filieres" element={<AllFilieres />} />
+              <Route path="groupes" element={<AllGroups />} />
               <Route path="alerts" element={<AllAdminAlerts />} />
               <Route path="alert/:id" element={<AlertAdminDetails />} />
               <Route path="absences" element={<EtudiantListAdministrateur />} />

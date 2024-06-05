@@ -184,6 +184,13 @@ const SidebarAdmin = () => {
               selected={selected}
               setSelected={setSelected}
             />
+            <Item
+              title="Groupes"
+              to="/administrateur/groupes"
+              icon={<HelpOutlineOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
 
             <Typography
               variant="h6"

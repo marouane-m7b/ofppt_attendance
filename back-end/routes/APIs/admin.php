@@ -23,7 +23,11 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::put('/reset-validator/{id}', [ValidatorController::class, 'resetPassword']);
     Route::put('/reset-designer/{id}', [DesignerController::class, 'resetPassword']);
     Route::get('/alerts', [AlertController::class, 'index']);
-    Route::get('/groups', [GroupController::class, 'index']);
+    Route::get('groups', [GroupController::class, 'index']);
+    Route::post('groups', [GroupController::class, 'store']);
+    Route::put('groups/{group}', [GroupController::class, 'update']);
+    Route::delete('groups/{group}', [GroupController::class, 'destroy']);
+    Route::get('groups/filiere/{filiere_id}', [GroupController::class, 'listByFiliere']);
     Route::get('/absencesByDaySeanceGroup', [AbsenceController::class, 'absencesByDaySeanceGroup']);
     Route::get('/etudiants/group/{id}', [EtudiantController::class, 'getEtudiantsByGroup']);
     Route::get('/appointments', [AppointmentController::class, 'index']);

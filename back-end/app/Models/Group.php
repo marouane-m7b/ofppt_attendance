@@ -9,6 +9,11 @@ class Group extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'nom',
+        'filiere_id'
+    ];
+
     public function designers()
     {
         return $this->belongsToMany(Designer::class, 'designer_group');
