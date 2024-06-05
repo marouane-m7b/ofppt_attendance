@@ -54,7 +54,8 @@ class Designer extends Authenticatable
 
     public function groups()
     {
-        return $this->belongsToMany(Group::class, 'designer_group');
+        return $this->belongsToMany(Group::class, 'designer_group')
+            ->withPivot('modules');
     }
 
     public function etudiants()

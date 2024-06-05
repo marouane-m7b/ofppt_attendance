@@ -65,7 +65,6 @@ const AllGroups = () => {
       headerName: 'Filiere',
       flex: 3,
       renderCell: (params) => {
-        console.log("params in renderCell for filiere:", params);
         return params.row.filiere ? params.row.filiere.nom : '';
       }
     },
@@ -74,7 +73,6 @@ const AllGroups = () => {
       headerName: 'Actions',
       flex: 1,
       renderCell: (params) => {
-        console.log("params in renderCell for actions:", params);
         return (
           <div className="d-flex gap-1 flex-nowrap">
             <IconButton color="success" onClick={() => setOpenUpdate({ open: true, group: params.row })}>

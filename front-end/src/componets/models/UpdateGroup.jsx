@@ -1,13 +1,46 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useAppContext } from "../../config/context/ComponentContext";
 import { axiosClient } from "../../config/Api/AxiosClient";
-import { Modal, Box, TextField, Button, Typography, CircularProgress } from '@mui/material';
+import { Modal, Box, TextField, Button, Typography, CircularProgress, MenuItem, IconButton } from '@mui/material';
 import PropTypes from "prop-types";
 import { errorToast, successToast } from "../../config/Toasts/toasts";
+import { Add, Remove } from '@mui/icons-material';
 
 const UpdateGroup = ({ open, onClose, group, getAllGroups, filieres }) => {
   const { setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
+  const [designers, setDesigners] = useState([]);
+  const [assignedDesigners, setAssignedDesigners] = useState(
+    group?.designers.map(d => ({ id: d.id, modules: Array.isArray(d.pivot.modules) ? d.pivot.modules : [] })) || []
+  );
+
+  useEffect(() => {
+    const fetchDesigners = async () => {
+      try {
+        const { data } = await axiosClient.get("/admin/designers");
+        setDesigners(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    fetchDesigners();
+  }, []);
+
+  const handleAddDesigner = () => {
+    setAssignedDesigners([...assignedDesigners, { id: '', modules: [] }]);
+  };
+
+  const handleRemoveDesigner = (index) => {
+    const newAssignedDesigners = [...assignedDesigners];
+    newAssignedDesigners.splice(index, 1);
+    setAssignedDesigners(newAssignedDesigners);
+  };
+
+  const handleDesignerChange = (index, field, value) => {
+    const newAssignedDesigners = [...assignedDesigners];
+    newAssignedDesigners[index][field] = value;
+    setAssignedDesigners(newAssignedDesigners);
+  };
 
   const updateGroup = async (e) => {
     setLoading(true);
@@ -19,6 +52,7 @@ const UpdateGroup = ({ open, onClose, group, getAllGroups, filieres }) => {
         {
           nom: nom.value,
           filiere_id: filiere.value,
+          designers: assignedDesigners,
         }
       );
       await getAllGroups();
@@ -34,7 +68,7 @@ const UpdateGroup = ({ open, onClose, group, getAllGroups, filieres }) => {
 
   return (
     <Modal open={open} onClose={onClose}>
-      <Box sx={{ p: 4, backgroundColor: 'white', borderRadius: 1, maxWidth: 400, margin: 'auto', mt: 5 }}>
+      <Box sx={{ p: 4, backgroundColor: 'white', borderRadius: 1, maxWidth: 600, margin: 'auto', mt: 5 }}>
         <Typography variant="h6" component="h2" gutterBottom>
           Update Group
         </Typography>
@@ -55,17 +89,51 @@ const UpdateGroup = ({ open, onClose, group, getAllGroups, filieres }) => {
             defaultValue={group?.filiere_id}
             fullWidth
             margin="normal"
-            SelectProps={{
-              native: true,
-            }}
           >
-            <option value="">Select a filiere</option>
+            <MenuItem value="">Select a filiere</MenuItem>
             {filieres.map((filiere) => (
-              <option key={filiere.id} value={filiere.id}>
+              <MenuItem key={filiere.id} value={filiere.id}>
                 {filiere.nom}
-              </option>
+              </MenuItem>
             ))}
           </TextField>
+          <Typography variant="h6" component="h2" gutterBottom>
+            Designers
+          </Typography>
+          {assignedDesigners.map((designer, index) => (
+            <Box key={index} sx={{ display: 'flex', alignItems: 'center', mb: 2, gap: 2 }}>
+              <TextField
+                select
+                label="Formateur"
+                value={designer.id}
+                onChange={(e) => handleDesignerChange(index, 'id', e.target.value)}
+                fullWidth
+                margin="normal"
+                helperText="Sélectionner un formateur"
+              >
+                <MenuItem value="">Select a formateur</MenuItem>
+                {designers.map((designerOption) => (
+                  <MenuItem key={designerOption.id} value={designerOption.id}>
+                    {designerOption.first_name} {designerOption.last_name}
+                  </MenuItem>
+                ))}
+              </TextField>
+              <TextField
+                label="Modules"
+                value={designer.modules.join(',')}
+                onChange={(e) => handleDesignerChange(index, 'modules', e.target.value.split(','))}
+                fullWidth
+                margin="normal"
+                helperText="Liste de modules séparés par des virgules"
+              />
+              <IconButton onClick={() => handleRemoveDesigner(index)} color="error">
+                <Remove />
+              </IconButton>
+            </Box>
+          ))}
+          <Button onClick={handleAddDesigner} variant="contained" color="primary" sx={{ mb: 2 }}>
+            <Add /> Add Designer
+          </Button>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
             <Button onClick={onClose} variant="contained" color="secondary" sx={{ mr: 1 }}>
               Cancel

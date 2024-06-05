@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('designer_id')->constrained('designers')->cascadeOnDelete();
             $table->foreignId('group_id')->constrained('groups')->cascadeOnDelete();
+            $table->json('modules')->nullable();
             $table->timestamps();
         });
     }

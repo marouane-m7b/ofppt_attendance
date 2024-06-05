@@ -14,18 +14,19 @@ class Group extends Model
         'filiere_id'
     ];
 
+    public function filiere()
+    {
+        return $this->belongsTo(Filiere::class);
+    }
+
     public function designers()
     {
-        return $this->belongsToMany(Designer::class, 'designer_group');
+        return $this->belongsToMany(Designer::class, 'designer_group')
+                    ->withPivot('modules');
     }
 
     public function etudiants()
     {
         return $this->hasMany(Etudiant::class);
-    }
-
-    public function filiere()
-    {
-        return $this->belongsTo(Filiere::class);
     }
 }
