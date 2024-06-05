@@ -162,6 +162,7 @@ class AbsenceController extends Controller
             Alert::create([
                 'etudiant_id' => $etudiantId,
                 'duree' => $totalDuree,
+                'motif_d_accompagnement' => 'Absence',
                 'commentaire' => "Dépasser 20 heures d'absence",
                 'is_validated' => false,
             ]);

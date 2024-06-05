@@ -2,7 +2,7 @@ import { useParams } from 'react-router-dom';
 import { useAppContext } from '../../../config/context/ComponentContext';
 import { useEffect, useState } from 'react';
 import { Divider, Typography, Box, Button, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Grid } from '@mui/material';
-import { Check, Cancel } from '@mui/icons-material';
+// import { Check, Cancel } from '@mui/icons-material';
 
 const AlertAdminDetails = () => {
     const { id } = useParams();
@@ -29,8 +29,11 @@ const AlertAdminDetails = () => {
                     <Grid item xs={12} sm={6}>
                         <Typography variant="body1"><strong>Commentaire:</strong> {alert?.commentaire}</Typography>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={2}>
                         <Typography variant="body1"><strong>Duree:</strong> {alert?.duree}</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                        <Typography variant="body1"><strong>Motif d&apos;accompagnement:</strong> {alert?.motif_d_accompagnement}</Typography>
                     </Grid>
                 </Grid>
                 <Divider sx={{ my: 3 }} />
@@ -74,7 +77,10 @@ const AlertAdminDetails = () => {
                                                     {absence?.date}
                                                 </Typography>
                                                 <Typography variant="body2" color="text.secondary">
-                                                    Absence réalisée par {absence?.designer ? 'formateur: ' + absence?.designer?.first_name + ' ' + absence?.designer?.last_name : 'gestionnaire: ' + absence?.validator?.first_name + ' ' + absence?.validator?.last_name}
+                                                    Absence réalisée par {absence?.designer || absence?.validator ?
+                                                        (absence?.designer ? 'formateur: ' + absence?.designer?.first_name + ' ' + absence?.designer?.last_name : 'gestionnaire: ' + absence?.validator?.first_name + ' ' + absence?.validator?.last_name)
+                                                        : 'administrateur'
+                                                    }
                                                 </Typography>
                                             </>
                                         }
@@ -89,14 +95,15 @@ const AlertAdminDetails = () => {
                         Problème déjà résolu
                     </Button>
                 ) : (
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
-                        <Button variant="contained" color="error" startIcon={<Cancel />}>
-                            Annuler
-                        </Button>
-                        <Button variant="contained" color="primary" startIcon={<Check />}>
-                            Valider
-                        </Button>
-                    </Box>
+                    <></>
+                    // <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
+                    //     <Button variant="contained" color="error" startIcon={<Cancel />}>
+                    //         Annuler
+                    //     </Button>
+                    //     <Button variant="contained" color="primary" startIcon={<Check />}>
+                    //         Valider
+                    //     </Button>
+                    // </Box>
                 )}
             </Paper>
         </Box>

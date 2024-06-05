@@ -1,4 +1,4 @@
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useAppContext } from '../../../config/context/ComponentContext';
 import { useEffect, useState } from 'react';
 import { Divider, Typography, Box, Button, Paper, List, ListItem, ListItemText, ListItemAvatar, Avatar, Grid } from '@mui/material';
@@ -29,8 +29,11 @@ const AlertDetails = () => {
                     <Grid item xs={12} sm={6}>
                         <Typography variant="body1"><strong>Commentaire:</strong> {alert?.commentaire}</Typography>
                     </Grid>
-                    <Grid item xs={12} sm={6}>
+                    <Grid item xs={12} sm={2}>
                         <Typography variant="body1"><strong>Duree:</strong> {alert?.duree}</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                        <Typography variant="body1"><strong>Motif d&apos;accompagnement:</strong> {alert?.motif_d_accompagnement}</Typography>
                     </Grid>
                 </Grid>
                 <Divider sx={{ my: 3 }} />
@@ -92,14 +95,19 @@ const AlertDetails = () => {
                         Problème déjà résolu
                     </Button>
                 ) : (
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
-                        <Button variant="contained" color="error" startIcon={<Cancel />}>
-                            Annuler
-                        </Button>
-                        <Button variant="contained" color="primary" startIcon={<Check />}>
-                            Valider
-                        </Button>
-                    </Box>
+                    // <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3 }}>
+                    //     <Button variant="contained" color="error" startIcon={<Cancel />}>
+                    //         Annuler
+                    //     </Button>
+                    //     <Button variant="contained" color="primary" startIcon={<Check />}>
+                    //         Valider
+                    //     </Button>
+                    // </Box>
+                    <Button variant="contained" color="primary" startIcon={<Check />}>
+                        <Link to="/gestionnaire/rendez_vous" style={{ textDecoration: 'none', color: 'white' }}>
+                            Planifier un rendez-vous
+                        </Link>
+                    </Button>
                 )}
             </Paper>
         </Box>

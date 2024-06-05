@@ -16,6 +16,7 @@ return new class extends Migration
             $table->foreignId('etudiant_id')->nullable()->constrained('etudiants')->cascadeOnDelete();
             $table->double('duree');
             $table->string('commentaire');
+            $table->enum('motif_d_accompagnement', ['Absence', 'Comportement', 'Adaptation','Apprentissage','Autre']);
             $table->boolean('is_validated')->default(false);
             $table->timestamps();
         });
