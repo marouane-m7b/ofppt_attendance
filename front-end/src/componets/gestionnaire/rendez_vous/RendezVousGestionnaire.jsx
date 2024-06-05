@@ -9,6 +9,7 @@ function Appointments() {
     const [date, setDate] = useState(new Date());
     const [appointments, setAppointments] = useState([]);
     const [etudiants, setEtudiants] = useState([]);
+    const [validators, setValidators] = useState([]);
     const [newAppointment, setNewAppointment] = useState({
         etudiant_id: '',
         validator_id: '',
@@ -26,9 +27,15 @@ function Appointments() {
         setEtudiants(response.data);
     };
 
+    const fetchValidators = async () => {
+        const response = await axiosClient.get('/validator/validators');
+        setValidators(response.data);
+    };
+
     useEffect(() => {
         fetchAppointments();
         fetchEtudiants();
+        fetchValidators();
     }, []);
 
     const handleDateChange = (date) => {
@@ -50,8 +57,6 @@ function Appointments() {
             errorToast(error.response.data.message);
         }
     };
-
-    
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -88,6 +93,22 @@ function Appointments() {
                     </Select>
                 </FormControl>
                 <FormControl fullWidth margin="normal">
+                    <InputLabel id="validator-label">Consultant</InputLabel>
+                    <Select
+                        labelId="validator-label"
+                        name="validator_id"
+                        value={newAppointment.validator_id}
+                        onChange={handleInputChange}
+                        required
+                    >
+                        {validators?.map((validator) => (
+                            <MenuItem key={validator.id} value={validator.id}>
+                                {validator?.first_name} {validator?.last_name}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+                <FormControl fullWidth margin="normal">
                     <DatePicker
                         selected={date}
                         onChange={handleDateChange}
@@ -95,6 +116,8 @@ function Appointments() {
                         dateFormat="MMMM d, yyyy h:mm aa"
                         timeFormat="HH:mm"
                         timeIntervals={60}
+                        minTime={new Date().setHours(9, 0)}
+                        maxTime={new Date().setHours(18, 0)}
                         timeCaption="time"
                     />
                 </FormControl>
