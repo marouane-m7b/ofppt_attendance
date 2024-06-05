@@ -30,6 +30,8 @@ const modalStyle = {
 function Appointments() {
     const [date, setDate] = useState(new Date());
     const [appointments, setAppointments] = useState([]);
+    const [groups, setGroups] = useState([]);
+    const [selectedGroup, setSelectedGroup] = useState('');
     const [etudiants, setEtudiants] = useState([]);
     const [newAppointment, setNewAppointment] = useState({
         etudiant_id: '',
@@ -41,20 +43,36 @@ function Appointments() {
     const [modalOpen, setModalOpen] = useState(false);
     const [submittingLoading, setSubmittingLoading] = useState(false);
 
+    const fetchGroups = async () => {
+        const response = await axiosClient.get('/validator/groups');
+        setGroups(response.data);
+        if (response.data.length > 0) {
+            setSelectedGroup(response.data[0].id);
+        }
+    };
+
     const fetchAppointments = async () => {
         const response = await axiosClient.get('/validator/appointments');
         setAppointments(response.data);
     };
 
-    const fetchEtudiants = async () => {
-        const response = await axiosClient.get('/validator/etudiants');
+    const fetchEtudiants = async (groupId) => {
+        const response = await axiosClient.get(`/validator/etudiants/group/${selectedGroup}`, {
+            params: { group_id: groupId }
+        });
         setEtudiants(response.data);
     };
 
     useEffect(() => {
+        fetchGroups();
         fetchAppointments();
-        fetchEtudiants();
     }, []);
+
+    useEffect(() => {
+        if (selectedGroup) {
+            fetchEtudiants(selectedGroup);
+        }
+    }, [selectedGroup]);
 
     const handleDateChange = (date) => {
         setDate(date);
@@ -115,6 +133,21 @@ function Appointments() {
             </Typography>
             <form onSubmit={handleSubmit}>
                 <FormControl fullWidth margin="normal">
+                    <InputLabel id="group-label">Groupe</InputLabel>
+                    <Select
+                        labelId="group-label"
+                        value={selectedGroup}
+                        onChange={(e) => setSelectedGroup(e.target.value)}
+                        required
+                    >
+                        {groups.map((group) => (
+                            <MenuItem key={group.id} value={group.id}>
+                                {group.nom}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+                <FormControl fullWidth margin="normal">
                     <InputLabel id="etudiant-label">Étudiant</InputLabel>
                     <Select
                         labelId="etudiant-label"
@@ -123,9 +156,9 @@ function Appointments() {
                         onChange={handleInputChange}
                         required
                     >
-                        {etudiants?.map((etudiant) => (
+                        {etudiants.map((etudiant) => (
                             <MenuItem key={etudiant.id} value={etudiant.id}>
-                                {etudiant?.prenom} {etudiant?.nom}
+                                {etudiant.prenom} {etudiant.nom}
                             </MenuItem>
                         ))}
                     </Select>
@@ -138,8 +171,6 @@ function Appointments() {
                         dateFormat="MMMM d, yyyy h:mm aa"
                         timeFormat="HH:mm"
                         timeIntervals={60}
-                        minTime={new Date().setHours(9, 0)}
-                        maxTime={new Date().setHours(18, 0)}
                         timeCaption="time"
                         customInput={<TextField label="Sélectionnez la date et l'heure" variant="outlined" />}
                     />

@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\Group;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
@@ -29,18 +30,19 @@ class ExcessiveAbsenceNotification extends Notification
     public function toMail($notifiable)
     {
         $mailMessage = new MailMessage;
+        $etudiantGroup = Group::find($this->etudiant->group_id);
 
         switch ($this->role) {
             case 'consultant':
                 $mailMessage->subject('Avertissement d\'absences excessives')
-                    ->line("L'étudiant {$this->etudiant->prenom} {$this->etudiant->nom} a dépassé {$this->totalDuree} heures d'absence non justifiée.")
+                    ->line("L'étudiant {$this->etudiant->prenom} {$this->etudiant->nom} de groupe {$etudiantGroup->nom} a dépassé {$this->totalDuree} heures d'absence non justifiée.")
                     ->line('Veuillez prendre les mesures nécessaires.')
-                    ->action('Planifier un RDV', url('http://localhost:3000/gestionnaire/rdvs'))
+                    ->action('Planifier un RDV', url('http://localhost:3000/gestionnaire/rendez_vous'))
                     ->line('Merci pour votre attention.');
                 break;
             case 'cgcp':
                 $mailMessage->subject('Avertissement d\'absences excessives')
-                    ->line("L'étudiant {$this->etudiant->prenom} {$this->etudiant->nom} a dépassé {$this->totalDuree} heures d'absence non justifiée.")
+                    ->line("L'étudiant {$this->etudiant->prenom} {$this->etudiant->nom} de groupe {$etudiantGroup->nom}  a dépassé {$this->totalDuree} heures d'absence non justifiée.")
                     ->line('Veuillez attendre un RDV du consultant.')
                     ->line('Merci pour votre attention.');
                 break;

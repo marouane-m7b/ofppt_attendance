@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AbsenceController;
 use App\Http\Controllers\AlertController;
+use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\DesignerController;
 use App\Http\Controllers\EtudiantController;
 use App\Http\Controllers\FiliereController;
@@ -25,8 +26,42 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('/groups', [GroupController::class, 'index']);
     Route::get('/absencesByDaySeanceGroup', [AbsenceController::class, 'absencesByDaySeanceGroup']);
     Route::get('/etudiants/group/{id}', [EtudiantController::class, 'getEtudiantsByGroup']);
-    Route::apiResource('designers', DesignerController::class)->names(['index' => 'designersAdmin.index', 'store' => 'designersAdmin.store', 'show' => 'designersAdmin.show', 'update' => 'designersAdmin.update', 'destroy' => 'designersAdmin.destroy']);
-    Route::apiResource('validators', ValidatorController::class)->names(['index' => 'validatorsAdmin.index', 'store' => 'validatorsAdmin.store', 'show' => 'validatorsAdmin.show', 'update' => 'validatorsAdmin.update', 'destroy' => 'validatorsAdmin.destroy']);
-    Route::apiResource('etudiants', EtudiantController::class)->names(['index' => 'etudiantsAdmin.index', 'store' => 'etudiantsAdmin.store', 'show' => 'etudiantsAdmin.show', 'update' => 'etudiantsAdmin.update', 'destroy' => 'etudiantsAdmin.destroy']);
-    Route::apiResource('absences', AbsenceController::class)->names(['index' => 'absencesAdminn.index', 'store' => 'absencesAdminn.store', 'show' => 'absencesAdminn.show', 'update' => 'absencesAdminn.update', 'destroy' => 'absencesAdminn.destroy']);
+    Route::get('/appointments', [AppointmentController::class, 'index']);
+    Route::apiResource('designers', DesignerController::class)->names([
+        'index' => 'designersAdmin.index',
+        'store' => 'designersAdmin.store',
+        'show' => 'designersAdmin.show',
+        'update' => 'designersAdmin.update',
+        'destroy' => 'designersAdmin.destroy'
+    ]);
+    Route::apiResource(
+        'validators',
+        ValidatorController::class
+    )->names([
+        'index' => 'validatorsAdmin.index',
+        'store' => 'validatorsAdmin.store',
+        'show' => 'validatorsAdmin.show',
+        'update' => 'validatorsAdmin.update',
+        'destroy' => 'validatorsAdmin.destroy'
+    ]);
+    Route::apiResource(
+        'etudiants',
+        EtudiantController::class
+    )->names([
+        'index' => 'etudiantsAdmin.index',
+        'store' => 'etudiantsAdmin.store',
+        'show' => 'etudiantsAdmin.show',
+        'update' => 'etudiantsAdmin.update',
+        'destroy' => 'etudiantsAdmin.destroy'
+    ]);
+    Route::apiResource(
+        'absences',
+        AbsenceController::class
+    )->names([
+        'index' => 'absencesAdminn.index',
+        'store' => 'absencesAdminn.store',
+        'show' => 'absencesAdminn.show',
+        'update' => 'absencesAdminn.update',
+        'destroy' => 'absencesAdminn.destroy'
+    ]);
 });

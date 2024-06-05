@@ -55,10 +55,6 @@ export default function AbsencesByDaySeanceGroup() {
         fetchGroups();
     }, []);
 
-    useEffect(() => {
-        console.log(etudiants);
-    }, [etudiants]);
-
     const handleSeanceChange = (event) => {
         setSeance(event.target.value);
     };
