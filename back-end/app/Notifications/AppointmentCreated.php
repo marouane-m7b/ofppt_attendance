@@ -26,7 +26,7 @@ class AppointmentCreated extends Notification
     {
         $mailMessage = new MailMessage;
 
-        $date = $this->appointment->date;
+        $date = $this->appointment->rdv_time;
         $etudiant = $this->appointment->etudiant;
 
         if ($notifiable->is_consultant) {

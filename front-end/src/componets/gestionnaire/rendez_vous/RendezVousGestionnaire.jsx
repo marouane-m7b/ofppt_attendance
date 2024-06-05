@@ -2,13 +2,27 @@ import { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { axiosClient } from '../../../config/Api/AxiosClient';
-import { Container, MenuItem, Select, Button, InputLabel, FormControl, Typography } from '@mui/material';
+import {
+    Container, MenuItem, Select, Button, InputLabel, FormControl, Typography, Modal, Box, CircularProgress, TextField
+} from '@mui/material';
 import { errorToast, successToast } from '../../../config/Toasts/toasts';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 const localizer = momentLocalizer(moment);
+
+const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    border: '2px solid #000',
+    boxShadow: 24,
+    p: 4,
+};
 
 function Appointments() {
     const [date, setDate] = useState(new Date());
@@ -17,9 +31,12 @@ function Appointments() {
     const [newAppointment, setNewAppointment] = useState({
         etudiant_id: '',
         validator_id: '',
-        date: date,
+        rdv_time: date,
         status: 'pending',
     });
+    const [selectedAppointment, setSelectedAppointment] = useState(null);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [submittingLoading, setSubmittingLoading] = useState(false);
 
     const fetchAppointments = async () => {
         const response = await axiosClient.get('/validator/appointments');
@@ -38,7 +55,7 @@ function Appointments() {
 
     const handleDateChange = (date) => {
         setDate(date);
-        setNewAppointment({ ...newAppointment, date });
+        setNewAppointment({ ...newAppointment, rdv_time: date });
     };
 
     const handleInputChange = (e) => {
@@ -46,33 +63,45 @@ function Appointments() {
         setNewAppointment({ ...newAppointment, [name]: value });
     };
 
-    const handleStatusChange = async (id, status) => {
+    const handleStatusChange = async (status) => {
         try {
-            await axiosClient.put(`/validator/appointments/${id}`, { status });
+            setSubmittingLoading(true);
+            await axiosClient.put(`/validator/appointments/${selectedAppointment.id}`, { status });
             successToast('Statut mis à jour');
+            setModalOpen(false);
             fetchAppointments();
         } catch (error) {
             errorToast(error.response.data.message);
+        } finally {
+            setSubmittingLoading(false);
         }
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            const formattedDate = newAppointment.date.toISOString().split('.')[0] + 'Z';
-            await axiosClient.post('/validator/appointments', { ...newAppointment, date: formattedDate });
+            setSubmittingLoading(true);
+            const formattedDate = newAppointment.rdv_time.toISOString().split('.')[0] + 'Z';
+            await axiosClient.post('/validator/appointments', { ...newAppointment, rdv_time: formattedDate });
             successToast('Rendez-vous ajouté');
             fetchAppointments();
         } catch (error) {
             errorToast(error.response.data.message);
+        } finally {
+            setSubmittingLoading(false);
         }
+    };
+
+    const handleEventClick = (event) => {
+        setSelectedAppointment(event);
+        setModalOpen(true);
     };
 
     const events = appointments.map((appointment) => ({
         id: appointment.id,
         title: `${appointment.etudiant.prenom} ${appointment.etudiant.nom}`,
-        start: new Date(appointment.date),
-        end: new Date(new Date(appointment.date).setHours(new Date(appointment.date).getHours() + 1)),
+        start: new Date(appointment.rdv_time),
+        end: new Date(new Date(appointment.rdv_time).setHours(new Date(appointment.rdv_time).getHours() + 1)),
         status: appointment.status,
     }));
 
@@ -106,13 +135,17 @@ function Appointments() {
                         dateFormat="MMMM d, yyyy h:mm aa"
                         timeFormat="HH:mm"
                         timeIntervals={60}
-                        minTime={new Date().setHours(8, 0)}
-                        maxTime={new Date().setHours(18, 0)}
                         timeCaption="time"
+                        customInput={<TextField label="Sélectionnez la date et l'heure" variant="outlined" />}
                     />
                 </FormControl>
-                <Button variant="contained" color="primary" type="submit">
-                    Ajouter un rendez-vous
+                <Button
+                    variant="contained"
+                    color="primary"
+                    type="submit"
+                    disabled={submittingLoading}
+                >
+                    {submittingLoading ? <CircularProgress size={12} /> : 'Ajouter un rendez-vous'}
                 </Button>
             </form>
 
@@ -139,7 +172,47 @@ function Appointments() {
                         color: 'white',
                     },
                 })}
+                onSelectEvent={handleEventClick}
             />
+
+            <Modal
+                open={modalOpen}
+                onClose={() => setModalOpen(false)}
+                aria-labelledby="modal-title"
+                aria-describedby="modal-description"
+            >
+                <Box sx={modalStyle}>
+                    <Typography id="modal-title" variant="h6" component="h2">
+                        Modifier le statut du rendez-vous
+                    </Typography>
+                    {selectedAppointment?.status === 'pending' ? (
+                        <FormControl fullWidth margin="normal" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                            <Button
+                                variant="contained"
+                                color="success"
+                                onClick={() => handleStatusChange('passed')}
+                                style={{ marginRight: '10px' }}
+                                disabled={submittingLoading}
+                            >
+                                {submittingLoading ? <CircularProgress size={12} /> : 'Marquer comme passé'}
+                            </Button>
+                            <Button
+                                variant="contained"
+                                color="error"
+                                onClick={() => handleStatusChange('cancelled')}
+                                disabled={submittingLoading}
+                            >
+                                {submittingLoading ? <CircularProgress size={12} /> : 'Marquer comme annulé'}
+                            </Button>
+                        </FormControl>
+                    ) : (
+                        <Typography variant="body1">
+                            {selectedAppointment?.status === 'passed' ? 'Déjà passé' : 'Déjà annulé'}
+                        </Typography>
+                    )}
+                    <Button onClick={() => setModalOpen(false)}>Fermer</Button>
+                </Box>
+            </Modal>
         </Container>
     );
 }

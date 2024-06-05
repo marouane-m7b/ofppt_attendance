@@ -4,13 +4,17 @@ namespace App\Http\Controllers;
 
 use App\Models\Appointment;
 use App\Models\Designer;
+use App\Notifications\AppointmentApology;
 use App\Notifications\AppointmentCreated;
+use App\Notifications\AppointmentThankYou;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 
 class AppointmentController extends Controller
 {
-    private $workingHoursStart = 9;
+    private $workingHoursStart = 7;
     private $workingHoursEnd = 18;
 
     public function index()
@@ -24,11 +28,15 @@ class AppointmentController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'etudiant_id' => 'required|exists:etudiants,id',
-            'date' => 'required|date_format:Y-m-d\TH:i:s\Z',
+            'rdv_time' => 'required|date_format:Y-m-d\TH:i:s\Z',
             'status' => 'required|in:pending,passed,cancelled',
         ]);
+
+        if ($validator->fails()) {
+            return response()->json($validator->errors(), 400);
+        }
 
         $validator = $request->user('validator');
         if (!$validator) {
@@ -39,22 +47,22 @@ class AppointmentController extends Controller
             return response()->json(['message' => 'Unauthorized'], 400);
         }
 
-        $date = Carbon::parse($request->date);
+        $rdv_time = Carbon::parse($request->rdv_time);
 
         // Ensure time is within working hours
-        $hour = $date->hour;
+        $hour = $rdv_time->hour;
         if ($hour < $this->workingHoursStart || $hour >= $this->workingHoursEnd) {
-            return response()->json(['message' => 'L\'heure de rendez-vous doit être entre 9h et 18h.'], 400);
+            return response()->json(['message' => 'L\'heure de rendez-vous doit être entre 8h et 18h.'], 400);
         }
 
         // Ensure time is at 60-minute intervals
-        if ($date->minute !== 0) {
-            return response()->json(['message' => 'Le rendez-vous doit être fixé à une heure précise (ex : 14:00, 15:00).'], 400);
+        if ($rdv_time->minute !== 0) {
+            return response()->json(['message' => 'Le rendez-vous doit être fixé à une heure précise (ex : 14:00, 08:00).'], 400);
         }
 
         // Check for existing appointments at this time
         $existingAppointment = Appointment::where('validator_id', $validator->id)
-            ->where('date', $date->format('Y-m-d H:i:s'))
+            ->where('rdv_time', $rdv_time->format('Y-m-d H:i:s'))
             ->first();
 
         if ($existingAppointment) {
@@ -64,7 +72,7 @@ class AppointmentController extends Controller
         $appointment = Appointment::create([
             'etudiant_id' => $request->etudiant_id,
             'validator_id' => $validator->id,
-            'date' => $date->format('Y-m-d H:i:s'),
+            'rdv_time' => $rdv_time->format('Y-m-d H:i:s'),
             'status' => $request->status,
         ]);
 
@@ -81,38 +89,62 @@ class AppointmentController extends Controller
 
     public function update(Request $request, $id)
     {
-        $appointment = Appointment::findOrFail($id);
-
+        $appointment = Appointment::find($id);
+    
+        if (!$appointment) {
+            return response()->json(['message' => 'Rendez-vous introuvable.'], 404);
+        }
+    
+        if ($appointment->status !== 'pending') {
+            return response()->json(['message' => 'Le statut ne peut être modifié que si le rendez-vous est en attente.'], 400);
+        }
+    
         $request->validate([
-            'date' => 'sometimes|date_format:Y-m-d\TH:i:s\Z',
-            'status' => 'sometimes|in:pending,passed,cancelled',
+            'status' => 'required|in:pending,passed,cancelled',
         ]);
-
-        if ($request->has('date')) {
-            $date = Carbon::parse($request->date);
-
-            // Ensure time is within working hours
-            $hour = $date->hour;
-            if ($hour < $this->workingHoursStart || $hour >= $this->workingHoursEnd) {
-                return response()->json(['message' => 'L\'heure de rendez-vous doit être entre 9h et 18h.'], 400);
-            }
-
-            // Ensure time is at 60-minute intervals
-            if ($date->minute !== 0) {
-                return response()->json(['message' => 'Le rendez-vous doit être fixé à une heure précise (ex : 14:00, 15:00).'], 400);
-            }
-
-            $appointment->date = $date->format('Y-m-d H:i:s');
-        }
-
-        if ($request->has('status')) {
-            $appointment->status = $request->status;
-        }
-
+    
+        $appointment->status = $request->status;
         $appointment->save();
-
+    
+        // Send notifications based on status change
+        if ($appointment->status === 'passed') {
+            $this->sendThankYouEmails($appointment);
+        } elseif ($appointment->status === 'cancelled') {
+            $this->sendApologyEmails($appointment);
+        }
+    
         return response()->json($appointment, 200);
     }
+    
+    protected function sendThankYouEmails(Appointment $appointment)
+    {
+        $etudiant = $appointment->etudiant;
+        $cgcpDesigners = Designer::where('is_cgcp', true)->get();
+    
+        // Send email to student
+        $etudiant->notify(new AppointmentThankYou($appointment));
+    
+        // Send email to CGCP users
+        foreach ($cgcpDesigners as $designer) {
+            $designer->notify(new AppointmentThankYou($appointment));
+        }
+    }
+    
+    protected function sendApologyEmails(Appointment $appointment)
+    {
+        $etudiant = $appointment->etudiant;
+        $cgcpDesigners = Designer::where('is_cgcp', true)->get();
+    
+        // Send email to student
+        $etudiant->notify(new AppointmentApology($appointment));
+    
+        // Send email to CGCP users
+        foreach ($cgcpDesigners as $designer) {
+            $designer->notify(new AppointmentApology($appointment));
+        }
+    }
+    
+
 
     public function destroy($id)
     {
