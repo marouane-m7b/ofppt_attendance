@@ -2,18 +2,22 @@ import { useState, useEffect } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { axiosClient } from '../../../config/Api/AxiosClient';
-import { Container, MenuItem, Select, Button, InputLabel, FormControl, Typography, List, ListItem, ListItemText, ListItemSecondaryAction } from '@mui/material';
+import { Container, MenuItem, Select, Button, InputLabel, FormControl, Typography } from '@mui/material';
 import { errorToast, successToast } from '../../../config/Toasts/toasts';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import moment from 'moment';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
+
+const localizer = momentLocalizer(moment);
 
 function Appointments() {
     const [date, setDate] = useState(new Date());
     const [appointments, setAppointments] = useState([]);
     const [etudiants, setEtudiants] = useState([]);
-    const [validators, setValidators] = useState([]);
     const [newAppointment, setNewAppointment] = useState({
         etudiant_id: '',
         validator_id: '',
-        date: new Date(),
+        date: date,
         status: 'pending',
     });
 
@@ -27,15 +31,9 @@ function Appointments() {
         setEtudiants(response.data);
     };
 
-    const fetchValidators = async () => {
-        const response = await axiosClient.get('/validator/validators');
-        setValidators(response.data);
-    };
-
     useEffect(() => {
         fetchAppointments();
         fetchEtudiants();
-        fetchValidators();
     }, []);
 
     const handleDateChange = (date) => {
@@ -70,6 +68,14 @@ function Appointments() {
         }
     };
 
+    const events = appointments.map((appointment) => ({
+        id: appointment.id,
+        title: `${appointment.etudiant.prenom} ${appointment.etudiant.nom}`,
+        start: new Date(appointment.date),
+        end: new Date(new Date(appointment.date).setHours(new Date(appointment.date).getHours() + 1)),
+        status: appointment.status,
+    }));
+
     return (
         <Container>
             <Typography variant="h4" gutterBottom>
@@ -93,22 +99,6 @@ function Appointments() {
                     </Select>
                 </FormControl>
                 <FormControl fullWidth margin="normal">
-                    <InputLabel id="validator-label">Consultant</InputLabel>
-                    <Select
-                        labelId="validator-label"
-                        name="validator_id"
-                        value={newAppointment.validator_id}
-                        onChange={handleInputChange}
-                        required
-                    >
-                        {validators?.map((validator) => (
-                            <MenuItem key={validator.id} value={validator.id}>
-                                {validator?.first_name} {validator?.last_name}
-                            </MenuItem>
-                        ))}
-                    </Select>
-                </FormControl>
-                <FormControl fullWidth margin="normal">
                     <DatePicker
                         selected={date}
                         onChange={handleDateChange}
@@ -116,7 +106,7 @@ function Appointments() {
                         dateFormat="MMMM d, yyyy h:mm aa"
                         timeFormat="HH:mm"
                         timeIntervals={60}
-                        minTime={new Date().setHours(9, 0)}
+                        minTime={new Date().setHours(8, 0)}
                         maxTime={new Date().setHours(18, 0)}
                         timeCaption="time"
                     />
@@ -129,28 +119,27 @@ function Appointments() {
             <Typography variant="h6" gutterBottom style={{ marginTop: '2rem' }}>
                 Liste des rendez-vous
             </Typography>
-            <List>
-                {appointments.map((appointment) => (
-                    <ListItem key={appointment.id}>
-                        <ListItemText
-                            primary={`${appointment.etudiant.prenom} ${appointment.etudiant.nom} avec ${appointment.validator.first_name} ${appointment.validator.last_name}`}
-                            secondary={`${appointment.date} - ${appointment.status}`}
-                        />
-                        <ListItemSecondaryAction>
-                            <FormControl>
-                                <Select
-                                    value={appointment.status}
-                                    onChange={(e) => handleStatusChange(appointment.id, e.target.value)}
-                                >
-                                    <MenuItem value="pending">En attente</MenuItem>
-                                    <MenuItem value="passed">Passé</MenuItem>
-                                    <MenuItem value="cancelled">Annulé</MenuItem>
-                                </Select>
-                            </FormControl>
-                        </ListItemSecondaryAction>
-                    </ListItem>
-                ))}
-            </List>
+            <Calendar
+                localizer={localizer}
+                events={events}
+                startAccessor="start"
+                endAccessor="end"
+                style={{ height: 500, margin: '50px' }}
+                messages={{
+                    next: "Suivant",
+                    previous: "Précédent",
+                    today: "Aujourd'hui",
+                    month: "Mois",
+                    week: "Semaine",
+                    day: "Jour",
+                }}
+                eventPropGetter={(event) => ({
+                    style: {
+                        backgroundColor: event.status === 'passed' ? 'green' : event.status === 'cancelled' ? 'red' : 'blue',
+                        color: 'white',
+                    },
+                })}
+            />
         </Container>
     );
 }

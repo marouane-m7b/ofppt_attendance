@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Appointment;
+use App\Models\Designer;
+use App\Notifications\AppointmentCreated;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
@@ -30,6 +32,10 @@ class AppointmentController extends Controller
 
         $validator = $request->user('validator');
         if (!$validator) {
+            return response()->json(['message' => 'Unauthorized'], 400);
+        }
+
+        if (!$validator->is_consultant) {
             return response()->json(['message' => 'Unauthorized'], 400);
         }
 
@@ -61,6 +67,14 @@ class AppointmentController extends Controller
             'date' => $date->format('Y-m-d H:i:s'),
             'status' => $request->status,
         ]);
+
+        // Send notifications
+        $appointment->etudiant->notify(new AppointmentCreated($appointment));
+        $cgcpDesigners = Designer::where('is_cgcp', true)->get();
+        foreach ($cgcpDesigners as $designer) {
+            $designer->notify(new AppointmentCreated($appointment));
+        }
+        $validator->notify(new AppointmentCreated($appointment));
 
         return response()->json($appointment, 201);
     }
