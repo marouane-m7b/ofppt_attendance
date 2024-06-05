@@ -206,7 +206,13 @@ const SidebarAdmin = () => {
               selected={selected}
               setSelected={setSelected}
             />
-
+            <Item
+              title="Rendez-vous"
+              to="/administrateur/rendez_vous"
+              icon={<ContactsOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
             {/* <Typography
               variant="h6"
               color={colors.grey[300]}
