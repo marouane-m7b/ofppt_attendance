@@ -22,6 +22,9 @@ const modalStyle = {
     border: '2px solid #000',
     boxShadow: 24,
     p: 4,
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center'
 };
 
 function Appointments() {
@@ -135,6 +138,8 @@ function Appointments() {
                         dateFormat="MMMM d, yyyy h:mm aa"
                         timeFormat="HH:mm"
                         timeIntervals={60}
+                        minTime={new Date().setHours(9, 0)}
+                        maxTime={new Date().setHours(18, 0)}
                         timeCaption="time"
                         customInput={<TextField label="Sélectionnez la date et l'heure" variant="outlined" />}
                     />
@@ -174,6 +179,8 @@ function Appointments() {
                 })}
                 onSelectEvent={handleEventClick}
             />
+            <Box sx={{ display: 'flex', justifyContent: 'center', marginTop: '2rem' }}>
+            </Box>
 
             <Modal
                 open={modalOpen}
@@ -182,17 +189,17 @@ function Appointments() {
                 aria-describedby="modal-description"
             >
                 <Box sx={modalStyle}>
-                    <Typography id="modal-title" variant="h6" component="h2">
+                    <Typography id="modal-title" variant="h6" component="h2" gutterBottom>
                         Modifier le statut du rendez-vous
                     </Typography>
                     {selectedAppointment?.status === 'pending' ? (
-                        <FormControl fullWidth margin="normal" style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <FormControl fullWidth margin="normal" style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
                             <Button
                                 variant="contained"
                                 color="success"
                                 onClick={() => handleStatusChange('passed')}
-                                style={{ marginRight: '10px' }}
                                 disabled={submittingLoading}
+                                sx={{ marginBottom: '1rem' }}
                             >
                                 {submittingLoading ? <CircularProgress size={12} /> : 'Marquer comme passé'}
                             </Button>
@@ -206,11 +213,13 @@ function Appointments() {
                             </Button>
                         </FormControl>
                     ) : (
-                        <Typography variant="body1">
+                        <Typography variant="h6">
                             {selectedAppointment?.status === 'passed' ? 'Déjà passé' : 'Déjà annulé'}
                         </Typography>
                     )}
-                    <Button onClick={() => setModalOpen(false)}>Fermer</Button>
+                    <Button variant="contained" onClick={() => setModalOpen(false)} sx={{ marginTop: '1rem' }}>
+                        Fermer
+                    </Button>
                 </Box>
             </Modal>
         </Container>
