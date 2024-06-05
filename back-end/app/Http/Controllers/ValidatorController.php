@@ -40,8 +40,13 @@ class ValidatorController extends Controller
     }
 
     // Index method to retrieve a list of validators
-    public function index()
+    public function index(Request $request)
     {
+        $validator =  $request->user('validator');
+        if ($validator) {
+            $validators = Validator::where('is_consultant', 1)->get();
+            return response()->json($validators, 200);
+        }
         $validators = Validator::all();
         return response()->json($validators, 200);
     }
