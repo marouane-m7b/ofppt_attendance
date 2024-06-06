@@ -17,6 +17,7 @@ Route::middleware(['auth:validator'])->group(function () {
     Route::get('/alerts', [AlertController::class, 'index']);
     Route::get('/absencesByDaySeanceGroup', [AbsenceController::class, 'absencesByDaySeanceGroup']);
     Route::get('/groups', [GroupController::class, 'index']);
+    Route::put('/etudiants/{id}/updateObservationConseiller', [EtudiantController::class, 'updateObservationConseiller']);
     Route::apiResources([
         'absences' => AbsenceController::class,
         'appointments' => AppointmentController::class,

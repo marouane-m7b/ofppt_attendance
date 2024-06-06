@@ -137,27 +137,36 @@ const SidebarGestionnaire = () => {
               Utilisateurs
             </Typography>
             <Item
-              title="Etudiants"
-              to="/gestionnaire/etudiants"
+              title="Absences"
+              to="/gestionnaire/absences"
               icon={<PeopleOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Absences Historiques"
-              to="/gestionnaire/absences"
+              to="/gestionnaire/absences_historiques"
               icon={<ContactsOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             {user?.is_consultant && (
-              <Item
-                title="Rendez-vous"
-                to="/gestionnaire/rendez_vous"
-                icon={<ContactsOutlinedIcon />}
-                selected={selected}
-                setSelected={setSelected}
-              />
+              <>
+                <Item
+                  title="Rendez-vous"
+                  to="/gestionnaire/rendez_vous"
+                  icon={<ContactsOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+                <Item
+                  title="Etudiants"
+                  to="/gestionnaire/etudiants"
+                  icon={<ContactsOutlinedIcon />}
+                  selected={selected}
+                  setSelected={setSelected}
+                />
+              </>
             )}
           </Box>
         </Menu>

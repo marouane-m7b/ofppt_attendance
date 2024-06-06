@@ -31,7 +31,6 @@ import DashboardFormateur from "./layouts/formateur/dashboard";
 import DashboardGestionnaire from "./layouts/gestionnaire/dashboard";
 import FormateurLogin from "./componets/Auth/formateur/FormateurLogin";
 import GestionnaireLogin from "./componets/Auth/gestionnaire/GestionnaireLogin";
-import EtudiantListGestionnaire from "./componets/gestionnaire/etudiants/EtudiantListGestionnaire";
 import AbsencesByDaySeanceGroup from "./componets/gestionnaire/absences/AbsencesByDaySeanceGroup";
 import AllGestionnaires from "./componets/admin/_validators/AllGestionnaire";
 import GestionnaireIndex from "./layouts/gestionnaire/GestionnaireIndex";
@@ -47,6 +46,8 @@ import AllGroups from "./componets/admin/groups/AllGroups";
 import EtudiantDetails from "./componets/admin/etudiants/EtudiantDetails";
 import AbsencesListFormateur from "./componets/formateur/absences/AbsencesListFormateur";
 import EtudiantListFormateur from "./componets/formateur/etudiants/EtudiantListFormateur";
+import EtudiantListGestionnaire from "./componets/gestionnaire/absences/EtudiantListGestionnaire";
+import EtudiantListReview from "./componets/gestionnaire/etudiants/EtudiantListReview";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -108,11 +109,12 @@ function App() {
                 index
                 element={<DashboardGestionnaire />}
               />
-              <Route path="etudiants" element={<EtudiantListGestionnaire />} />
-              <Route path="absences" element={<AbsencesByDaySeanceGroup />} />
+              <Route path="absences" element={<EtudiantListGestionnaire />} />
+              <Route path="absences_historiques" element={<AbsencesByDaySeanceGroup />} />
               <Route path="alerts" element={<AllAlerts />} />
               <Route path="alert/:id" element={<AlertDetails />} />
               <Route path="rendez_vous" element={<RendezVousGestionnaire />} />
+              <Route path="etudiants" element={<EtudiantListReview />} />
             </Route>
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

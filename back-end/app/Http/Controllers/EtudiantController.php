@@ -165,6 +165,24 @@ class EtudiantController extends Controller
         return response()->json(['message' => 'Observation mise à jour avec succès']);
     }
 
+    public function updateObservationConseiller($id, Request $request)
+    {
+        $request->validate([
+            'observations_conseiller' => 'required|string|max:255',
+        ]);
+
+        $etudiant = Etudiant::find($id);
+
+        if (!$etudiant) {
+            return response()->json(['message' => 'Étudiant non trouvé'], 404);
+        }
+
+        $etudiant->observations_conseiller = $request->input('observations_conseiller');
+        $etudiant->save();
+
+        return response()->json(['message' => 'Observation mise à jour avec succès']);
+    }
+
     public function getEtudiantsByGroup($id)
     {
         $etudiants = Etudiant::where('group_id', $id)->with('group.filiere')->get();
