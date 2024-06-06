@@ -1,9 +1,8 @@
+import { useEffect, useState } from "react";
 import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../../theme";
-import { mockTransactions } from "../../../data/mockData";
 import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import EmailIcon from "@mui/icons-material/Email";
-import PointOfSaleIcon from "@mui/icons-material/PointOfSale";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import TrafficIcon from "@mui/icons-material/Traffic";
 import Header from "../../../components/Header";
@@ -12,17 +11,48 @@ import GeographyChart from "../../../components/GeographyChart";
 import BarChart from "../../../components/BarChart";
 import StatBox from "../../../components/StatBox";
 import ProgressCircle from "../../../components/ProgressCircle";
+import { axiosClient } from "../../../config/Api/AxiosClient";
 
 const DashboardAdmin = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [totalStudents, setTotalStudents] = useState(0);
+  const [totalAbsences, setTotalAbsences] = useState(0);
+  const [totalAlerts, setTotalAlerts] = useState(0);
+  const [totalFormateurs, setTotalFormateurs] = useState(0);
+  const [recentAppointments, setRecentAppointments] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [studentsRes, absencesRes, alertsRes, designersRes, appointmentsRes] = await Promise.all([
+          axiosClient.get('/dashboard/total-students'),
+          axiosClient.get('/dashboard/total-absences'),
+          axiosClient.get('/dashboard/total-alerts'),
+          axiosClient.get('/dashboard/total-designers'),
+          axiosClient.get('/dashboard/recent-appointments'),
+        ]);
+
+        console.log('Dashboard data:', studentsRes.data, absencesRes.data, alertsRes.data, appointmentsRes.data);
+
+        setTotalStudents(studentsRes.data.total);
+        setTotalAbsences(absencesRes.data.total);
+        setTotalAlerts(alertsRes.data.total);
+        setTotalFormateurs(designersRes.data.total);
+        setRecentAppointments(appointmentsRes.data.appointments);
+      } catch (error) {
+        console.error('Error fetching dashboard data', error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <Box m="20px">
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="DASHBOARD" subtitle="Welcome to your dashboardAdmin" />
-
+        <Header title="TABLEAU DE BORD" subtitle="Bienvenue sur votre tableau de bord" />
         <Box>
           <Button
             sx={{
@@ -55,48 +85,10 @@ const DashboardAdmin = () => {
           justifyContent="center"
         >
           <StatBox
-            title="12,361"
-            subtitle="Emails Sent"
+            title={totalStudents}
+            subtitle="Total Students"
             progress="0.75"
             increase="+14%"
-            icon={
-              <EmailIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-        </Box>
-        <Box
-          gridColumn="span 3"
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <StatBox
-            title="431,225"
-            subtitle="Sales Obtained"
-            progress="0.50"
-            increase="+21%"
-            icon={
-              <PointOfSaleIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-        </Box>
-        <Box
-          gridColumn="span 3"
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <StatBox
-            title="32,441"
-            subtitle="New Clients"
-            progress="0.30"
-            increase="+5%"
             icon={
               <PersonAddIcon
                 sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
@@ -112,8 +104,8 @@ const DashboardAdmin = () => {
           justifyContent="center"
         >
           <StatBox
-            title="1,325,134"
-            subtitle="Traffic Received"
+            title={totalFormateurs}
+            subtitle="Total Formateurs"
             progress="0.80"
             increase="+43%"
             icon={
@@ -123,7 +115,44 @@ const DashboardAdmin = () => {
             }
           />
         </Box>
-
+        <Box
+          gridColumn="span 3"
+          backgroundColor={colors.primary[400]}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <StatBox
+            title={totalAbsences}
+            subtitle="Total Absences"
+            progress="0.50"
+            increase="+21%"
+            icon={
+              <TrafficIcon
+                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+              />
+            }
+          />
+        </Box>
+        <Box
+          gridColumn="span 3"
+          backgroundColor={colors.primary[400]}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+        >
+          <StatBox
+            title={totalAlerts}
+            subtitle="Total Alerts"
+            progress="0.30"
+            increase="+5%"
+            icon={
+              <EmailIcon
+                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
+              />
+            }
+          />
+        </Box>
         {/* ROW 2 */}
         <Box
           gridColumn="span 8"
@@ -180,12 +209,12 @@ const DashboardAdmin = () => {
             p="15px"
           >
             <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-              Recent Transactions
+              Récent rendez-vous
             </Typography>
           </Box>
-          {mockTransactions.map((transaction, i) => (
+          {recentAppointments?.map((appointment, i) => (
             <Box
-              key={`${transaction.txId}-${i}`}
+              key={`${appointment.id}-${i}`}
               display="flex"
               justifyContent="space-between"
               alignItems="center"
@@ -198,19 +227,19 @@ const DashboardAdmin = () => {
                   variant="h5"
                   fontWeight="600"
                 >
-                  {transaction.txId}
+                  {appointment?.etudiant?.nom} {appointment?.etudiant?.prenom}
                 </Typography>
                 <Typography color={colors.grey[100]}>
-                  {transaction.user}
+                  avec {appointment?.validator?.first_name} {appointment?.validator?.last_name}
                 </Typography>
               </Box>
-              <Box color={colors.grey[100]}>{transaction.date}</Box>
+              <Box color={colors.grey[100]}>{appointment.date}</Box>
               <Box
                 backgroundColor={colors.greenAccent[500]}
                 p="5px 10px"
                 borderRadius="4px"
               >
-                ${transaction.cost}
+                {appointment?.rdv_time} {/* Adjust based on your appointment model */}
               </Box>
             </Box>
           ))}
