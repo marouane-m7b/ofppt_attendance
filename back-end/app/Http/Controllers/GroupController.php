@@ -27,7 +27,7 @@ class GroupController extends Controller
             'filiere_id' => 'required|exists:filieres,id',
             'designers' => 'required|array',
             'designers.*.id' => 'required|exists:designers,id',
-            'designers.*.modules' => 'required|array',
+            'designers.*.modules' => 'array',
         ];
 
         $validate = Validator::make($request->all(), $rules);
@@ -55,7 +55,7 @@ class GroupController extends Controller
             'filiere_id' => 'required|exists:filieres,id',
             'designers' => 'required|array',
             'designers.*.id' => 'required|exists:designers,id',
-            'designers.*.modules' => 'required|array',
+            'designers.*.modules' => 'array',
         ];
 
         $validate = Validator::make($request->all(), $rules);
