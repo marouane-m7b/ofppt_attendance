@@ -48,6 +48,7 @@ import AbsencesListFormateur from "./componets/formateur/absences/AbsencesListFo
 import EtudiantListFormateur from "./componets/formateur/etudiants/EtudiantListFormateur";
 import EtudiantListGestionnaire from "./componets/gestionnaire/absences/EtudiantListGestionnaire";
 import EtudiantListReview from "./componets/gestionnaire/etudiants/EtudiantListReview";
+import JustifyAbsence from "./componets/admin/etudiants/JustifyAbsence";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -82,10 +83,10 @@ function App() {
               <Route path="alerts" element={<AllAdminAlerts />} />
               <Route path="alert/:id" element={<AlertAdminDetails />} />
               <Route path="absences" element={<EtudiantListAdministrateur />} />
+              <Route path="absence/:id" element={<JustifyAbsence />} />
               <Route path="absences_historiques" element={<AbsencesByDaySeanceGroupAdmin />} />
               <Route path="rendez_vous" element={<RendezVousAdmin />} />
             </Route>
-
             <Route path="/concepteur" element={<FormateurIndex />}>
               <Route
                 index

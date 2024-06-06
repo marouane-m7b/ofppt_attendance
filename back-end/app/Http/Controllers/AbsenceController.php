@@ -188,7 +188,13 @@ class AbsenceController extends Controller
      */
     public function show(Absence $absence)
     {
-        //
+        // $absence = Absence::find($id);
+
+        if (!$absence) {
+            return response()->json(['message' => 'Absence non trouvée'], 404);
+        }
+
+        return response()->json(['absence' => $absence]);
     }
 
     /**
@@ -237,5 +243,30 @@ class AbsenceController extends Controller
             ->get();
 
         return response()->json($absences);
+    }
+
+    public function justifyAbsence($id, Request $request)
+    {
+        $request->validate([
+            'certificat' => 'required|file|mimes:pdf',
+            'commentaire' => 'nullable|string',
+        ]);
+
+        $absence = Absence::find($id);
+
+        if (!$absence) {
+            return response()->json(['message' => 'Absence non trouvée'], 404);
+        }
+
+        if ($request->hasFile('certificat')) {
+            $filePath = $request->file('certificat')->store('certificats');
+            $absence->certificat = $filePath;
+        }
+
+        $absence->commentaire = $request->input('commentaire');
+        $absence->is_justified = true;
+        $absence->save();
+
+        return response()->json(['message' => 'Absence justifiée avec succès']);
     }
 }

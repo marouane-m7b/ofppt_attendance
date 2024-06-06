@@ -1,22 +1,12 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import {
-    CircularProgress,
-    Typography,
-    Box,
-    Paper,
-    Grid,
-    Card,
-    CardContent,
-    CardHeader,
-    Divider,
-    Button,
-} from '@mui/material';
+import { useParams, useNavigate } from 'react-router-dom';
+import { CircularProgress, Typography, Box, Paper, Grid, Card, CardContent, CardHeader, Divider, Button } from '@mui/material';
 import { axiosClient } from '../../../config/Api/AxiosClient';
 import { errorToast, successToast } from '../../../config/Toasts/toasts';
 
 function EtudiantDetails() {
     const { id } = useParams();
+    const navigate = useNavigate();
     const [etudiant, setEtudiant] = useState(null);
     const [loading, setLoading] = useState(true);
     const [totalDureeAbsences, setTotalDureeAbsences] = useState(0);
@@ -85,9 +75,9 @@ function EtudiantDetails() {
                             <Typography variant="h6">Filière: {etudiant.group.filiere.nom}</Typography>
                             <Typography variant="h6">Durée Totale des Absences: {totalDureeAbsences} heures</Typography>
                             {totalDureeAbsences > 5 && (
-                                <Button 
-                                    variant="contained" 
-                                    color="secondary" 
+                                <Button
+                                    variant="contained"
+                                    color="secondary"
                                     onClick={handleSendAlert}
                                     sx={{ mt: 2 }}
                                 >
@@ -134,6 +124,12 @@ function EtudiantDetails() {
                                         <Typography>Commentaire: {absence?.commentaire}</Typography>
                                         <Typography>Statut: {absence?.statut}</Typography>
                                         <Typography>Justifiée: {absence?.is_justified ? 'Oui' : 'Non'}</Typography>
+                                        <Button
+                                            variant="outlined"
+                                            onClick={() => navigate(`/administrateur/absence/${absence.id}`)}
+                                        >
+                                            Justifier l&apos;absence
+                                        </Button>
                                     </Paper>
                                 ))
                             ) : (
