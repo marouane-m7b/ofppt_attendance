@@ -30,6 +30,8 @@ Route::middleware(['auth:admin'])->group(function () {
     Route::get('groups/filiere/{filiere_id}', [GroupController::class, 'listByFiliere']);
     Route::get('/absencesByDaySeanceGroup', [AbsenceController::class, 'absencesByDaySeanceGroup']);
     Route::get('/etudiants/group/{id}', [EtudiantController::class, 'getEtudiantsByGroup']);
+    Route::get('getEtudiantData/{id}', [EtudiantController::class, 'getEtudiantData']);
+    Route::post('sendAlert', [EtudiantController::class, 'sendAlert']);
     Route::get('/appointments', [AppointmentController::class, 'index']);
     Route::apiResource('designers', DesignerController::class)->names([
         'index' => 'designersAdmin.index',

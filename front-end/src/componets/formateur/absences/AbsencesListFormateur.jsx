@@ -1,44 +1,42 @@
 import { useEffect, useState } from 'react';
 import { DataGrid } from '@mui/x-data-grid';
 import { axiosClient } from '../../../config/Api/AxiosClient';
-import { Box, Typography, Select, MenuItem, useTheme } from '@mui/material';
-import { errorToast, successToast } from '../../../config/Toasts/toasts';
+import { Box, Typography, Select, MenuItem } from '@mui/material';
+import Checkbox from '@mui/material/Checkbox';
+import Button from '@mui/material/Button';
+import moment from 'moment';
 import { tokens } from '../../../theme';
+import { useTheme } from '@mui/material';
+import { errorToast, successToast } from '../../../config/Toasts/toasts';
 
-export default function EtudiantListFormateur() {
+export default function AbsencesListFormateur() {
     const [loadingPage, setLoadingPage] = useState(true);
     const [etudiants, setEtudiants] = useState([]);
     const [groups, setGroups] = useState([]);
-    const [selectedGroup, setSelectedGroup] = useState('');
-    const [observationsFormateur, setObservationsFormateur] = useState({});
+    const [selectedGroup, setSelectedGroup] = useState([]);
+    const [absenceData, setAbsenceData] = useState({});
+    const [seance, setSeance] = useState('s1');
+    const today = moment().format('YYYY-MM-DD');
 
 
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
-
-    const observationsOptions = [
-        'Très bon étudiant.',
-        'Étudiant moyen.',
-        'Besoin d\'amélioration.',
-        'Excellent travail.',
-        'Faible performance.'
-    ];
 
     const getEtudiants = async () => {
         try {
             setLoadingPage(true);
             const { data } = await axiosClient.get(`designer/etudiants/group/${selectedGroup}`);
             setEtudiants(data);
-            // Initialize observationsFormateur with the current observations
-            const initialObservations = {};
+            // Initialize absenceData with all students set to false (Absent)
+            const initialAbsenceData = {};
             data.forEach(etudiant => {
-                initialObservations[etudiant.id] = etudiant.observations_formateur || '';
+                initialAbsenceData[etudiant.id] = false;
             });
-            setObservationsFormateur(initialObservations);
+            setAbsenceData(initialAbsenceData);
             setLoadingPage(false);
         } catch (error) {
             setLoadingPage(false);
-            errorToast('Une erreur s\'est produite lors de la récupération des étudiants');
+            console.log(error);
         }
     };
 
@@ -47,28 +45,39 @@ export default function EtudiantListFormateur() {
             const { data } = await axiosClient.get("designer/groups");
             setGroups(data);
         } catch (error) {
-            errorToast('Une erreur s\'est produite lors de la récupération des groupes');
+            console.log(error);
         }
     }
+
+    const handleCheckboxChange = (id, checked) => {
+        setAbsenceData({
+            ...absenceData,
+            [id]: checked,
+        });
+    };
+
+    const handleSeanceChange = (event) => {
+        setSeance(event.target.value);
+    };
 
     const handleGroupChange = (event) => {
         setSelectedGroup(event.target.value);
     };
 
-    const handleObservationChange = async (id, observation) => {
-        const updatedObservations = {
-            ...observationsFormateur,
-            [id]: observation
-        };
-        setObservationsFormateur(updatedObservations);
+    const handleSubmit = async () => {
+        const absences = etudiants.map(etudiant => ({
+            etudiant_id: etudiant.id,
+            statut: absenceData[etudiant.id] ? 'Présent' : 'Absent',
+            date: today,
+            seance,
+        }));
 
         try {
-            await axiosClient.put(`designer/etudiants/${id}/updateObservation`, {
-                observations_formateur: observation
-            });
-            successToast('Observation mise à jour avec succès');
+            const response = await axiosClient.post('/designer/absences', absences);
+            successToast(response.data.message, 1500, 'top-center');
         } catch (error) {
-            errorToast('Une erreur s\'est produite lors de la mise à jour de l\'observation');
+            console.error(error);
+            errorToast(error.response.data.message, 1500, 'top-center');
         }
     };
 
@@ -77,9 +86,7 @@ export default function EtudiantListFormateur() {
     }, []);
 
     useEffect(() => {
-        if (groups.length > 0) {
-            setSelectedGroup(groups[0].id);
-        }
+        setSelectedGroup(groups[0]?.id);
     }, [groups]);
 
     useEffect(() => {
@@ -89,26 +96,22 @@ export default function EtudiantListFormateur() {
     }, [selectedGroup]);
 
     const columns = [
-        { field: 'nom', headerName: 'Nom', flex: 1 },
-        { field: 'prenom', headerName: 'Prenom', flex: 1 },
-        { field: 'filiere', headerName: 'Filiere', flex: 3 },
-        { field: 'groupe', headerName: 'Groupe', flex: 1 },
+        { field: 'nom', headerName: 'Nom', width: 150 },
+        { field: 'prenom', headerName: 'Prenom', width: 150 },
+        { field: 'filiere', headerName: 'Filiere', width: 150 },
+        { field: 'groupe', headerName: 'Groupe', width: 150 },
+        { field: 'cin', headerName: 'Cin', width: 150 },
+        { field: 'numero_stagiaire', headerName: 'Numero de Telephone', width: 160 },
+        { field: 'numero_parent', headerName: 'Numero de Parent', width: 160 },
         {
-            field: 'observation',
-            headerName: 'Observation du Formateur',
-            flex: 3,
+            field: 'absence',
+            headerName: 'Présent',
+            width: 120,
             renderCell: (params) => (
-                <Select
-                    value={observationsFormateur[params.row.id] || ''}
-                    onChange={(e) => handleObservationChange(params.row.id, e.target.value)}
-                    fullWidth
-                >
-                    {observationsOptions.map((option, index) => (
-                        <MenuItem key={index} value={option}>
-                            {option}
-                        </MenuItem>
-                    ))}
-                </Select>
+                <Checkbox
+                    checked={absenceData[params.row.id] || false}
+                    onChange={(e) => handleCheckboxChange(params.row.id, e.target.checked)}
+                />
             ),
         },
     ];
@@ -125,11 +128,17 @@ export default function EtudiantListFormateur() {
     }));
 
     return (
-        <Box sx={{ height: 600, width: '100%' }}>
+        <Box sx={{ height: 400, width: '100%' }}>
             <Box display="flex" justifyContent="space-between" m="20px">
                 <Typography variant="h4">
-                    Liste des Étudiants
+                    Aujourd&apos;hui {today}
                 </Typography>
+                <Select value={seance} onChange={handleSeanceChange}>
+                    <MenuItem value="s1">Séance 1</MenuItem>
+                    <MenuItem value="s2">Séance 2</MenuItem>
+                    <MenuItem value="s3">Séance 3</MenuItem>
+                    <MenuItem value="s4">Séance 4</MenuItem>
+                </Select>
                 <Select value={selectedGroup} onChange={handleGroupChange}>
                     {groups.map((group) => (
                         <MenuItem key={group.id} value={group.id}>
@@ -137,6 +146,9 @@ export default function EtudiantListFormateur() {
                         </MenuItem>
                     ))}
                 </Select>
+                <Button variant="contained" color="primary" onClick={handleSubmit} sx={{ backgroundColor: colors.greenAccent[400] }}>
+                    Marquer les absences
+                </Button>
             </Box>
             <Box
                 m="40px 0 0 0"
@@ -161,6 +173,9 @@ export default function EtudiantListFormateur() {
                     "& .MuiDataGrid-footerContainer": {
                         borderTop: "none",
                         backgroundColor: colors.grey[900],
+                    },
+                    "& .MuiCheckbox-root": {
+                        color: `${colors.greenAccent[200]} !important`,
                     },
                 }}
             >

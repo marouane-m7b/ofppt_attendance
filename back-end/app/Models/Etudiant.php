@@ -17,7 +17,10 @@ class Etudiant extends Model
         'email',
         'numero_stagiaire',
         'numero_parent',
-        'group_id',
+        'observations_formateur',
+        'observations_conseiller',
+        'observations_cgcp',
+        'group_id'
     ];
 
     public function absences()

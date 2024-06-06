@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Etudiant;
+use App\Notifications\AbsenceAlert;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -109,6 +110,59 @@ class EtudiantController extends Controller
         $etudiant->delete();
 
         return response()->json(['message' => 'Etudiant deleted successfully'], 200);
+    }
+
+    public function getEtudiantData($id)
+    {
+        $etudiant = Etudiant::with(['group.filiere', 'alerts'])
+            ->with(['absences' => function ($query) {
+                $query->where('statut', 'Absent')
+                    ->where('is_justified', 0);
+            }])
+            ->find($id);
+
+        if (!$etudiant) {
+            return response()->json(['message' => 'Etudiant not found'], 404);
+        }
+
+        $totalDuree = $etudiant->absences->sum('duree');
+
+        return response()->json([
+            'etudiant' => $etudiant,
+            'total_duree_absences' => $totalDuree,
+        ]);
+    }
+
+    public function sendAlert(Request $request)
+    {
+        $etudiantId = $request->input('etudiant_id');
+        $totalAbsences = $request->input('total_absences');
+
+        $etudiant = Etudiant::find($etudiantId);
+
+        if ($etudiant && $totalAbsences > 5) {
+            $etudiant->notify(new AbsenceAlert($totalAbsences));
+        }
+
+        return response()->json(['message' => 'Alert sent successfully'], 200);
+    }
+
+    public function updateObservation($id, Request $request)
+    {
+        $request->validate([
+            'observations_formateur' => 'required|string|max:255',
+        ]);
+
+        $etudiant = Etudiant::find($id);
+
+        if (!$etudiant) {
+            return response()->json(['message' => 'Étudiant non trouvé'], 404);
+        }
+
+        $etudiant->observations_formateur = $request->input('observations_formateur');
+        $etudiant->save();
+
+        return response()->json(['message' => 'Observation mise à jour avec succès']);
     }
 
     public function getEtudiantsByGroup($id)

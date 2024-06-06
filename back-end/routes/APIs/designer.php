@@ -15,4 +15,5 @@ Route::middleware(['auth:designer'])->group(function () {
     Route::put('/absences/{id}', [AbsenceController::class, 'update']);
     Route::delete('/absences/{id}', [AbsenceController::class, 'destroy']);
     Route::get('/groups', [GroupController::class, 'formateurGroups']);
+    Route::put('/etudiants/{id}/updateObservation', [EtudiantController::class, 'updateObservation']);
 });

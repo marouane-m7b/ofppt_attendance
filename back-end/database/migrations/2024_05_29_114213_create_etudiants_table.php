@@ -19,6 +19,9 @@ return new class extends Migration
             $table->string('email');
             $table->integer('numero_stagiaire');
             $table->integer('numero_parent');
+            $table->string('observations_formateur')->nullable();
+            $table->string('observations_conseiller')->nullable();
+            $table->string('observations_cgcp')->nullable();
             $table->foreignId('group_id')->constrained('groups')->cascadeOnDelete();
             $table->timestamps();
         });

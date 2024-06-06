@@ -13,7 +13,6 @@ import GuestIndex from "./layouts/Guest/GuestIndex";
 import AdminIndex from "./layouts/admin/AdminIndex";
 import AllSecteurs from "./componets/admin/secteurs/AllSecteurs";
 import AllFilieres from "./componets/admin/filieres/AllFilieres";
-import EtudiantListFormateur from "./componets/formateur/etudiants/EtudiantListFormateur";
 import AllEtudiant from "./componets/admin/etudiants/AllEtudiant";
 import Team from "./scenes/team";
 import Invoices from "./scenes/invoices";
@@ -45,6 +44,9 @@ import AbsencesByDaySeanceGroupAdmin from "./componets/admin/absences_historique
 import RendezVousGestionnaire from "./componets/gestionnaire/rendez_vous/RendezVousGestionnaire";
 import RendezVousAdmin from "./componets/admin/rendez_vous/RendezVousAdmin";
 import AllGroups from "./componets/admin/groups/AllGroups";
+import EtudiantDetails from "./componets/admin/etudiants/EtudiantDetails";
+import AbsencesListFormateur from "./componets/formateur/absences/AbsencesListFormateur";
+import EtudiantListFormateur from "./componets/formateur/etudiants/EtudiantListFormateur";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -70,6 +72,7 @@ function App() {
                 element={<DashboardAdmin />}
               />
               <Route path="etudiants" element={<AllEtudiant />} />
+              <Route path="etudiant/:id" element={<EtudiantDetails />} />
               <Route path="gestionnaires" element={<AllGestionnaires />} />
               <Route path="designers" element={<AllDesigners />} />
               <Route path="secteurs" element={<AllSecteurs />} />
@@ -88,6 +91,7 @@ function App() {
                 element={<DashboardFormateur />}
               />
               <Route path="etudiants" element={<EtudiantListFormateur />} />
+              <Route path="absences" element={<AbsencesListFormateur />} />
               <Route path="team" element={<Team />} />
               <Route path="contacts" element={<Contacts />} />
               <Route path="invoices" element={<Invoices />} />

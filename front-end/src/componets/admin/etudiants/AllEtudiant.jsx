@@ -4,22 +4,31 @@ import { useAppContext } from "../../../config/context/ComponentContext";
 import { axiosClient } from "../../../config/Api/AxiosClient";
 import CreateEtudiant from "../../models/CreateEtudiant";
 import UpdateEtudiant from "../../models/UpdateEtudiant";
-import { Button, Modal, Box, IconButton, Typography, CircularProgress } from '@mui/material';
-import { Edit, Delete } from '@mui/icons-material';
+import { Button, Modal, Box, IconButton, Typography, CircularProgress, Select, MenuItem } from '@mui/material';
+import { Edit, Delete, RemoveRedEye } from '@mui/icons-material';
 import { successToast, errorToast } from "../../../config/Toasts/toasts";
+import { Link } from "react-router-dom";
 
 export default function AllEtudiant() {
   const [etudiants, setEtudiants] = useState([]);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [groups, setGroups] = useState([]);
+  const [selectedGroup, setSelectedGroup] = useState('');
   const { setErrors } = useAppContext();
   const [openCreate, setOpenCreate] = useState(false);
   const [openUpdate, setOpenUpdate] = useState({ open: false, etudiant: null });
   const [openConfirm, setOpenConfirm] = useState({ open: false, etudiant: null });
 
-  const getAllEtudiants = async () => {
+  const getAllEtudiants = async (groupId) => {
     try {
-      const { data } = await axiosClient.get("admin/etudiants");
+      let data;
+      if (groupId === 'tous' || groupId === '') {
+        const response = await axiosClient.get("admin/etudiants");
+        data = response.data;
+      } else {
+        const response = await axiosClient.get(`admin/etudiants/group/${groupId}`);
+        data = response.data;
+      }
       setEtudiants(data);
       setErrors(null);
     } catch (error) {
@@ -32,7 +41,7 @@ export default function AllEtudiant() {
     try {
       await axiosClient.delete("admin/etudiants/" + etudiant.id);
       successToast("Etudiant supprimé avec succès");
-      await getAllEtudiants();
+      await getAllEtudiants(selectedGroup);
     } catch (error) {
       errorToast("Une erreur est survenue, veuillez réessayer");
     } finally {
@@ -45,6 +54,9 @@ export default function AllEtudiant() {
     try {
       const { data } = await axiosClient.get("admin/groups");
       setGroups(data);
+      if (data.length > 0) {
+        setSelectedGroup(data[0].id);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -52,9 +64,18 @@ export default function AllEtudiant() {
 
   useEffect(() => {
     document.title = "Tous les étudiants - OFPPT";
-    getAllEtudiants();
     getGroups();
   }, []);
+
+  useEffect(() => {
+    if (selectedGroup) {
+      getAllEtudiants(selectedGroup);
+    }
+  }, [selectedGroup]);
+
+  const handleGroupChange = (event) => {
+    setSelectedGroup(event.target.value);
+  };
 
   const columns = [
     { field: 'nom', headerName: 'Nom', flex: 0.7 },
@@ -67,12 +88,17 @@ export default function AllEtudiant() {
     {
       field: 'actions',
       headerName: 'Les Actions',
-      flex: 0.7,
+      flex: 1,
       renderCell: (params) => (
         <div className="d-flex gap-1 flex-nowrap">
           <IconButton color="success" onClick={() => setOpenUpdate({ open: true, etudiant: params.row })}>
             <Edit />
           </IconButton>
+          <Link to={`/administrateur/etudiant/${params.row.id}`}>
+            <IconButton color="primary">
+              <RemoveRedEye />
+            </IconButton>
+          </Link>
           <IconButton
             color="error"
             onClick={() => setOpenConfirm({ open: true, etudiant: params.row })}
@@ -91,14 +117,30 @@ export default function AllEtudiant() {
 
   return (
     <Box sx={{ mt: 1, pt: 2, px: 3 }}>
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => setOpenCreate(true)}
-        className="mb-3"
-      >
-        Ajouter un étudiant
-      </Button>
+      <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => setOpenCreate(true)}
+        >
+          Ajouter un étudiant
+        </Button>
+        <Select
+          value={selectedGroup}
+          onChange={handleGroupChange}
+          displayEmpty
+          sx={{ minWidth: 200 }}
+        >
+          <MenuItem value="tous">
+            <em>Tous les groupes</em>
+          </MenuItem>
+          {groups.map((group) => (
+            <MenuItem key={group.id} value={group.id}>
+              {group.nom}
+            </MenuItem>
+          ))}
+        </Select>
+      </Box>
       <Box sx={{ height: 600, width: '100%' }}>
         <DataGrid
           rows={etudiants}
@@ -111,7 +153,7 @@ export default function AllEtudiant() {
       <CreateEtudiant
         open={openCreate}
         onClose={() => setOpenCreate(false)}
-        getAllEtudiants={getAllEtudiants}
+        getAllEtudiants={() => getAllEtudiants(selectedGroup)}
         groups={groups}
       />
       {openUpdate.etudiant && (
@@ -119,7 +161,7 @@ export default function AllEtudiant() {
           open={openUpdate.open}
           onClose={() => setOpenUpdate({ open: false, etudiant: null })}
           etudiant={openUpdate.etudiant}
-          getAllEtudiants={getAllEtudiants}
+          getAllEtudiants={() => getAllEtudiants(selectedGroup)}
           groups={groups}
         />
       )}
