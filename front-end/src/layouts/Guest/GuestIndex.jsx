@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 import { useAppContext } from "../../config/context/ComponentContext";
 
@@ -20,7 +20,7 @@ const GuestIndex = () => {
       localStorage.getItem("ud") &&
       JSON.parse(localStorage.getItem("ud")).role === "validator"
     ) {
-      navigateTo("/validateur");
+      navigateTo("/gestionnaire");
     }
     document.title = "Home - OFPPT";
   }, []);

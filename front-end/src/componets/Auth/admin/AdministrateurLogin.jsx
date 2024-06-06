@@ -4,7 +4,7 @@ import { useAppContext } from "../../../config/context/ComponentContext";
 const AdministrateurLogin = () => {
   const [loading, setLoading] = useState(false);
 
-  const { handleLogin, navigateTo, user, errors } = useAppContext();
+  const { handleLogin, navigateTo, errors } = useAppContext();
   const login = async (e) => {
     setLoading(true);
     e.preventDefault();

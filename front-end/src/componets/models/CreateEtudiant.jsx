@@ -1,159 +1,130 @@
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useAppContext } from "../../config/context/ComponentContext";
 import { axiosClient } from "../../config/Api/AxiosClient";
-import Swal from "sweetalert2";
 import PropTypes from "prop-types";
+import { Modal, Box, TextField, Button, Typography, CircularProgress } from '@mui/material';
+import { errorToast, successToast } from "../../config/Toasts/toasts";
 
-const CreateEtudiant = ({ targetModel, getAllDesigners }) => {
+const CreateEtudiant = ({ open, onClose, getAllEtudiants, groups }) => {
   const { setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
-  const cancelModel = useRef();
+
   const addEtudiant = async (e) => {
     setLoading(true);
     e.preventDefault();
-    const { etudiant, commantaire, duree } = e.target.elements;
+    const { cin, group, nom, prenom, email, numero_parent, numero_stagiaire } = e.target.elements;
     try {
-      const { data } = await axiosClient.post("admin/designers", {
-        etudiant: etudiant.value,
-        commantaire: commantaire.value,
-        duree: duree.value,
+      await axiosClient.post("admin/etudiants", {
+        nom: nom.value,
+        prenom: prenom.value,
+        cin: cin.value,
+        email: email.value,
+        group_id: group.value,
+        numero_parent: numero_parent.value,
+        numero_stagiaire: numero_stagiaire.value,
       });
-      await getAllDesigners();
-      cancelModel.current.click();
-      Swal.fire({
-        title: data.message,
-        text: "Mote de passe : " + data.password,
-        icon: "success",
-      });
-      console.log(data);
+      successToast("Étudiant ajouté avec succès");
+      await getAllEtudiants();
+      onClose();
     } catch (error) {
-      console.log(error);
-      setErrors(error.response.data.errors);
+      setErrors(error.response.data);
+      errorToast("Une erreur est survenue");
     } finally {
       setLoading(false);
     }
   };
-  const [etudiants, setEtudiants] = useState([
-    {
-      nom: 'zakaria',
-      prenom: 'el houmidi',
-      filiere: 'full stack',
-      cin: 'bj2020',
-      numero_telephone: '0632287513',
-      numero_parent: '0632287513',
-    },
-    {
-      nom: 'marwan',
-      prenom: 'mahboub',
-      filiere: 'full stack',
-      cin: 'bj2020',
-      numero_telephone: '0632287513',
-      numero_parent: '0632287513',
-    }
-  ]);
 
   return (
-    <div
-      className="modal fade"
-      id={targetModel}
-      tabIndex={-1}
-      aria-labelledby="CreateAbsence"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h1 className="modal-title fs-5" id="CreateAbsence">
-              Ajouter Une Etudiant
-            </h1>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
+    <Modal open={open} onClose={onClose}>
+      <Box sx={{ p: 4, backgroundColor: 'white', borderRadius: 1, maxWidth: 400, margin: 'auto', mt: 5 }}>
+        <Typography variant="h6" component="h2" gutterBottom>
+          Ajouter un Étudiant
+        </Typography>
+        <form onSubmit={addEtudiant}>
+          <TextField
+            label="Nom"
+            name="nom"
+            fullWidth
+            margin="normal"
+            error={!!errors?.nom}
+            helperText={errors?.nom}
             />
-          </div>
-          <div className="modal-body">
-            <form onSubmit={addEtudiant}>
-              <div data-mdb-input-init className="form-outline mb-4">
-                <label className="form-label" htmlFor="form2Example2">
-                  Etudiant <span className="text text-danger">*</span>
-                </label>
-                <div className="mb-3">
-                  <select
-                    className={`form-select form-select-lg ${(errors?.etudiant ? " is-invalid" : "")}`}
-                    type="etudiant"
-                    id="form2Example2"
-                    name="etudiant"
-                  >
-                    <option selected>Select one</option>
-                    {etudiants?.map((etudiant) => (
-                      <option key={etudiant?.id} value={etudiant?.id}>{etudiant?.nom} {etudiant?.prenom}</option>
-                    ))}
-                  </select>
-                </div>
-
-                <span className="text text-danger">{errors?.etudiant}</span>
-              </div>
-
-              <div data-mdb-input-init className="form-outline mb-4">
-                <label className="form-label" htmlFor="form2Example2">
-                  Commentaire <span className="text text-danger">*</span>
-                </label>
-                <textarea type="commentaire" name="commentaire" id="form2Example2"
-                  className={
-                    "form-control" + (errors?.commentaire ? " is-invalid" : "")
-                  }></textarea>
-                <span className="text text-danger">{errors?.commentaire}</span>
-              </div>
-
-              <div data-mdb-input-init className="form-outline mb-4">
-                <label className="form-label" htmlFor="form2Example2">
-                  Duree <span className="text text-danger">*</span>
-                </label>
-                <input type="number" name="duree" id="form2Example2"
-                  className={
-                    "form-control" + (errors?.duree ? " is-invalid" : "")
-                  } />
-                <span className="text text-danger">{errors?.duree}</span>
-              </div>
-
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  ref={cancelModel}
-                  className="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  Annuler
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <span
-                      className="spinner-border spinner-border-sm"
-                      role="status"
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    "Ajouter"
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+            <TextField
+              label="Prénom"
+              name="prenom"
+              fullWidth
+              margin="normal"
+              error={!!errors?.prenom}
+              helperText={errors?.prenom}
+            />
+            <TextField
+              label="Email"
+              name="email"
+              fullWidth
+              margin="normal"
+              error={!!errors?.email}
+              helperText={errors?.email}
+            />
+          <TextField
+            label="CIN"
+            name="cin"
+            fullWidth
+            margin="normal"
+            error={!!errors?.cin}
+            helperText={errors?.cin}
+          />
+          <TextField
+            select
+            label="Groupe"
+            name="group"
+            fullWidth
+            margin="normal"
+            SelectProps={{
+              native: true,
+            }}
+          >
+            <option value="">Sélectionner un groupe</option>
+            {groups.map((group) => (
+              <option key={group.id} value={group.id}>
+                {group.nom}
+              </option>
+            ))}
+          </TextField>
+          <TextField
+            label="Numéro Parent"
+            name="numero_parent"
+            fullWidth
+            margin="normal"
+            error={!!errors?.numero_parent}
+            helperText={errors?.numero_parent}
+          />
+          <TextField
+            label="Numéro Stagiaire"
+            name="numero_stagiaire"
+            fullWidth
+            margin="normal"
+            error={!!errors?.numero_stagiaire}
+            helperText={errors?.numero_stagiaire}
+          />
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <Button onClick={onClose} variant="contained" color="secondary" sx={{ mr: 1 }}>
+              Annuler
+            </Button>
+            <Button type="submit" variant="contained" color="primary" disabled={loading}>
+              {loading ? <CircularProgress size={12} /> : 'Ajouter'}
+            </Button>
+          </Box>
+        </form>
+      </Box>
+    </Modal>
   );
 };
 
 CreateEtudiant.propTypes = {
-  targetModel: PropTypes.string.isRequired,
-  getAllDesigners: PropTypes.func.isRequired,
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  getAllEtudiants: PropTypes.func.isRequired,
+  groups: PropTypes.array.isRequired,
 };
 
 export default CreateEtudiant;

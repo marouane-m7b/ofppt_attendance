@@ -71,6 +71,20 @@ class FiliereSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'nom' => 'Développement digital',
+                'code' => 'DEV',
+                'secteur_id' => Secteur::where('nom', 'Génie informatique')->first()->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'nom' => 'Infrastructure digital',
+                'code' => 'ID',
+                'secteur_id' => Secteur::where('nom', 'Génie informatique')->first()->id,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ];
 
         Filiere::insert($filiers);

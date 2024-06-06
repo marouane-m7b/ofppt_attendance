@@ -1,4 +1,3 @@
-import React from "react";
 import { FaUser, FaUserTie } from "react-icons/fa"; // Import des icônes Font Awesome
 import { Link } from "react-router-dom";
 export default function GuestHome() {
@@ -25,7 +24,7 @@ export default function GuestHome() {
       </div>
       <div style={{ textAlign: "center", marginTop: "100px" }}>
         <h2>
-          Bienvenue à l'Institut Spécialisée de Technologie Appliquée SIDI
+          Bienvenue à l&apos;Institut Spécialisée de Technologie Appliquée SIDI
           MOUMEN
         </h2>
         <p>Nous sommes là pour vous offrir nos meilleurs services :</p>
@@ -35,7 +34,7 @@ export default function GuestHome() {
           }}
         >
           <Link
-            to="/concepteur/login"
+            to="/formateur/login"
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -50,10 +49,10 @@ export default function GuestHome() {
               transition: "background-color 0.3s ease",
             }}
           >
-            <FaUser style={{ marginRight: "10px" }} /> Connexion Concepteur
+            <FaUser style={{ marginRight: "10px" }} /> Connexion Formateur
           </Link>
           <Link
-            to="/validateur/login"
+            to="/gestionnaire/login"
             style={{
               display: "inline-flex",
               alignItems: "center",
@@ -70,7 +69,7 @@ export default function GuestHome() {
               transition: "background-color 0.3s ease",
             }}
           >
-            <FaUser style={{ marginRight: "10px" }} /> Connexion Validateur
+            <FaUser style={{ marginRight: "10px" }} /> Connexion Gestionnaire
           </Link>
         </div>
         <div className="pt-md-3 ms-lg-2 ms-md-2 ms-sm-0">

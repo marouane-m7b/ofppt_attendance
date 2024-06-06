@@ -34,6 +34,11 @@ class SecteurSeeder extends Seeder
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
+            [
+                'nom' => 'Génie informatique',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
         ];
 
         Secteur::insert($secteurs);

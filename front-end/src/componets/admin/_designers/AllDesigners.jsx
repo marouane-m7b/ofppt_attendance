@@ -1,15 +1,24 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { axiosClient } from "../../../config/Api/AxiosClient";
-import { Link } from "react-router-dom";
 import CreateDesigner from "../../models/CreateDesigner";
 import UpdateDesigner from "../../models/UpdateDesigner";
 import { useAppContext } from "../../../config/context/ComponentContext";
-import Swal from "sweetalert2";
+import { Box, Button, CircularProgress, Modal, Typography, IconButton, useTheme } from "@mui/material";
+import { DataGrid } from '@mui/x-data-grid';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import LockResetIcon from '@mui/icons-material/LockReset';
+import { errorToast, successToast } from "../../../config/Toasts/toasts";
+import { tokens } from "../../../theme";
 
 const AllDesigners = () => {
-  const [designers, setDesigners] = React.useState(null);
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [designers, setDesigners] = useState(null);
+  const [deleteLoading, setDeleteLoading] = useState(false);
+  const [resetLoading, setResetLoading] = useState(false);
   const { setErrors } = useAppContext();
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
   const getAllDesigners = async () => {
     try {
       const { data } = await axiosClient.get("admin/designers");
@@ -19,132 +28,176 @@ const AllDesigners = () => {
       console.log(error);
     }
   };
+
   const deleteDesigner = async (designer) => {
-    setDeleteLoading(true);
-    document.getElementById(
-      "deleteBtnDesigners" + designer?.id
-    ).disabled = true;
-    document.getElementById(
-      "deleteBtnDesigners" + designer?.id
-    ).innerHTML = `<span
-    class="spinner-border spinner-border-sm"
-    role="status"
-    aria-hidden="true"
-  ></span>`;
     try {
-      await axiosClient.delete(
-        "admin/designers/" + designer?.id
-      );
+      setDeleteLoading(true);
+      await axiosClient.delete("admin/designers/" + designer?.id);
+      setDeleteLoading(false);
+      handleCloseConfirmDelete();
+      successToast("Le formateur a bien été supprimé");
       await getAllDesigners();
     } catch (error) {
-      console.log(error);
-    } finally {
-      document.getElementById(
-        "deleteBtnDesigners" + designer?.id
-      ).disabled = false;
-      document.getElementById(
-        "deleteBtnDesigners" + designer?.id
-      ).innerHTML = `Supprimer`;
       setDeleteLoading(false);
+      handleCloseConfirmDelete();
+      errorToast("Une erreur est survenue");
     }
   };
 
   useEffect(() => {
-    document.title = "Tous les concepteurs - OFPPT";
+    document.title = "Tous les formateurs - OFPPT";
     getAllDesigners();
   }, []);
 
-  const handleReset = async (validator) => {
+  const handleReset = async (designer) => {
     try {
-      await axiosClient.put("admin/reset-designer/" + validator?.id);
-      Swal.fire("Le mot de passe a bien été réinitialisé !", "Nouveau mot de passe: ofppt", "success");
+      setResetLoading(true);
+      const { data } = await axiosClient.put("admin/reset-designer/" + designer?.id);
+      successToast(data.message + " Mot de passe : " + data.password, 5000, "top-right");
+      setResetLoading(false);
+      handleCloseConfirmReset();
       await getAllDesigners();
     } catch (error) {
-      Swal.fire("Le mot de passe n'a pas pu être réinitialisé !", "Veuillez réessayer !", "error");
-      console.log(error);
+      setResetLoading(false);
+      handleCloseConfirmReset();
+      errorToast("Une erreur est survenue");
     }
   };
 
+  const columns = [
+    { field: 'first_name', headerName: 'Nom', flex: 1.5 },
+    { field: 'last_name', headerName: 'Prenom', flex: 1.5 },
+    { field: 'is_cgcp', headerName: 'CGCP', flex: 0.6, renderCell: (params) => params.value ? 'Oui' : 'Non' },
+    {
+      field: 'email',
+      headerName: 'E-mail',
+      flex: 3,
+      // renderCell: (params) => <a href={"mailto:" + params.value}>{params.value}</a> 
+    },
+    {
+      field: 'actions',
+      headerName: 'Les Actions',
+      flex: 1.1,
+      renderCell: (params) => {
+        const designer = params.row;
+        return (
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <IconButton sx={{ color: colors.greenAccent[500] }} onClick={() => handleOpenUpdate(designer)}>
+              <EditIcon />
+            </IconButton>
+            <IconButton sx={{ color: colors.redAccent[500] }} onClick={() => handleOpenConfirmDelete(designer)}>
+              <DeleteIcon />
+            </IconButton>
+            <IconButton sx={{ color: colors.blueAccent[500] }} onClick={() => handleOpenConfirmReset(designer)}>
+              <LockResetIcon />
+            </IconButton>
+          </Box>
+        );
+      }
+    }
+  ];
+
+  const [openCreate, setOpenCreate] = useState(false);
+  const [openUpdate, setOpenUpdate] = useState(false);
+  const [openConfirmDelete, setOpenConfirmDelete] = useState(false);
+  const [openConfirmReset, setOpenConfirmReset] = useState(false);
+  const [currentDesigner, setCurrentDesigner] = useState(null);
+
+  const handleOpenCreate = () => setOpenCreate(true);
+  const handleCloseCreate = () => setOpenCreate(false);
+
+  const handleOpenUpdate = (designer) => {
+    setCurrentDesigner(designer);
+    setOpenUpdate(true);
+  };
+  const handleCloseUpdate = () => setOpenUpdate(false);
+
+  const handleOpenConfirmDelete = (designer) => {
+    setCurrentDesigner(designer);
+    setOpenConfirmDelete(true);
+  };
+  const handleCloseConfirmDelete = () => setOpenConfirmDelete(false);
+
+  const handleOpenConfirmReset = (designer) => {
+    setCurrentDesigner(designer);
+    setOpenConfirmReset(true);
+  };
+  const handleCloseConfirmReset = () => setOpenConfirmReset(false);
+
   return (
-    <div className="container mt-5 pt-5">
-      <button
-        type="button"
-        className="btn btn-primary mb-3"
-        data-bs-toggle="modal"
-        data-bs-target="#CreateDesigner"
-      >
-        Ajouter une concepteur
-      </button>
-      <CreateDesigner
-        targetModel="CreateDesigner"
-        getAllDesigners={getAllDesigners}
-      />
+    <Box sx={{ mt: 1, pt: 2, px: 3 }}>
+      <Button variant="contained" color="primary" onClick={handleOpenCreate} sx={{ mb: 3 }}>
+        Ajouter une formateur
+      </Button>
+      <Modal open={openCreate} onClose={handleCloseCreate}>
+        <Box sx={{ ...modalStyle }}>
+          <CreateDesigner getAllDesigners={getAllDesigners} handleClose={handleCloseCreate} />
+        </Box>
+      </Modal>
+      <Modal open={openUpdate} onClose={handleCloseUpdate}>
+        <Box sx={{ ...modalStyle }}>
+          <UpdateDesigner
+            getAllDesigners={getAllDesigners}
+            handleClose={handleCloseUpdate}
+            designer={currentDesigner}
+          />
+        </Box>
+      </Modal>
+      <Modal open={openConfirmDelete} onClose={handleCloseConfirmDelete}>
+        <Box sx={{ ...modalStyle }}>
+          <Typography variant="h6">Confirmer la suppression</Typography>
+          <Typography variant="body1" sx={{ mt: 2 }}>Voulez-vous vraiment supprimer ce formateur ?</Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <Button onClick={handleCloseConfirmDelete} variant="contained" color="secondary" sx={{ mr: 2 }}>
+              Annuler
+            </Button>
+            <Button onClick={() => deleteDesigner(currentDesigner)} variant="contained" color="error" disabled={deleteLoading}>
+              {deleteLoading ? <CircularProgress size={12} /> : 'Supprimer'}
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+      <Modal open={openConfirmReset} onClose={handleCloseConfirmReset}>
+        <Box sx={{ ...modalStyle }}>
+          <Typography variant="h6">Confirmer la réinitialisation</Typography>
+          <Typography variant="body1" sx={{ mt: 2 }}>Voulez-vous vraiment réinitialiser le mot de passe de ce formateur ?</Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <Button onClick={handleCloseConfirmReset} variant="contained" color="secondary" sx={{ mr: 2 }}>
+              Annuler
+            </Button>
+            <Button onClick={() => handleReset(currentDesigner)} variant="contained" color="primary" disabled={resetLoading}>
+              {resetLoading ? <CircularProgress size={12} /> : "Réinitialiser"}
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
       {!designers ? (
-        <h1 className="text-center mt-5 pt-5">Chargement...</h1>
+        <Typography variant="h4" align="center" sx={{ mt: 5, pt: 5 }}>Chargement...</Typography>
       ) : (
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Nom</th>
-              <th>Prenom</th>
-              <th>E-mail</th>
-              <th>Les Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {designers?.length > 0 ? (
-              designers?.map((designer, i) => (
-                <tr key={i}>
-                  <td>{designer.first_name}</td>
-                  <td>{designer.last_name}</td>
-                  <td>
-                    <Link to={"mailto:" + designer.email}>
-                      {designer.email}
-                    </Link>
-                  </td>
-                  <td>
-                    <div className="d-flex gap-1 flex-nowrap">
-                      <button
-                        type="button"
-                        className="btn btn-success"
-                        data-bs-toggle="modal"
-                        data-bs-target={"#UpdateDesigner" + designer.id}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-danger"
-                        id={"deleteBtnDesigners" + designer.id}
-                        disabled={deleteLoading}
-                        onClick={() => deleteDesigner(designer)}
-                      >
-                        Supprimer
-                      </button>
-                      <UpdateDesigner
-                        targetModel={"UpdateDesigner" + designer.id}
-                        getAllDesigners={getAllDesigners}
-                        designer={designer}
-                      />
-                      <button
-                        onClick={() => handleReset(designer)}
-                        type="button"
-                        className="btn btn-primary"
-                      >
-                        Reset mot de Passe
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <h1 className="text-center mt-5 pt-5">Aucun concepteur</h1>
-            )}
-          </tbody>
-        </table>
+        <Box sx={{ height: 600, width: '99%' }}>
+          <DataGrid
+            rows={designers}
+            columns={columns}
+            pageSize={5}
+            rowsPerPageOptions={[5]}
+          />
+        </Box>
       )}
-    </div>
+    </Box>
   );
+};
+
+const modalStyle = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  p: 4,
+  borderRadius: '8px',
+  border: 'none',
 };
 
 export default AllDesigners;

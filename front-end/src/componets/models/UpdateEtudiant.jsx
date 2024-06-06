@@ -1,35 +1,37 @@
-import React, { useRef, useState } from "react";
+import { useState } from "react";
 import { useAppContext } from "../../config/context/ComponentContext";
 import { axiosClient } from "../../config/Api/AxiosClient";
+import PropTypes from "prop-types";
+import { Modal, Box, TextField, Button, Typography, CircularProgress } from '@mui/material';
+import { errorToast, successToast } from "../../config/Toasts/toasts";
 
-const UpdateEtudiant = ({ targetModel, etudiant, getAllDesigners }) => {
-  const { navigateTo, setErrors, errors } = useAppContext();
+const UpdateEtudiant = ({ open, onClose, etudiant, getAllEtudiants, groups }) => {
+  const { setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
-  const cancelModel = useRef();
 
   const updateEtudiant = async (e) => {
     setLoading(true);
     e.preventDefault();
-    const { first_name, last_name, email } = e.target.elements;
+    const { cin, nom, prenom, email, numero_parent, numero_stagiaire, group } = e.target.elements;
     try {
       const { data } = await axiosClient.put(
-        "admin/designers/" + etudiant?.id,
+        "admin/etudiants/" + etudiant.id,
         {
-          first_name: first_name.value,
-          last_name: last_name.value,
+          nom: nom.value,
+          prenom: prenom.value,
+          cin: cin.value,
           email: email.value,
+          group_id: group.value,
+          numero_parent: numero_parent.value,
+          numero_stagiaire: numero_stagiaire.value,
         }
       );
-      await getAllDesigners();
-      cancelModel.current.click();
-      Swal.fire({
-        // title: ,
-        text: data.message,
-        icon: "success",
-      });
+      await getAllEtudiants();
+      onClose();
+      successToast("Étudiant modifié avec succès");
       console.log(data);
     } catch (error) {
-      console.log(error);
+      errorToast("Une erreur est survenue");
       setErrors(error.response.data.errors);
     } finally {
       setLoading(false);
@@ -37,107 +39,104 @@ const UpdateEtudiant = ({ targetModel, etudiant, getAllDesigners }) => {
   };
 
   return (
-    <div
-      className="modal fade"
-      id={targetModel}
-      tabIndex={-1}
-      aria-labelledby="UpdateEtudiant"
-      aria-hidden="true"
-    >
-      <div className="modal-dialog">
-        <div className="modal-content">
-          <div className="modal-header">
-            <h1 className="modal-title fs-5" id="UpdateEtudiant">
-              Modifier Une Concepteur
-            </h1>
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            />
-          </div>
-          <div className="modal-body">
-            <form onSubmit={updateEtudiant}>
-              <div data-mdb-input-init className="form-outline mb-4">
-                <label className="form-label" htmlFor="form2Example1">
-                  Nom <span className="text text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="form2Example1"
-                  defaultValue={etudiant?.first_name}
-                  className={
-                    "form-control" + (errors?.first_name ? " is-invalid" : "")
-                  }
-                  name="first_name"
-                />
-                <span className="text text-danger">{errors?.first_name}</span>
-              </div>
-
-              <div data-mdb-input-init className="form-outline mb-4">
-                <label className="form-label" htmlFor="form2Example2">
-                  Prenom <span className="text text-danger">*</span>
-                </label>
-                <input
-                  type="text"
-                  id="form2Example2"
-                  defaultValue={etudiant?.last_name}
-                  className={
-                    "form-control" + (errors?.last_name ? " is-invalid" : "")
-                  }
-                  name="last_name"
-                />
-                <span className="text text-danger">{errors?.last_name}</span>
-              </div>
-
-              <div data-mdb-input-init className="form-outline mb-4">
-                <label className="form-label" htmlFor="form2Example2">
-                  E-mail <span className="text text-danger">*</span>
-                </label>
-                <input
-                  type="email"
-                  id="form2Example2"
-                  defaultValue={etudiant?.email}
-                  className={
-                    "form-control" + (errors?.email ? " is-invalid" : "")
-                  }
-                  name="email"
-                />
-                <span className="text text-danger">{errors?.email}</span>
-              </div>
-
-              <div className="modal-footer">
-                <button
-                  type="button"
-                  ref={cancelModel}
-                  className="btn btn-secondary"
-                  data-bs-dismiss="modal"
-                >
-                  Annuler
-                </button>
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <span
-                      className="spinner-border spinner-border-sm"
-                      role="status"
-                      aria-hidden="true"
-                    />
-                  ) : (
-                    "Modifier"
-                  )}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
+    <Modal open={open} onClose={onClose}>
+      <Box sx={{ p: 4, backgroundColor: 'white', borderRadius: 1, maxWidth: 400, margin: 'auto', mt: 5 }}>
+        <Typography variant="h6" component="h2" gutterBottom>
+          Modifier un Étudiant
+        </Typography>
+        <form onSubmit={updateEtudiant}>
+          <TextField
+            label="Nom"
+            name="nom"
+            defaultValue={etudiant.nom}
+            fullWidth
+            margin="normal"
+            error={!!errors?.nom}
+            helperText={errors?.nom}
+          />
+          <TextField
+            label="Prénom"
+            name="prenom"
+            defaultValue={etudiant.prenom}
+            fullWidth
+            margin="normal"
+            error={!!errors?.prenom}
+            helperText={errors?.prenom}
+          />
+          <TextField
+            label="Email"
+            name="email"
+            defaultValue={etudiant.email}
+            fullWidth
+            margin="normal"
+            error={!!errors?.email}
+            helperText={errors?.email}
+          />
+          <TextField
+            label="CIN"
+            name="cin"
+            defaultValue={etudiant.cin}
+            fullWidth
+            margin="normal"
+            error={!!errors?.cin}
+            helperText={errors?.cin}
+          />
+          <TextField
+            select
+            label="Groupe"
+            name="group"
+            defaultValue={etudiant.group_id}
+            fullWidth
+            margin="normal"
+            SelectProps={{
+              native: true,
+            }}
+          >
+            <option value="">Sélectionner un groupe</option>
+            {groups.map((group) => (
+              <option key={group.id} value={group.id}>
+                {group.nom}
+              </option>
+            ))}
+          </TextField>
+          <TextField
+            label="Numéro Parent"
+            name="numero_parent"
+            defaultValue={etudiant.numero_parent}
+            fullWidth
+            margin="normal"
+            error={!!errors?.numero_parent}
+            helperText={errors?.numero_parent}
+          />
+          <TextField
+            label="Numéro Stagiaire"
+            name="numero_stagiaire"
+            defaultValue={etudiant.numero_stagiaire}
+            fullWidth
+            margin="normal"
+            error={!!errors?.numero_stagiaire}
+            helperText={errors?.numero_stagiaire}
+          />
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <Button onClick={onClose} variant="contained" color="secondary" sx={{ mr: 1 }}>
+              Annuler
+            </Button>
+            <Button type="submit" variant="contained" color="primary" disabled={loading}>
+              {loading ? <CircularProgress size={12} /> : 'Modifier'}
+            </Button>
+          </Box>
+        </form>
+      </Box>
+    </Modal>
   );
+};
+
+UpdateEtudiant.propTypes = {
+  open: PropTypes.bool.isRequired,
+  onClose: PropTypes.func.isRequired,
+  etudiant: PropTypes.object.isRequired,
+  getAllEtudiants: PropTypes.func.isRequired,
+  groups: PropTypes.array.isRequired,
 };
 
 export default UpdateEtudiant;

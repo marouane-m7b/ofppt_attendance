@@ -2,9 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Designer;
 use App\Models\Etudiant;
-use App\Models\Filiere;
+use App\Notifications\AbsenceAlert;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -15,7 +14,7 @@ class EtudiantController extends Controller
      */
     public function index()
     {
-        $etudiants = Etudiant::all();
+        $etudiants = Etudiant::all()->load('group.filiere');
         return response()->json($etudiants);
     }
 
@@ -28,10 +27,10 @@ class EtudiantController extends Controller
             'cin' => 'required',
             'nom' => 'required',
             'prenom' => 'required',
+            'email' => 'required',
             'numero_stagiaire' => 'required',
             'numero_parent' => 'required',
-            'filiere_id' => 'required',
-            'designer_id' => 'required',
+            'group_id' => 'required|exists:groups,id',
         ];
 
         $validate = Validator::make($request->all(), $rules);
@@ -40,24 +39,14 @@ class EtudiantController extends Controller
             return response()->json($validate->errors(), 400);
         }
 
-        $filiere = Filiere::find($request->filiere_id);
-        if (!$filiere) {
-            return response()->json(['message2' => 'Filiere not found'], 404);
-        }
-
-        $designer = Designer::find($request->designer_id);
-        if (!$designer) {
-            return response()->json(['message1' => 'Designer not found'], 404);
-        } 
-
         $etudiant = new Etudiant();
         $etudiant->cin = $request->cin;
         $etudiant->nom = $request->nom;
         $etudiant->prenom = $request->prenom;
+        $etudiant->email = $request->email;
         $etudiant->numero_stagiaire = $request->numero_stagiaire;
         $etudiant->numero_parent = $request->numero_parent;
-        $etudiant->filiere_id = $request->filiere_id;
-        $etudiant->designer_id = $request->designer_id;
+        $etudiant->group_id = $request->group_id;
         $etudiant->save();
     }
 
@@ -82,21 +71,16 @@ class EtudiantController extends Controller
             'cin' => 'required',
             'nom' => 'required',
             'prenom' => 'required',
+            'email' => 'required',
             'numero_stagiaire' => 'required',
             'numero_parent' => 'required',
-            'filiere_id' => 'required',
-            'designer_id' => 'required',
+            'group_id' => 'required|exists:groups,id',
         ];
-        
+
         $validate = Validator::make($request->all(), $rules);
 
         if ($validate->fails()) {
             return response()->json($validate->errors(), 400);
-        }
-
-        $filiere = Filiere::find($request->filiere_id);
-        if (!$filiere) {
-            return response()->json(['message' => 'Filiere not found'], 404);
         }
 
         $etudiant = Etudiant::find($etudiant->id);
@@ -107,10 +91,10 @@ class EtudiantController extends Controller
         $etudiant->cin = $request->cin;
         $etudiant->nom = $request->nom;
         $etudiant->prenom = $request->prenom;
+        $etudiant->email = $request->email;
         $etudiant->numero_stagiaire = $request->numero_stagiaire;
         $etudiant->numero_parent = $request->numero_parent;
-        $etudiant->filiere_id = $request->filiere_id;
-        $etudiant->designer_id = $request->designer_id;
+        $etudiant->group_id = $request->group_id;
         $etudiant->save();
     }
 
@@ -126,5 +110,82 @@ class EtudiantController extends Controller
         $etudiant->delete();
 
         return response()->json(['message' => 'Etudiant deleted successfully'], 200);
+    }
+
+    public function getEtudiantData($id)
+    {
+        $etudiant = Etudiant::with(['group.filiere', 'alerts'])
+            ->with(['absences' => function ($query) {
+                $query->where('statut', 'Absent')
+                    ->where('is_justified', 0);
+            }])
+            ->find($id);
+
+        if (!$etudiant) {
+            return response()->json(['message' => 'Etudiant not found'], 404);
+        }
+
+        $totalDuree = $etudiant->absences->sum('duree');
+
+        return response()->json([
+            'etudiant' => $etudiant,
+            'total_duree_absences' => $totalDuree,
+        ]);
+    }
+
+    public function sendAlert(Request $request)
+    {
+        $etudiantId = $request->input('etudiant_id');
+        $totalAbsences = $request->input('total_absences');
+
+        $etudiant = Etudiant::find($etudiantId);
+
+        if ($etudiant && $totalAbsences > 5) {
+            $etudiant->notify(new AbsenceAlert($totalAbsences));
+        }
+
+        return response()->json(['message' => 'Alert sent successfully'], 200);
+    }
+
+    public function updateObservation($id, Request $request)
+    {
+        $request->validate([
+            'observations_formateur' => 'required|string|max:255',
+        ]);
+
+        $etudiant = Etudiant::find($id);
+
+        if (!$etudiant) {
+            return response()->json(['message' => 'Étudiant non trouvé'], 404);
+        }
+
+        $etudiant->observations_formateur = $request->input('observations_formateur');
+        $etudiant->save();
+
+        return response()->json(['message' => 'Observation mise à jour avec succès']);
+    }
+
+    public function updateObservationConseiller($id, Request $request)
+    {
+        $request->validate([
+            'observations_conseiller' => 'required|string|max:255',
+        ]);
+
+        $etudiant = Etudiant::find($id);
+
+        if (!$etudiant) {
+            return response()->json(['message' => 'Étudiant non trouvé'], 404);
+        }
+
+        $etudiant->observations_conseiller = $request->input('observations_conseiller');
+        $etudiant->save();
+
+        return response()->json(['message' => 'Observation mise à jour avec succès']);
+    }
+
+    public function getEtudiantsByGroup($id)
+    {
+        $etudiants = Etudiant::where('group_id', $id)->with('group.filiere')->get();
+        return response()->json($etudiants);
     }
 }

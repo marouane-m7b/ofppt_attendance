@@ -1,123 +1,159 @@
-import React, { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { DataGrid } from '@mui/x-data-grid';
 import { axiosClient } from "../../../config/Api/AxiosClient";
 import { useAppContext } from "../../../config/context/ComponentContext";
 import CreateFiliere from "../../models/CreateFiliere";
 import UpdateFiliere from "../../models/UpdateFiliere";
+import { Button, Modal, Box, IconButton, Typography, CircularProgress } from '@mui/material';
+import { Edit, Delete } from '@mui/icons-material';
+import { errorToast, successToast } from "../../../config/Toasts/toasts";
 
 const AllFilieres = () => {
-  const [filieres, setFilieres] = React.useState(null);
-  const [deleteLoading, setDeleteLoading] = React.useState(false);
+  const [filieres, setFilieres] = useState([]);
+  const [secteurs, setSecteurs] = useState([]);
+  const [deleteLoading, setDeleteLoading] = useState(false);
   const { setErrors } = useAppContext();
+  const [openCreate, setOpenCreate] = useState(false);
+  const [openUpdate, setOpenUpdate] = useState({ open: false, filiere: null });
+  const [openConfirm, setOpenConfirm] = useState({ open: false, filiere: null });
+
   const getAllFilieres = async () => {
     try {
       const { data } = await axiosClient.get("admin/filieres");
+      console.log("Fetched filieres:", data);
       setFilieres(data);
       setErrors(null);
     } catch (error) {
       console.log(error);
     }
   };
+
   const deleteFiliere = async (filiere) => {
     setDeleteLoading(true);
-    document.getElementById(
-      "deleteBtnFiliere" + filiere?.id
-    ).disabled = true;
-    document.getElementById(
-      "deleteBtnFiliere" + filiere?.id
-    ).innerHTML = `<span
-    class="spinner-border spinner-border-sm"
-    role="status"
-    aria-hidden="true"
-  ></span>`;
     try {
-      await axiosClient.delete("admin/filieres/" + filiere?.id);
+      await axiosClient.delete("admin/filieres/" + filiere.id);
+      successToast("Filière supprimée avec succès");
+    } catch (error) {
+      errorToast("Une erreur est survenue, veuillez réessayer");
+    } finally {
+      setDeleteLoading(false);
+      setOpenConfirm({ open: false, filiere: null });
       await getAllFilieres();
+    }
+  };
+
+  const getSecteurs = async () => {
+    try {
+      const { data } = await axiosClient.get("/secteur");
+      console.log("Fetched secteurs:", data);
+      setSecteurs(data);
     } catch (error) {
       console.log(error);
-    } finally {
-      document.getElementById(
-        "deleteBtnFiliere" + filiere?.id
-      ).disabled = false;
-      document.getElementById(
-        "deleteBtnFiliere" + filiere?.id
-      ).innerHTML = `Supprimer`;
-      setDeleteLoading(false);
     }
   };
 
   useEffect(() => {
     document.title = "Tous les validateurs - OFPPT";
     getAllFilieres();
+    getSecteurs();
   }, []);
 
+  const columns = [
+    { field: 'nom', headerName: 'Nom', flex: 3 },
+    { field: 'code', headerName: 'Code', flex: 1 },
+    {
+      field: 'secteur',
+      headerName: 'Secteur',
+      flex: 3,
+      renderCell: (params) => {
+        console.log("params in renderCell for secteur:", params);
+        return params.row.secteur ? params.row.secteur.nom : '';
+      }
+    },
+    {
+      field: 'actions',
+      headerName: 'Les Actions',
+      flex: 1,
+      renderCell: (params) => {
+        console.log("params in renderCell for actions:", params);
+        return (
+          <div className="d-flex gap-1 flex-nowrap">
+            <IconButton color="success" onClick={() => setOpenUpdate({ open: true, filiere: params.row })}>
+              <Edit />
+            </IconButton>
+            <IconButton
+              color="error"
+              onClick={() => setOpenConfirm({ open: true, filiere: params.row })}
+              disabled={deleteLoading}
+            >
+              <Delete />
+            </IconButton>
+          </div>
+        );
+      }
+    },
+  ];
+
+  const handleConfirmDelete = () => {
+    deleteFiliere(openConfirm.filiere);
+  };
+
   return (
-    <div className="container mt-5 pt-5">
-      <button
-        type="button"
-        className="btn btn-primary mb-3"
-        data-bs-toggle="modal"
-        data-bs-target="#CreateFiliere"
+    <Box sx={{ mt: 1, pt: 2, px: 3 }}>
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => setOpenCreate(true)}
+        className="mb-3"
       >
-        Ajouter une filiere
-      </button>
+        Ajouter une filière
+      </Button>
+      <Box sx={{ height: 600, width: '100%' }}>
+        <DataGrid
+          rows={filieres}
+          columns={columns}
+          pageSize={5}
+          rowsPerPageOptions={[5]}
+          getRowId={(row) => row.id}
+        />
+      </Box>
       <CreateFiliere
-        targetModel="CreateFiliere"
+        open={openCreate}
+        onClose={() => setOpenCreate(false)}
         getAllFilieres={getAllFilieres}
+        secteurs={secteurs}
       />
-      {!filieres ? (
-        <h1 className="text-center mt-5 pt-5">Chargement...</h1>
-      ) : (
-        <table className="table">
-          <thead>
-            <tr>
-              <th>Nom</th>
-              <th>Code</th>
-              <th>Secteur</th>
-              <th>Les Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filieres?.length > 0 ? (
-              filieres?.map((filiere, i) => (
-                <tr key={i}>
-                  <td>{filiere.nom}</td>
-                  <td>{filiere.code}</td>
-                  <td>{filiere.secteur?.nom}</td>
-                  <td>
-                    <div className="d-flex gap-1 flex-nowrap">
-                      <button
-                        type="button"
-                        className="btn btn-success"
-                        data-bs-toggle="modal"
-                        data-bs-target={"#UpdateFiliere" + filiere.id}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        className="btn btn-danger"
-                        id={"deleteBtnFiliere" + filiere.id}
-                        disabled={deleteLoading}
-                        onClick={() => deleteFiliere(filiere)}
-                      >
-                        Supprimer
-                      </button>
-                      <UpdateFiliere
-                        targetModel={"UpdateFiliere" + filiere.id}
-                        getAllFilieres={getAllFilieres}
-                        filiere={filiere}
-                      />
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <h1 className="text-center mt-5 pt-5">Aucun Validateur</h1>
-            )}
-          </tbody>
-        </table>
+      {openUpdate.filiere && (
+        <UpdateFiliere
+          open={openUpdate.open}
+          onClose={() => setOpenUpdate({ open: false, filiere: null })}
+          filiere={openUpdate.filiere}
+          getAllFilieres={getAllFilieres}
+          secteurs={secteurs}
+        />
       )}
-    </div>
+      <Modal
+        open={openConfirm.open}
+        onClose={() => setOpenConfirm({ open: false, filiere: null })}
+      >
+        <Box sx={{ p: 4, backgroundColor: 'white', borderRadius: 1, maxWidth: 400, margin: 'auto', mt: 5 }}>
+          <Typography variant="h6" component="h2" gutterBottom>
+            Confirmer la suppression
+          </Typography>
+          <Typography>
+            Êtes-vous sûr de vouloir supprimer cette filière ?
+          </Typography>
+          <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
+            <Button onClick={() => setOpenConfirm({ open: false, filiere: null })} variant="contained" color="secondary" sx={{ mr: 1 }}>
+              Annuler
+            </Button>
+            <Button onClick={handleConfirmDelete} variant="contained" color="primary" disabled={deleteLoading}>
+              {deleteLoading ? <CircularProgress size={12} /> : 'Supprimer'}
+            </Button>
+          </Box>
+        </Box>
+      </Modal>
+    </Box>
   );
 };
 

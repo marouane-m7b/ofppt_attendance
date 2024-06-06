@@ -4,10 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Notifications\Notifiable;
 
 class Etudiant extends Model
 {
-    use HasFactory;
+    use HasFactory, Notifiable;
+
+    protected $fillable = [
+        'cin',
+        'nom',
+        'prenom',
+        'email',
+        'numero_stagiaire',
+        'numero_parent',
+        'observations_formateur',
+        'observations_conseiller',
+        'observations_cgcp',
+        'group_id'
+    ];
 
     public function absences()
     {
@@ -19,9 +33,9 @@ class Etudiant extends Model
         return $this->hasMany(Alert::class);
     }
 
-    public function designers()
+    public function group()
     {
-        return $this->belongsTo(Designer::class);
+        return $this->belongsTo(Group::class);
     }
 
     public function filiere()

@@ -4,81 +4,143 @@ import { Routes, Route, Navigate } from "react-router-dom";
 // Pages
 import GuestHome from "./componets/Guest/GuestHome";
 import AllDesigners from "./componets/admin/_designers/AllDesigners";
-import AllValidators from "./componets/admin/_validators/AllValidators";
-import AddQuestions from "./componets/designer/questions/AddQuestions";
-import VoirQuestions from "./componets/designer/questions/VoirQuestions";
-import AllQuestions from "./componets/Validator/_questions/AllQuestions";
 
 // Auth Components
-import ConcepteurLogin from "./componets/Auth/designer/ConcepteurLogin";
-import ValidateurLogin from "./componets/Auth/Validator/ValidateurLogin";
 import AdministrateurLogin from "./componets/Auth/admin/AdministrateurLogin";
 
 //Layouts
 import GuestIndex from "./layouts/Guest/GuestIndex";
-import ConcepteurIndex from "./layouts/designer/ConcepteurIndex";
-import ValidateurIndex from "./layouts/Validator/ValidateurIndex";
 import AdminIndex from "./layouts/admin/AdminIndex";
-import AllQuestionsValidated from "./componets/Validator/_questions/AllQuestionsValidated";
-import QuestionValidation from "./componets/Validator/_questions/QuestionValidation";
-import AllAdminQuestions from "./componets/admin/questions/AllAdminQuestions";
 import AllSecteurs from "./componets/admin/secteurs/AllSecteurs";
 import AllFilieres from "./componets/admin/filieres/AllFilieres";
-import AdminQuestion from "./componets/admin/questions/AdminQuestion";
-import DesignerQuestion from "./componets/designer/questions/DesignerQuestion";
-import EtudiantList from "./componets/designer/questions/EtudiantListFormateur";
-import EtudiantListFormateur from "./componets/designer/questions/EtudiantListFormateur";
-import EtudiantListGestionnaire from "./componets/Validator/_questions/EtudiantListGestionnaire";
 import AllEtudiant from "./componets/admin/etudiants/AllEtudiant";
+import Team from "./scenes/team";
+import Invoices from "./scenes/invoices";
+import Contacts from "./scenes/contacts";
+import Bar from "./scenes/bar";
+import Form from "./scenes/form";
+import Line from "./scenes/line";
+import Pie from "./scenes/pie";
+import FAQ from "./scenes/faq";
+import Geography from "./scenes/geography";
+import { CssBaseline, ThemeProvider } from "@mui/material";
+import { ColorModeContext, useMode } from "./theme";
+import DashboardAdmin from "./layouts/admin/dashboard";
+import FormateurIndex from "./layouts/formateur/FormateurIndex";
+import DashboardFormateur from "./layouts/formateur/dashboard";
+import DashboardGestionnaire from "./layouts/gestionnaire/dashboard";
+import FormateurLogin from "./componets/Auth/formateur/FormateurLogin";
+import GestionnaireLogin from "./componets/Auth/gestionnaire/GestionnaireLogin";
+import AbsencesByDaySeanceGroup from "./componets/gestionnaire/absences/AbsencesByDaySeanceGroup";
+import AllGestionnaires from "./componets/admin/_validators/AllGestionnaire";
+import GestionnaireIndex from "./layouts/gestionnaire/GestionnaireIndex";
+import AlertDetails from "./componets/gestionnaire/alerts/AlertDetails";
+import AllAlerts from "./componets/gestionnaire/alerts/AllAlerts";
+import AllAdminAlerts from "./componets/admin/alerts/AllAdminAlerts";
+import AlertAdminDetails from "./componets/admin/alerts/AlertAdminDetails";
+import EtudiantListAdministrateur from "./componets/admin/absences/EtudiantListAdministrateur";
+import AbsencesByDaySeanceGroupAdmin from "./componets/admin/absences_historique/AbsencesByDaySeanceGroupAdmin";
+import RendezVousGestionnaire from "./componets/gestionnaire/rendez_vous/RendezVousGestionnaire";
+import RendezVousAdmin from "./componets/admin/rendez_vous/RendezVousAdmin";
+import AllGroups from "./componets/admin/groups/AllGroups";
+import EtudiantDetails from "./componets/admin/etudiants/EtudiantDetails";
+import AbsencesListFormateur from "./componets/formateur/absences/AbsencesListFormateur";
+import EtudiantListFormateur from "./componets/formateur/etudiants/EtudiantListFormateur";
+import EtudiantListGestionnaire from "./componets/gestionnaire/absences/EtudiantListGestionnaire";
+import EtudiantListReview from "./componets/gestionnaire/etudiants/EtudiantListReview";
 
 function App() {
+  const [theme, colorMode] = useMode();
+
   return (
     <>
-      <Routes>
-        <Route path="/" element={<GuestIndex />}>
-          <Route index element={<GuestHome />} />
-          <Route path="concepteur/login" element={<ConcepteurLogin />} />
-          <Route path="validateur/login" element={<ValidateurLogin />} />
-          <Route
-            path="administrateur/login"
-            element={<AdministrateurLogin />}
-          />
-        </Route>
-        <Route path="/administrateur" element={<AdminIndex />}>
-          <Route
-            index
-            element={<Navigate to={"/administrateur/etudiant-managment"} />}
-          />
-          <Route path="etudiant-managment" element={<AllEtudiant />} />
-          <Route path="validateurs-managment" element={<AllValidators />} />
-          <Route path="questions-managment" element={<AllAdminQuestions />} />
-          <Route path="questions-managment/:id" element={<AdminQuestion />} />
-          <Route path="secteurs-managment" element={<AllSecteurs />} />
-          <Route path="filieres-managment" element={<AllFilieres />} />
-        </Route>
+      <ColorModeContext.Provider value={colorMode}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <Routes>
+            <Route path="/" element={<GuestIndex />}>
+              <Route index element={<GuestHome />} />
+              <Route path="formateur/login" element={<FormateurLogin />} />
+              <Route path="gestionnaire/login" element={<GestionnaireLogin />} />
+              <Route
+                path="administrateur/login"
+                element={<AdministrateurLogin />}
+              />
+            </Route>
+            <Route path="/administrateur" element={<AdminIndex />}>
+              <Route
+                index
+                element={<DashboardAdmin />}
+              />
+              <Route path="etudiants" element={<AllEtudiant />} />
+              <Route path="etudiant/:id" element={<EtudiantDetails />} />
+              <Route path="gestionnaires" element={<AllGestionnaires />} />
+              <Route path="designers" element={<AllDesigners />} />
+              <Route path="secteurs" element={<AllSecteurs />} />
+              <Route path="filieres" element={<AllFilieres />} />
+              <Route path="groupes" element={<AllGroups />} />
+              <Route path="alerts" element={<AllAdminAlerts />} />
+              <Route path="alert/:id" element={<AlertAdminDetails />} />
+              <Route path="absences" element={<EtudiantListAdministrateur />} />
+              <Route path="absences_historiques" element={<AbsencesByDaySeanceGroupAdmin />} />
+              <Route path="rendez_vous" element={<RendezVousAdmin />} />
+            </Route>
 
-        <Route path="/concepteur" element={<ConcepteurIndex />}>
-          <Route
-            index
-            element={<Navigate to={"/concepteur/list-etudiants"} />}
-          />
-          <Route path="list-etudiants" element={<EtudiantListFormateur />} />
-          <Route path="voir-questions" element={<VoirQuestions />} />
-          <Route path="voir-questions/:id" element={<DesignerQuestion />} />
-        </Route>
+            <Route path="/concepteur" element={<FormateurIndex />}>
+              <Route
+                index
+                element={<DashboardFormateur />}
+              />
+              <Route path="etudiants" element={<EtudiantListFormateur />} />
+              <Route path="absences" element={<AbsencesListFormateur />} />
+              <Route path="team" element={<Team />} />
+              <Route path="contacts" element={<Contacts />} />
+              <Route path="invoices" element={<Invoices />} />
+              <Route path="form" element={<Form />} />
+              <Route path="bar" element={<Bar />} />
+              <Route path="pie" element={<Pie />} />
+              <Route path="line" element={<Line />} />
+              <Route path="faq" element={<FAQ />} />
+              <Route path="geography" element={<Geography />} />
+            </Route>
 
-        <Route path="/validateur" element={<ValidateurIndex />}>
-          <Route
-            index
-            element={<Navigate to={"/validateur/list-etudiants"} />}
-          />
-          <Route path="list-etudiants" element={<EtudiantListGestionnaire />} />
-          <Route path="questions-meanagment" element={<AllQuestions />} />
-          <Route path="questions-meanagment/:id" element={<QuestionValidation />} />
-          <Route path="questions-validated" element={<AllQuestionsValidated />} />
-        </Route>
-        <Route path="*" element={<Navigate to="/" />} />
-      </Routes>
+            <Route path="/gestionnaire" element={<GestionnaireIndex />}>
+              <Route
+                index
+                element={<DashboardGestionnaire />}
+              />
+              <Route path="absences" element={<EtudiantListGestionnaire />} />
+              <Route path="absences_historiques" element={<AbsencesByDaySeanceGroup />} />
+              <Route path="alerts" element={<AllAlerts />} />
+              <Route path="alert/:id" element={<AlertDetails />} />
+              <Route path="rendez_vous" element={<RendezVousGestionnaire />} />
+              <Route path="etudiants" element={<EtudiantListReview />} />
+            </Route>
+            <Route path="*" element={<Navigate to="/" />} />
+          </Routes>
+          {/* 
+          <div className="app">
+          <Sidebar isSidebar={isSidebar} />
+            <main className="content">
+              <Topbar setIsSidebar={setIsSidebar} />
+              <Routes>
+                <Route path="/" element={<Dashboard />} />
+                <Route path="/team" element={<Team />} />
+                <Route path="/contacts" element={<Contacts />} />
+                <Route path="/invoices" element={<Invoices />} />
+                <Route path="/form" element={<Form />} />
+                <Route path="/bar" element={<Bar />} />
+                <Route path="/pie" element={<Pie />} />
+                <Route path="/line" element={<Line />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/geography" element={<Geography />} />
+              </Routes>
+            </main>
+          </div>
+            */}
+        </ThemeProvider>
+
+      </ColorModeContext.Provider>
     </>
   );
 }

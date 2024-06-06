@@ -40,8 +40,13 @@ class ValidatorController extends Controller
     }
 
     // Index method to retrieve a list of validators
-    public function index()
+    public function index(Request $request)
     {
+        $validator =  $request->user('validator');
+        if ($validator) {
+            $validators = Validator::where('is_consultant', 1)->get();
+            return response()->json($validators, 200);
+        }
         $validators = Validator::all();
         return response()->json($validators, 200);
     }
@@ -53,19 +58,23 @@ class ValidatorController extends Controller
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|email|unique:validators,email',
+            'is_consultant' => 'required|boolean',
         ]);
 
-        $password = 'ofppt';
+        $password = Str::random(8);
 
         $validator = new Validator();
-        $validator->fill($request->all());
+        $validator->first_name = $request->first_name;
+        $validator->last_name = $request->last_name;
+        $validator->email = $request->email;
+        $validator->is_consultant = $request->is_consultant;
         $validator->password = Hash::make($password);
         $validator->save();
 
-        return response()->json(['message' => 'Validator created successfully', 'password' => $password], 201);
+        return response()->json(['message' => 'Validateur créé avec succès', 'password' => $password], 201);
     }
 
-    // Show method to display the specified validator
+    // Afficher la méthode pour afficher le validateur spécifié
     public function show(Validator $validator)
     {
         return response()->json(['validator' => $validator], 200);
@@ -78,26 +87,28 @@ class ValidatorController extends Controller
             'first_name' => 'string',
             'last_name' => 'string',
             'email' => 'email|unique:validators,email,' . $validator->id,
-            'password' => 'string|min:6',
+            'is_consultant' => 'boolean',
         ]);
 
         $validator->update($request->all());
 
-        return response()->json(['message' => 'Validator updated successfully'], 200);
+        return response()->json(['message' => 'Validateur mis à jour avec succès'], 200);
     }
 
     // Destroy method to delete the specified validator
     public function destroy(Validator $validator)
     {
         $validator->delete();
-        return response()->json(['message' => 'Validator deleted successfully'], 200);
+        return response()->json(['message' => 'Validateur supprimé avec succès'], 200);
     }
 
     public function resetPassword($id)
     {
         $validator = Validator::find($id);
-        $validator->password = Hash::make('ofppt');
+        $password = Str::random(8);
+        $validator->password = Hash::make($password);
         $validator->save();
-        return response()->json($validator, 200);
+
+        return response()->json(['message' => 'Mot de passe mis à jour', 'password' => $password], 201);
     }
 }

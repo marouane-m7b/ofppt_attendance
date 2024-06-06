@@ -12,7 +12,8 @@ class Designer extends Authenticatable
 {
     use HasFactory, Notifiable, HasApiTokens;
     protected $appends = ['role'];
-    public function getRoleAttribute(){
+    public function getRoleAttribute()
+    {
         return 'designer';
     }
     /**
@@ -24,6 +25,7 @@ class Designer extends Authenticatable
         'first_name',
         'last_name',
         'email',
+        'is_cgcp',
         'password',
     ];
 
@@ -50,8 +52,14 @@ class Designer extends Authenticatable
         ];
     }
 
+    public function groups()
+    {
+        return $this->belongsToMany(Group::class, 'designer_group')
+            ->withPivot('modules');
+    }
+
     public function etudiants()
     {
-        return $this->hasMany(Etudiant::class);
+        return $this->hasManyThrough(Etudiant::class, Group::class, 'id', 'group_id', 'id', 'id');
     }
 }
