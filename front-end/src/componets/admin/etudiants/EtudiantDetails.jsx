@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { CircularProgress, Typography, Box, Paper, Grid, Card, CardContent, CardHeader, Divider, Button } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
 import { axiosClient } from '../../../config/Api/AxiosClient';
 import { errorToast, successToast } from '../../../config/Toasts/toasts';
 
@@ -38,6 +39,55 @@ function EtudiantDetails() {
             errorToast('Une erreur s\'est produite lors de l\'envoi de l\'alerte');
         }
     };
+
+    const handleJustifyAbsence = (absenceId) => {
+        navigate(`/administrateur/absence/${absenceId}`);
+    };
+
+    const handleDownloadCertificat = (filePath) => {
+        window.open(`/storage/${filePath}`, '_blank');
+    };
+
+    const absenceColumns = [
+        { field: 'id', headerName: 'ID de l\'Absence', flex: 1 },
+        { field: 'date', headerName: 'Date', flex: 1 },
+        { field: 'duree', headerName: 'Durée', flex: 1 },
+        { field: 'certificat', headerName: 'Certificat', flex: 2 },
+        { field: 'commentaire', headerName: 'Commentaire', flex: 2 },
+        { field: 'statut', headerName: 'Statut', flex: 1 },
+        { field: 'is_justified', headerName: 'Justifiée', flex: 1 },
+        {
+            field: 'actions',
+            headerName: 'Actions',
+            flex: 2,
+            renderCell: (params) => (
+                <>
+                    {!params.row.is_justified ? (
+                        <Button
+                            variant="outlined"
+                            onClick={() => handleJustifyAbsence(params.row.id)}
+                        >
+                            Justifier maintenant
+                        </Button>
+                    ) : (
+                        <Button
+                            variant="outlined"
+                            onClick={() => handleDownloadCertificat(params.row.certificat)}
+                        >
+                            Télécharger certificat
+                        </Button>
+                    )}
+                </>
+            ),
+        },
+    ];
+
+    const alertColumns = [
+        { field: 'id', headerName: 'ID de l\'Alerte', flex: 1 },
+        { field: 'duree', headerName: 'Durée', flex: 1 },
+        { field: 'commentaire', headerName: 'Commentaire', flex: 2 },
+        { field: 'is_validated', headerName: 'Validée', flex: 1 },
+    ];
 
     if (loading) {
         return <CircularProgress />;
@@ -93,18 +143,14 @@ function EtudiantDetails() {
                         <CardHeader title="Alertes" />
                         <Divider />
                         <CardContent>
-                            {etudiant?.alerts?.length > 0 ? (
-                                etudiant?.alerts?.map(alert => (
-                                    <Paper key={alert?.id} sx={{ mb: 2, p: 2 }}>
-                                        <Typography>ID de l&apos;Alerte: {alert.id}</Typography>
-                                        <Typography>Durée: {alert?.duree}</Typography>
-                                        <Typography>Commentaire: {alert?.commentaire}</Typography>
-                                        <Typography>Validée: {alert?.is_validated ? 'Oui' : 'Non'}</Typography>
-                                    </Paper>
-                                ))
-                            ) : (
-                                <Typography>Aucune alerte</Typography>
-                            )}
+                            <div style={{ height: 700, width: '100%' }}>
+                                <DataGrid
+                                    rows={etudiant.alerts || []}
+                                    columns={alertColumns}
+                                    pageSize={5}
+                                    rowsPerPageOptions={[5]}
+                                />
+                            </div>
                         </CardContent>
                     </Card>
                 </Grid>
@@ -114,27 +160,14 @@ function EtudiantDetails() {
                         <CardHeader title="Absences" />
                         <Divider />
                         <CardContent>
-                            {etudiant?.absences.length > 0 ? (
-                                etudiant?.absences?.map(absence => (
-                                    <Paper key={absence.id} sx={{ mb: 2, p: 2 }}>
-                                        <Typography>ID de l&apos;Absence: {absence?.id}</Typography>
-                                        <Typography>Date: {absence?.date}</Typography>
-                                        <Typography>Durée: {absence?.duree}</Typography>
-                                        <Typography>Certificat: {absence?.certificat}</Typography>
-                                        <Typography>Commentaire: {absence?.commentaire}</Typography>
-                                        <Typography>Statut: {absence?.statut}</Typography>
-                                        <Typography>Justifiée: {absence?.is_justified ? 'Oui' : 'Non'}</Typography>
-                                        <Button
-                                            variant="outlined"
-                                            onClick={() => navigate(`/administrateur/absence/${absence.id}`)}
-                                        >
-                                            Justifier l&apos;absence
-                                        </Button>
-                                    </Paper>
-                                ))
-                            ) : (
-                                <Typography>Aucune absence</Typography>
-                            )}
+                            <div style={{ height: 700, width: '100%' }}>
+                                <DataGrid
+                                    rows={etudiant.absences || []}
+                                    columns={absenceColumns}
+                                    pageSize={5}
+                                    rowsPerPageOptions={[5]}
+                                />
+                            </div>
                         </CardContent>
                     </Card>
                 </Grid>
