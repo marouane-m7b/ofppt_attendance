@@ -47,7 +47,7 @@ class AppointmentController extends Controller
             return response()->json(['message' => 'Unauthorized'], 400);
         }
 
-        if (!$validator->is_consultant) {
+        if (!$validator->is_conseiller) {
             return response()->json(['message' => 'Unauthorized'], 400);
         }
 
@@ -70,7 +70,7 @@ class AppointmentController extends Controller
             ->first();
 
         if ($existingAppointment) {
-            return response()->json(['message' => 'Le consultant est occupé à ce moment-là.'], 400);
+            return response()->json(['message' => 'Le conseiller est occupé à ce moment-là.'], 400);
         }
 
         $appointment = Appointment::create([
@@ -88,7 +88,7 @@ class AppointmentController extends Controller
             Mail::to($designer->email)->send(new AppointmentCreatedMail($appointment, 'cgcp', $designer));
         }
 
-        Mail::to($validator->email)->send(new AppointmentCreatedMail($appointment, 'consultant', $validator));
+        Mail::to($validator->email)->send(new AppointmentCreatedMail($appointment, 'conseiller', $validator));
 
         return response()->json($appointment, 201);
     }

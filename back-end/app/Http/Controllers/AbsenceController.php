@@ -170,18 +170,18 @@ class AbsenceController extends Controller
             ]);
 
             // Send notification to the student
-            Mail::to($etudiant->email)->send(new ExcessiveAbsenceMail($etudiant, $totalDuree, 'etudiant'));
+            Mail::to($etudiant->email)->send(new ExcessiveAbsenceMail($etudiant, $totalDuree, 'etudiant', $etudiant));
 
-            // Get the consultants
-            $consultants = Validator::where('is_consultant', 1)->get();
-            foreach ($consultants as $consultant) {
-                Mail::to($consultant->email)->send(new ExcessiveAbsenceMail($etudiant, $totalDuree, 'consultant'));
+            // Get the conseillers
+            $conseillers = Validator::where('is_conseiller', 1)->get();
+            foreach ($conseillers as $conseiller) {
+                Mail::to($conseiller->email)->send(new ExcessiveAbsenceMail($etudiant, $totalDuree, 'conseiller', $conseiller));
             }
 
             // Get the CGCPs
             $cgcps = Designer::where('is_cgcp', 1)->get();
             foreach ($cgcps as $cgcp) {
-                Mail::to($cgcp->email)->send(new ExcessiveAbsenceMail($etudiant, $totalDuree, 'cgcp'));
+                Mail::to($cgcp->email)->send(new ExcessiveAbsenceMail($etudiant, $totalDuree, 'cgcp', $cgcp));
             }
         }
     }

@@ -4,7 +4,7 @@
 <head>
     <title>
         @switch($role)
-            @case('consultant')
+            @case('conseiller')
                 Notification de rendez-vous créé
             @break
 
@@ -41,7 +41,7 @@
         }
 
         .header img {
-            max-width: 150px;
+            max-width: 500px;
             height: auto;
         }
 
@@ -85,12 +85,12 @@
             <img src="{{ asset('images/ista.png') }}" alt="Logo">
         </div>
         <div class="content">
-            @if ($role == 'consultant' || $role == 'cgcp')
+            @if ($role == 'conseiller' || $role == 'cgcp')
                 <p>Bonjour {{ $notifiable->last_name }} {{ $notifiable->first_name }},</p>
             @else
                 <p>Bonjour {{ $notifiable->prenom }} {{ $notifiable->nom }},</p>
             @endif
-            @if ($role == 'consultant')
+            @if ($role == 'conseiller')
                 <p>Nous avons envoyé des emails à l'étudiant et au CGCP concernant le rendez-vous créé.</p>
                 <p>Merci pour votre attention et collaboration.</p>
             @elseif($role == 'cgcp')

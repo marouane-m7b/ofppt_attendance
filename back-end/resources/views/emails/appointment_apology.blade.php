@@ -24,7 +24,7 @@
             margin-bottom: 20px;
         }
         .header img {
-            max-width: 150px;
+            max-width: 500px;
             height: auto;
         }
         .content {
@@ -49,7 +49,7 @@
             <img src="{{ asset('images/ista.png') }}" alt="Logo">
         </div>
         <div class="content">
-            @if ($notifiable->is_consultant || $notifiable->is_cgcp)
+            @if ($notifiable->is_conseiller || $notifiable->is_cgcp)
                 <p>Bonjour {{ $notifiable->last_name }} {{ $notifiable->first_name }},</p>
             @else
                 <p>Bonjour {{ $notifiable->prenom }} {{ $notifiable->nom }},</p>

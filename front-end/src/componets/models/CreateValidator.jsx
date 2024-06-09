@@ -8,10 +8,10 @@ import { errorToast, successToast } from "../../config/Toasts/toasts";
 const CreateValidator = ({ open, onClose, getAllGestionnaires }) => {
   const { setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
-  const [isConsultant, setIsConsultant] = useState(false);
+  const [isConseiller, setIsConseiller] = useState(false);
 
   const handleCheckboxChange = (event) => {
-    setIsConsultant(event.target.checked);
+    setIsConseiller(event.target.checked);
   };
 
   const addValidator = async (e) => {
@@ -23,7 +23,7 @@ const CreateValidator = ({ open, onClose, getAllGestionnaires }) => {
         first_name: first_name.value,
         last_name: last_name.value,
         email: email.value,
-        is_consultant: isConsultant,
+        is_conseiller: isConseiller,
       });
       await getAllGestionnaires();
       onClose();
@@ -71,9 +71,9 @@ const CreateValidator = ({ open, onClose, getAllGestionnaires }) => {
           <FormControlLabel
             control={
               <Checkbox
-                checked={isConsultant}
+                checked={isConseiller}
                 onChange={handleCheckboxChange}
-                name="is_consultant"
+                name="is_conseiller"
                 color="primary"
               />
             }

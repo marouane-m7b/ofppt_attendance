@@ -35,7 +35,7 @@ class AppointmentCreatedMail extends Mailable
     private function getSubject()
     {
         switch ($this->role) {
-            case 'consultant':
+            case 'conseiller':
                 return 'Notification de rendez-vous créé';
             case 'cgcp':
                 return 'Notification de rendez-vous étudiant';

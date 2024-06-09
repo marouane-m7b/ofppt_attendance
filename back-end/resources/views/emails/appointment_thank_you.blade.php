@@ -28,7 +28,7 @@
         }
 
         .header img {
-            max-width: 150px;
+            max-width: 500px;
             height: auto;
         }
 
@@ -57,12 +57,12 @@
             <img src="{{ asset('images/ista.png') }}" alt="Logo">
         </div>
         <div class="content">
-            @if ($notifiable->is_consultant || $notifiable->is_cgcp)
+            @if ($notifiable->is_conseiller || $notifiable->is_cgcp)
                 <p>Bonjour {{ $notifiable->last_name }} {{ $notifiable->first_name }},</p>
             @else
                 <p>Bonjour {{ $notifiable->prenom }} {{ $notifiable->nom }},</p>
             @endif
-            @if (isset($notifiable->is_consultant) && $notifiable->is_consultant)
+            @if (isset($notifiable->is_conseiller) && $notifiable->is_conseiller)
                 <p>Merci d'avoir assisté au rendez-vous avec l'étudiant {{ $etudiant->prenom }} {{ $etudiant->nom }}.
                 </p>
                 <p>Le rendez-vous a eu lieu le {{ $rdv_time }}.</p>
@@ -73,7 +73,7 @@
                 <p>Le rendez-vous a eu lieu le {{ $rdv_time }}.</p>
                 <p>Nous vous remercions pour votre engagement et votre collaboration.</p>
             @else
-                <p>Nous vous remercions pour votre présence au rendez-vous avec le consultant.</p>
+                <p>Nous vous remercions pour votre présence au rendez-vous avec le conseiller.</p>
                 <p>Le rendez-vous a eu lieu le {{ $rdv_time }}.</p>
                 <p>Nous espérons que cela a été bénéfique pour vous.</p>
             @endif

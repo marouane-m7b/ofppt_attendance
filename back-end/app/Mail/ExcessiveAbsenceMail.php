@@ -13,12 +13,14 @@ class ExcessiveAbsenceMail extends Mailable
     public $etudiant;
     public $totalDuree;
     public $role;
+    public $notifiable;
 
-    public function __construct($etudiant, $totalDuree, $role)
+    public function __construct($etudiant, $totalDuree, $role, $notifiable)
     {
         $this->etudiant = $etudiant;
         $this->totalDuree = $totalDuree;
         $this->role = $role;
+        $this->notifiable = $notifiable;
     }
 
     public function build()
@@ -29,6 +31,7 @@ class ExcessiveAbsenceMail extends Mailable
                         'etudiant' => $this->etudiant,
                         'totalDuree' => $this->totalDuree,
                         'role' => $this->role,
+                        'notifiable' => $this->notifiable,
                     ]);
     }
 

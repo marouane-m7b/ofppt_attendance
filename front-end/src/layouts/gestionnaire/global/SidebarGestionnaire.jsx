@@ -152,7 +152,7 @@ const SidebarGestionnaire = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            {user?.is_consultant && (
+            {user?.is_conseiller && (
               <>
                 <Item
                   title="Rendez-vous"

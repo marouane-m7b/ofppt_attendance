@@ -170,6 +170,10 @@ class EtudiantController extends Controller
 
     public function updateObservationConseiller($id, Request $request)
     {
+        $conseiller = $request->user('validator');
+        if (!$conseiller || !$conseiller->is_conseiller) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
         $request->validate([
             'observations_conseiller' => 'required|string|max:255',
         ]);

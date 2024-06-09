@@ -44,7 +44,7 @@ class ValidatorController extends Controller
     {
         $validator =  $request->user('validator');
         if ($validator) {
-            $validators = Validator::where('is_consultant', 1)->get();
+            $validators = Validator::where('is_conseiller', 1)->get();
             return response()->json($validators, 200);
         }
         $validators = Validator::all();
@@ -58,7 +58,7 @@ class ValidatorController extends Controller
             'first_name' => 'required|string',
             'last_name' => 'required|string',
             'email' => 'required|email|unique:validators,email',
-            'is_consultant' => 'required|boolean',
+            'is_conseiller' => 'required|boolean',
         ]);
 
         $password = Str::random(8);
@@ -67,7 +67,7 @@ class ValidatorController extends Controller
         $validator->first_name = $request->first_name;
         $validator->last_name = $request->last_name;
         $validator->email = $request->email;
-        $validator->is_consultant = $request->is_consultant;
+        $validator->is_conseiller = $request->is_conseiller;
         $validator->password = Hash::make($password);
         $validator->save();
 
@@ -87,7 +87,7 @@ class ValidatorController extends Controller
             'first_name' => 'string',
             'last_name' => 'string',
             'email' => 'email|unique:validators,email,' . $validator->id,
-            'is_consultant' => 'boolean',
+            'is_conseiller' => 'boolean',
         ]);
 
         $validator->update($request->all());

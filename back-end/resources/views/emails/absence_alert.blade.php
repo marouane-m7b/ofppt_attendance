@@ -24,7 +24,7 @@
             margin-bottom: 20px;
         }
         .header img {
-            max-width: 150px;
+            max-width: 500px;
             height: auto;
         }
         .content {
