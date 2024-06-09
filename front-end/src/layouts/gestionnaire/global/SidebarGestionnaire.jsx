@@ -5,8 +5,10 @@ import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
+import PeopleIcon from "@mui/icons-material/People";
+import HistoryIcon from "@mui/icons-material/History";
+import EventNoteIcon from "@mui/icons-material/EventNote";
+import SchoolIcon from "@mui/icons-material/School";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import PropTypes from "prop-types";
 import { useAppContext } from "../../../config/context/ComponentContext";
@@ -139,14 +141,14 @@ const SidebarGestionnaire = () => {
             <Item
               title="Absences"
               to="/gestionnaire/absences"
-              icon={<PeopleOutlinedIcon />}
+              icon={<PeopleIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Absences Historiques"
               to="/gestionnaire/absences_historiques"
-              icon={<ContactsOutlinedIcon />}
+              icon={<HistoryIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -155,14 +157,14 @@ const SidebarGestionnaire = () => {
                 <Item
                   title="Rendez-vous"
                   to="/gestionnaire/rendez_vous"
-                  icon={<ContactsOutlinedIcon />}
+                  icon={<EventNoteIcon />}
                   selected={selected}
                   setSelected={setSelected}
                 />
                 <Item
                   title="Etudiants"
                   to="/gestionnaire/etudiants"
-                  icon={<ContactsOutlinedIcon />}
+                  icon={<SchoolIcon />}
                   selected={selected}
                   setSelected={setSelected}
                 />
@@ -174,6 +176,5 @@ const SidebarGestionnaire = () => {
     </Box>
   );
 };
-
 
 export default SidebarGestionnaire;

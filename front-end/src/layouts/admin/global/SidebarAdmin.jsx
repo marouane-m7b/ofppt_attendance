@@ -5,15 +5,14 @@ import { Link } from "react-router-dom";
 import "react-pro-sidebar/dist/css/styles.css";
 import { tokens } from "../../../theme";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
-import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
-import HelpOutlineOutlinedIcon from "@mui/icons-material/HelpOutlineOutlined";
-// import BarChartOutlinedIcon from "@mui/icons-material/BarChartOutlined";
-// import PieChartOutlineOutlinedIcon from "@mui/icons-material/PieChartOutlineOutlined";
-// import TimelineOutlinedIcon from "@mui/icons-material/TimelineOutlined";
-// import MapOutlinedIcon from "@mui/icons-material/MapOutlined";
+import PeopleIcon from "@mui/icons-material/People";
+import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import DesignServicesIcon from "@mui/icons-material/DesignServices";
+import BusinessIcon from "@mui/icons-material/Business";
+import SchoolIcon from "@mui/icons-material/School";
+import GroupIcon from "@mui/icons-material/Group";
+import EventNoteIcon from "@mui/icons-material/EventNote";
+import HistoryIcon from "@mui/icons-material/History";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import PropTypes from "prop-types";
 
@@ -42,7 +41,6 @@ Item.propTypes = {
   selected: PropTypes.string.isRequired,
   setSelected: PropTypes.func.isRequired,
 };
-
 
 const SidebarAdmin = () => {
   const theme = useTheme();
@@ -144,21 +142,21 @@ const SidebarAdmin = () => {
             <Item
               title="Etudiants"
               to="/administrateur/etudiants"
-              icon={<PeopleOutlinedIcon />}
+              icon={<PeopleIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Gestionnaire"
               to="/administrateur/gestionnaires"
-              icon={<ContactsOutlinedIcon />}
+              icon={<SupervisorAccountIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
-              title="IFormateurs"
+              title="Formateurs"
               to="/administrateur/designers"
-              icon={<ReceiptOutlinedIcon />}
+              icon={<DesignServicesIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -173,21 +171,21 @@ const SidebarAdmin = () => {
             <Item
               title="Secteurs"
               to="/administrateur/secteurs"
-              icon={<CalendarTodayOutlinedIcon />}
+              icon={<BusinessIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Filieres"
               to="/administrateur/filieres"
-              icon={<HelpOutlineOutlinedIcon />}
+              icon={<SchoolIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Groupes"
               to="/administrateur/groupes"
-              icon={<HelpOutlineOutlinedIcon />}
+              icon={<GroupIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -202,65 +200,29 @@ const SidebarAdmin = () => {
             <Item
               title="Marquer les absences"
               to="/administrateur/absences"
-              icon={<PeopleOutlinedIcon />}
+              icon={<EventNoteIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Absences Historiques"
               to="/administrateur/absences_historiques"
-              icon={<ContactsOutlinedIcon />}
+              icon={<HistoryIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Rendez-vous"
               to="/administrateur/rendez_vous"
-              icon={<ContactsOutlinedIcon />}
+              icon={<EventNoteIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-            {/* <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
-            >
-              Charts
-            </Typography>
-            <Item
-              title="Bar Chart"
-              to="/administrateur/bar"
-              icon={<BarChartOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Pie Chart"
-              to="/administrateur/pie"
-              icon={<PieChartOutlineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Line Chart"
-              to="/administrateur/line"
-              icon={<TimelineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
-            <Item
-              title="Geography Chart"
-              to="/administrateur/geography"
-              icon={<MapOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
           </Box>
         </Menu>
       </ProSidebar>
     </Box>
   );
 };
-
 
 export default SidebarAdmin;
