@@ -59,7 +59,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ asset('images/OFPPT.png') }}" alt="Logo">
+            <img src="{{ asset('images/ista.png') }}" alt="Logo">
         </div>
         <div class="content">
             <p>Bonjour {{ $etudiant->prenom }} {{ $etudiant->nom }},</p>
