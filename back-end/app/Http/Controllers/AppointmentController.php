@@ -90,60 +90,61 @@ class AppointmentController extends Controller
     public function update(Request $request, $id)
     {
         $appointment = Appointment::find($id);
-    
+
         if (!$appointment) {
             return response()->json(['message' => 'Rendez-vous introuvable.'], 404);
         }
-    
+
         if ($appointment->status !== 'pending') {
             return response()->json(['message' => 'Le statut ne peut être modifié que si le rendez-vous est en attente.'], 400);
         }
-    
+
         $request->validate([
             'status' => 'required|in:pending,passed,cancelled',
         ]);
-    
+
         $appointment->status = $request->status;
         $appointment->save();
-    
+        // return response()->json(['message' => 'Rendez-vous introuvable.'], 404);
+
         // Send notifications based on status change
         if ($appointment->status === 'passed') {
             $this->sendThankYouEmails($appointment);
         } elseif ($appointment->status === 'cancelled') {
             $this->sendApologyEmails($appointment);
         }
-    
+
         return response()->json($appointment, 200);
     }
-    
+
     protected function sendThankYouEmails(Appointment $appointment)
     {
         $etudiant = $appointment->etudiant;
         $cgcpDesigners = Designer::where('is_cgcp', true)->get();
-    
+
         // Send email to student
         $etudiant->notify(new AppointmentThankYou($appointment));
-    
+
         // Send email to CGCP users
         foreach ($cgcpDesigners as $designer) {
             $designer->notify(new AppointmentThankYou($appointment));
         }
     }
-    
+
     protected function sendApologyEmails(Appointment $appointment)
     {
         $etudiant = $appointment->etudiant;
         $cgcpDesigners = Designer::where('is_cgcp', true)->get();
-    
+
         // Send email to student
         $etudiant->notify(new AppointmentApology($appointment));
-    
+
         // Send email to CGCP users
         foreach ($cgcpDesigners as $designer) {
             $designer->notify(new AppointmentApology($appointment));
         }
     }
-    
+
 
 
     public function destroy($id)

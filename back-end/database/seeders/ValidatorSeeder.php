@@ -17,8 +17,8 @@ class ValidatorSeeder extends Seeder
     {
         $data = [
             // Communication & Soft Skills
-            ['first_name' => 'Kaoutar', 'last_name' => 'Meddri', 'email' => 'kaoutar.meddri@ofppt.ma', 'is_consultant' => 0, 'password' => Hash::make('ofppt')],
-            ['first_name' => 'Khadija', 'last_name' => 'Traf', 'email' => 'khadija.traf@ofppt.ma', 'is_consultant' => 1, 'password' => Hash::make('ofppt')],
+            ['first_name' => 'Kaoutar', 'last_name' => 'Meddri', 'email' => 'kaoutar.meddri@ofppt.ma', 'is_consultant' => 1, 'password' => Hash::make('ofppt')],
+            ['first_name' => 'Khadija', 'last_name' => 'Traf', 'email' => 'khadija.traf@ofppt.ma', 'is_consultant' => 0, 'password' => Hash::make('ofppt')],
             ['first_name' => 'Khadija', 'last_name' => 'Chekrani', 'email' => 'khadija.chekrani@ofppt.ma', 'is_consultant' => 0, 'password' => Hash::make('ofppt')],
             // Génie électrique
             ['first_name' => 'Faical', 'last_name' => 'Essaiydy', 'email' => 'faical.essaiydy@ofppt.ma', 'is_consultant' => 0, 'password' => Hash::make('ofppt')],

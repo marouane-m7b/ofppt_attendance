@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { CircularProgress, Typography, Box, Paper, Grid, Card, CardContent, CardHeader, Divider, Button } from '@mui/material';
+import { CircularProgress, Typography, Box, Grid, Card, CardContent, CardHeader, Divider, Button } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
 import { axiosClient } from '../../../config/Api/AxiosClient';
 import { errorToast, successToast } from '../../../config/Toasts/toasts';

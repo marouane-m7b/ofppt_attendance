@@ -12,7 +12,7 @@ class CreateAppointmentsTable extends Migration
             $table->id();
             $table->unsignedBigInteger('etudiant_id');
             $table->unsignedBigInteger('validator_id');
-            $table->timestamp('rdv_time');
+            $table->dateTime('rdv_time');
             $table->enum('status', ['pending', 'passed', 'cancelled'])->default('pending');
             $table->timestamps();
 

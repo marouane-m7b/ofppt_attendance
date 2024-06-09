@@ -43,7 +43,7 @@ class ExcessiveAbsenceNotification extends Notification
             case 'cgcp':
                 $mailMessage->subject('Avertissement d\'absences excessives')
                     ->line("L'étudiant {$this->etudiant->prenom} {$this->etudiant->nom} de groupe {$etudiantGroup->nom}  a dépassé {$this->totalDuree} heures d'absence non justifiée.")
-                    ->line('Veuillez attendre un RDV du consultant.')
+                    ->line('Veuillez attendre un RDV du conseiller.')
                     ->line('Merci pour votre attention.');
                 break;
             case 'etudiant':

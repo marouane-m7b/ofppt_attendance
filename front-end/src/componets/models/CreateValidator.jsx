@@ -77,7 +77,7 @@ const CreateValidator = ({ open, onClose, getAllGestionnaires }) => {
                 color="primary"
               />
             }
-            label="Consultant"
+            label="Conseiller"
           />
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
             <Button onClick={onClose} variant="contained" color="secondary" sx={{ mr: 1 }}>
