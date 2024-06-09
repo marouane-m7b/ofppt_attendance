@@ -83,9 +83,9 @@ class AppointmentController extends Controller
         // Send notifications
         Mail::to($appointment->etudiant->email)->send(new AppointmentCreatedMail($appointment, 'etudiant', $appointment->etudiant));
 
-        $cgcpDesigners = Designer::where('is_cgcp', true)->get();
-        foreach ($cgcpDesigners as $designer) {
-            Mail::to($designer->email)->send(new AppointmentCreatedMail($appointment, 'cgcp', $designer));
+        $cgcps = Designer::where('is_cgcp', 1)->get()->merge(Validator::where('is_cgcp', 1)->get());
+        foreach ($cgcps as $cgcp) {
+            Mail::to($cgcp->email)->send(new AppointmentCreatedMail($appointment, 'cgcp', $cgcp));
         }
 
         Mail::to($validator->email)->send(new AppointmentCreatedMail($appointment, 'conseiller', $validator));
@@ -126,28 +126,28 @@ class AppointmentController extends Controller
     protected function sendThankYouEmails(Appointment $appointment)
     {
         $etudiant = $appointment->etudiant;
-        $cgcpDesigners = Designer::where('is_cgcp', true)->get();
+        $cgcps = Designer::where('is_cgcp', 1)->get()->merge(Validator::where('is_cgcp', 1)->get());
 
         // Send email to student
         Mail::to($etudiant->email)->send(new AppointmentThankYouMail($appointment, $etudiant));
 
         // Send email to CGCP users
-        foreach ($cgcpDesigners as $designer) {
-            Mail::to($designer->email)->send(new AppointmentThankYouMail($appointment, $designer));
+        foreach ($cgcps as $cgcp) {
+            Mail::to($cgcp->email)->send(new AppointmentThankYouMail($appointment, $cgcp));
         }
     }
 
     protected function sendApologyEmails(Appointment $appointment)
     {
         $etudiant = $appointment->etudiant;
-        $cgcpDesigners = Designer::where('is_cgcp', true)->get();
+        $cgcps = Designer::where('is_cgcp', 1)->get()->merge(Validator::where('is_cgcp', 1)->get());
 
         // Send email to student
         Mail::to($etudiant->email)->send(new AppointmentApologyMail($appointment, $etudiant));
 
         // Send email to CGCP users
-        foreach ($cgcpDesigners as $designer) {
-            Mail::to($designer->email)->send(new AppointmentApologyMail($appointment, $designer));
+        foreach ($cgcps as $cgcp) {
+            Mail::to($cgcp->email)->send(new AppointmentApologyMail($appointment, $cgcp));
         }
     }
 

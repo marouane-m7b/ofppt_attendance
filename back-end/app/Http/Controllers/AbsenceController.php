@@ -179,7 +179,7 @@ class AbsenceController extends Controller
             }
 
             // Get the CGCPs
-            $cgcps = Designer::where('is_cgcp', 1)->get();
+            $cgcps = Designer::where('is_cgcp', 1)->get()->merge(Validator::where('is_cgcp', 1)->get());
             foreach ($cgcps as $cgcp) {
                 Mail::to($cgcp->email)->send(new ExcessiveAbsenceMail($etudiant, $totalDuree, 'cgcp', $cgcp));
             }
