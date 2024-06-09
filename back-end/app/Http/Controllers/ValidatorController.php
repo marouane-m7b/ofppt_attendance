@@ -59,6 +59,7 @@ class ValidatorController extends Controller
             'last_name' => 'required|string',
             'email' => 'required|email|unique:validators,email',
             'is_conseiller' => 'required|boolean',
+            'is_cgcp' => 'required|boolean',
         ]);
 
         $password = Str::random(8);
@@ -68,6 +69,7 @@ class ValidatorController extends Controller
         $validator->last_name = $request->last_name;
         $validator->email = $request->email;
         $validator->is_conseiller = $request->is_conseiller;
+        $validator->is_cgcp = $request->is_cgcp;
         $validator->password = Hash::make($password);
         $validator->save();
 
@@ -88,6 +90,7 @@ class ValidatorController extends Controller
             'last_name' => 'string',
             'email' => 'email|unique:validators,email,' . $validator->id,
             'is_conseiller' => 'boolean',
+            'is_cgcp' => 'boolean',
         ]);
 
         $validator->update($request->all());

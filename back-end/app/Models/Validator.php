@@ -27,6 +27,7 @@ class Validator extends Authenticatable
         'last_name',
         'email',
         'is_conseiller',
+        'is_cgcp',
         'password',
     ];
 

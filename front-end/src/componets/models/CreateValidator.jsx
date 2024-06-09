@@ -9,9 +9,14 @@ const CreateValidator = ({ open, onClose, getAllGestionnaires }) => {
   const { setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
   const [isConseiller, setIsConseiller] = useState(false);
+  const [isCgcp, setIsCgcp] = useState(false);
 
   const handleCheckboxChange = (event) => {
     setIsConseiller(event.target.checked);
+  };
+
+  const handleCgcpChange = (event) => {
+    setIsCgcp(event.target.checked);
   };
 
   const addValidator = async (e) => {
@@ -24,6 +29,7 @@ const CreateValidator = ({ open, onClose, getAllGestionnaires }) => {
         last_name: last_name.value,
         email: email.value,
         is_conseiller: isConseiller,
+        is_cgcp: isCgcp
       });
       await getAllGestionnaires();
       onClose();
@@ -78,6 +84,17 @@ const CreateValidator = ({ open, onClose, getAllGestionnaires }) => {
               />
             }
             label="Conseiller"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={isCgcp}
+                onChange={handleCgcpChange}
+                name="is_cgcp"
+                color="primary"
+              />
+            }
+            label="CGCP"
           />
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
             <Button onClick={onClose} variant="contained" color="secondary" sx={{ mr: 1 }}>
