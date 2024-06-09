@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AbsenceAlertMail;
 use App\Models\Etudiant;
 use App\Notifications\AbsenceAlert;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class EtudiantController extends Controller
@@ -141,7 +143,8 @@ class EtudiantController extends Controller
         $etudiant = Etudiant::find($etudiantId);
 
         if ($etudiant && $totalAbsences > 5) {
-            $etudiant->notify(new AbsenceAlert($totalAbsences));
+            $etudiantName = $etudiant->nom . ' ' . $etudiant->prenom;
+            Mail::to($etudiant->email)->send(new AbsenceAlertMail($totalAbsences, $etudiantName));
         }
 
         return response()->json(['message' => 'Alert sent successfully'], 200);
