@@ -82,7 +82,7 @@
 <body>
     <div class="container">
         <div class="header">
-            <img src="{{ asset('images/ofppt-logo.png') }}" alt="Logo">
+            <img src="{{ asset('images/OFPPT.png') }}" alt="Logo">
         </div>
         <div class="content">
             @if ($role == 'consultant' || $role == 'cgcp')

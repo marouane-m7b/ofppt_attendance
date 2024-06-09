@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Mail\AppointmentCreatedMail;
+use App\Mail\AppointmentThankYouMail;
 use App\Models\Appointment;
 use App\Models\Designer;
 use App\Notifications\AppointmentApology;
@@ -127,11 +128,11 @@ class AppointmentController extends Controller
         $cgcpDesigners = Designer::where('is_cgcp', true)->get();
 
         // Send email to student
-        $etudiant->notify(new AppointmentThankYou($appointment));
+        Mail::to($etudiant->email)->send(new AppointmentThankYouMail($appointment, $etudiant));
 
         // Send email to CGCP users
         foreach ($cgcpDesigners as $designer) {
-            $designer->notify(new AppointmentThankYou($appointment));
+            Mail::to($designer->email)->send(new AppointmentThankYouMail($appointment, $designer));
         }
     }
 
