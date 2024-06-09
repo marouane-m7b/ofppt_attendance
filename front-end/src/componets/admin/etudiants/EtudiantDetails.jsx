@@ -44,15 +44,28 @@ function EtudiantDetails() {
         navigate(`/administrateur/absence/${absenceId}`);
     };
 
-    const handleDownloadCertificat = (filePath) => {
-        window.open(`/storage/${filePath}`, '_blank');
+    const handleDownloadCertificat = async (filePath) => {
+        try {
+            const response = await axiosClient.post('/admin/download-certificat', { filePath }, {
+                responseType: 'blob',
+            });
+    
+            const url = window.URL.createObjectURL(new Blob([response.data]));
+            const link = document.createElement('a');
+            link.href = url;
+            link.setAttribute('download', filePath.split('/').pop()); // Extract the file name
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+        } catch (error) {
+            console.error('Error downloading the file', error);
+        }
     };
 
     const absenceColumns = [
         { field: 'id', headerName: 'ID de l\'Absence', flex: 1 },
         { field: 'date', headerName: 'Date', flex: 1 },
         { field: 'duree', headerName: 'Durée', flex: 1 },
-        { field: 'certificat', headerName: 'Certificat', flex: 2 },
         { field: 'commentaire', headerName: 'Commentaire', flex: 2 },
         { field: 'statut', headerName: 'Statut', flex: 1 },
         { field: 'is_justified', headerName: 'Justifiée', flex: 1 },
