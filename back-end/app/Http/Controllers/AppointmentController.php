@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AppointmentCreatedMail;
 use App\Models\Appointment;
 use App\Models\Designer;
 use App\Notifications\AppointmentApology;
@@ -10,6 +11,7 @@ use App\Notifications\AppointmentThankYou;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class AppointmentController extends Controller
@@ -77,12 +79,14 @@ class AppointmentController extends Controller
         ]);
 
         // Send notifications
-        $appointment->etudiant->notify(new AppointmentCreated($appointment));
+        Mail::to($appointment->etudiant->email)->send(new AppointmentCreatedMail($appointment, 'etudiant', $appointment->etudiant));
+
         $cgcpDesigners = Designer::where('is_cgcp', true)->get();
         foreach ($cgcpDesigners as $designer) {
-            $designer->notify(new AppointmentCreated($appointment));
+            Mail::to($designer->email)->send(new AppointmentCreatedMail($appointment, 'cgcp', $designer));
         }
-        $validator->notify(new AppointmentCreated($appointment));
+
+        Mail::to($validator->email)->send(new AppointmentCreatedMail($appointment, 'consultant', $validator));
 
         return response()->json($appointment, 201);
     }
