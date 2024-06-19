@@ -40,8 +40,8 @@ class DashboardController extends Controller
     {
         // Assuming 'Appointment' model exists and represents recent activities
         $recentAppointments = Appointment::with(['validator', 'etudiant'])
-            ->whereDate('rdv_time', '>=', Carbon::now()->startOfDay())
-            ->orderByRaw('ABS(DATEDIFF(rdv_time, ?)) ASC', [Carbon::now()->format('Y-m-d')])
+            ->whereDate('rdv_time', '>=', Carbon::today())
+            ->orderByRaw('ABS(DATEDIFF(rdv_time, ?)) ASC', [Carbon::today()->format('Y-m-d')])
             ->limit(10)
             ->get();
         return response()->json(['appointments' => $recentAppointments]);

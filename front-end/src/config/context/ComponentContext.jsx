@@ -4,6 +4,8 @@ import { axiosClient } from "../Api/AxiosClient";
 import { errorToast, successToast } from "../Toasts/toasts";
 import { Toaster } from "react-hot-toast";
 import PropTypes from "prop-types";
+import { CircularProgress, Box } from "@mui/material";
+
 const Context = createContext({
   user: {},
   errors: {},
@@ -105,7 +107,20 @@ const ComponentContext = ({ children }) => {
         fetchAlerts,
       }}
     >
-      {loading ? "Loading..." :
+      {loading ? (
+        <Box
+          display="flex"
+          justifyContent="center"
+          alignItems="center"
+          height="100vh"
+        >
+          <CircularProgress
+            size={60}
+            thickness={5}
+            style={{ color: "#00BFFF" }}
+          />
+        </Box>
+      ) : (
         <>
           <Toaster
             toastOptions={{
@@ -126,7 +141,8 @@ const ComponentContext = ({ children }) => {
             }}
           />
           {children}
-        </>}
+        </>
+      )}
     </Context.Provider>
   );
 };

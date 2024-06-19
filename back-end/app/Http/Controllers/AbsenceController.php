@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\ExcessiveAbsenceMail;
 use App\Models\Absence;
 use App\Models\Alert;
 use App\Models\Designer;
@@ -10,6 +11,7 @@ use App\Models\Validator;
 use App\Notifications\ExcessiveAbsenceNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator as ValidatorData;
 
 class AbsenceController extends Controller
@@ -168,17 +170,18 @@ class AbsenceController extends Controller
             ]);
 
             // Send notification to the student
-            $etudiant->notify(new ExcessiveAbsenceNotification($etudiant, $totalDuree, 'etudiant'));
+            Mail::to($etudiant->email)->send(new ExcessiveAbsenceMail($etudiant, $totalDuree, 'etudiant', $etudiant));
 
-            // Get the consultant
-            $consultants = Validator::where('is_consultant', 1)->get();
-            foreach ($consultants as $consultant) {
-                $consultant->notify(new ExcessiveAbsenceNotification($etudiant, $totalDuree, 'consultant'));
+            // Get the conseillers
+            $conseillers = Validator::where('is_conseiller', 1)->get();
+            foreach ($conseillers as $conseiller) {
+                Mail::to($conseiller->email)->send(new ExcessiveAbsenceMail($etudiant, $totalDuree, 'conseiller', $conseiller));
             }
 
-            $cgcps = Designer::where('is_cgcp', 1)->get();
+            // Get the CGCPs
+            $cgcps = Designer::where('is_cgcp', 1)->get()->merge(Validator::where('is_cgcp', 1)->get());
             foreach ($cgcps as $cgcp) {
-                $cgcp->notify(new ExcessiveAbsenceNotification($etudiant, $totalDuree, 'cgcp'));
+                Mail::to($cgcp->email)->send(new ExcessiveAbsenceMail($etudiant, $totalDuree, 'cgcp', $cgcp));
             }
         }
     }
@@ -188,7 +191,13 @@ class AbsenceController extends Controller
      */
     public function show(Absence $absence)
     {
-        //
+        // $absence = Absence::find($id);
+
+        if (!$absence) {
+            return response()->json(['message' => 'Absence non trouvée'], 404);
+        }
+
+        return response()->json(['absence' => $absence]);
     }
 
     /**
@@ -237,5 +246,30 @@ class AbsenceController extends Controller
             ->get();
 
         return response()->json($absences);
+    }
+
+    public function justifyAbsence($id, Request $request)
+    {
+        $request->validate([
+            'certificat' => 'required|file|mimes:pdf',
+            'commentaire' => 'nullable|string',
+        ]);
+
+        $absence = Absence::find($id);
+
+        if (!$absence) {
+            return response()->json(['message' => 'Absence non trouvée'], 404);
+        }
+
+        if ($request->hasFile('certificat')) {
+            $filePath = $request->file('certificat')->store('certificats');
+            $absence->certificat = $filePath;
+        }
+
+        $absence->commentaire = $request->input('commentaire');
+        $absence->is_justified = true;
+        $absence->save();
+
+        return response()->json(['message' => 'Absence justifiée avec succès']);
     }
 }

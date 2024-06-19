@@ -4,6 +4,7 @@ import { axiosClient } from '../../../config/Api/AxiosClient';
 import { Box, Typography, Select, MenuItem, useTheme } from '@mui/material';
 import { errorToast, successToast } from '../../../config/Toasts/toasts';
 import { tokens } from '../../../theme';
+import { useAppContext } from '../../../config/context/ComponentContext';
 
 export default function EtudiantListReview() {
     const [loadingPage, setLoadingPage] = useState(true);
@@ -11,6 +12,7 @@ export default function EtudiantListReview() {
     const [groups, setGroups] = useState([]);
     const [selectedGroup, setSelectedGroup] = useState('');
     const [observationsConseiller, setObservationsConseiller] = useState({});
+    const { user } = useAppContext();
 
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -123,6 +125,25 @@ export default function EtudiantListReview() {
         numero_stagiaire: etudiant.numero_stagiaire,
         numero_parent: etudiant.numero_parent,
     }));
+
+
+
+    if (!user?.is_conseiller) {
+        return (
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100vh',
+                }}
+            >
+                <Typography variant="h1" component="h1">
+                    Vous ne pouvez pas accéder à cette page
+                </Typography>
+            </Box>
+        )
+    }
 
     return (
         <Box sx={{ height: 600, width: '100%' }}>

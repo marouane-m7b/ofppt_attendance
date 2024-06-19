@@ -68,7 +68,8 @@ const AllGestionnaires = () => {
   const columns = [
     { field: 'first_name', headerName: 'Nom', flex: 1.5 },
     { field: 'last_name', headerName: 'Prenom', flex: 1.5 },
-    { field: 'is_consultant', headerName: 'Consultant', flex: 1, renderCell: (params) => params.value ? 'Oui' : 'Non' },
+    { field: 'is_conseiller', headerName: 'Conseiller', flex: 1, renderCell: (params) => params.value ? 'Oui' : 'Non' },
+    { field: 'is_cgcp', headerName: 'CGCP', flex: 1, renderCell: (params) => params.value ? 'Oui' : 'Non' },
     {
       field: 'email',
       headerName: 'E-mail',

@@ -9,6 +9,7 @@ import { errorToast, successToast } from '../../../config/Toasts/toasts';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import moment from 'moment';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import { useAppContext } from '../../../config/context/ComponentContext';
 
 const localizer = momentLocalizer(moment);
 
@@ -42,6 +43,8 @@ function Appointments() {
     const [selectedAppointment, setSelectedAppointment] = useState(null);
     const [modalOpen, setModalOpen] = useState(false);
     const [submittingLoading, setSubmittingLoading] = useState(false);
+
+    const { user } = useAppContext();
 
     const fetchGroups = async () => {
         const response = await axiosClient.get('/validator/groups');
@@ -125,6 +128,23 @@ function Appointments() {
         end: new Date(new Date(appointment.rdv_time).setHours(new Date(appointment.rdv_time).getHours() + 1)),
         status: appointment.status,
     }));
+
+    if (!user?.is_conseiller) {
+        return (
+            <Box
+                sx={{
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    height: '100vh',
+                }}
+            >
+                <Typography variant="h1" component="h1">
+                    Vous ne pouvez pas accéder à cette page
+                </Typography>
+            </Box>
+        )
+    }
 
     return (
         <Container>

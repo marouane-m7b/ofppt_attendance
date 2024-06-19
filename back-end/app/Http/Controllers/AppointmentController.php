@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AppointmentApologyMail;
+use App\Mail\AppointmentCreatedMail;
+use App\Mail\AppointmentThankYouMail;
 use App\Models\Appointment;
 use App\Models\Designer;
 use App\Notifications\AppointmentApology;
@@ -10,6 +13,7 @@ use App\Notifications\AppointmentThankYou;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Validator;
 
 class AppointmentController extends Controller
@@ -43,7 +47,7 @@ class AppointmentController extends Controller
             return response()->json(['message' => 'Unauthorized'], 400);
         }
 
-        if (!$validator->is_consultant) {
+        if (!$validator->is_conseiller) {
             return response()->json(['message' => 'Unauthorized'], 400);
         }
 
@@ -66,7 +70,7 @@ class AppointmentController extends Controller
             ->first();
 
         if ($existingAppointment) {
-            return response()->json(['message' => 'Le consultant est occupé à ce moment-là.'], 400);
+            return response()->json(['message' => 'Le conseiller est occupé à ce moment-là.'], 400);
         }
 
         $appointment = Appointment::create([
@@ -77,12 +81,14 @@ class AppointmentController extends Controller
         ]);
 
         // Send notifications
-        $appointment->etudiant->notify(new AppointmentCreated($appointment));
-        $cgcpDesigners = Designer::where('is_cgcp', true)->get();
-        foreach ($cgcpDesigners as $designer) {
-            $designer->notify(new AppointmentCreated($appointment));
+        Mail::to($appointment->etudiant->email)->send(new AppointmentCreatedMail($appointment, 'etudiant', $appointment->etudiant));
+
+        $cgcps = Designer::where('is_cgcp', 1)->get()->merge(Validator::where('is_cgcp', 1)->get());
+        foreach ($cgcps as $cgcp) {
+            Mail::to($cgcp->email)->send(new AppointmentCreatedMail($appointment, 'cgcp', $cgcp));
         }
-        $validator->notify(new AppointmentCreated($appointment));
+
+        Mail::to($validator->email)->send(new AppointmentCreatedMail($appointment, 'conseiller', $validator));
 
         return response()->json($appointment, 201);
     }
@@ -90,60 +96,61 @@ class AppointmentController extends Controller
     public function update(Request $request, $id)
     {
         $appointment = Appointment::find($id);
-    
+
         if (!$appointment) {
             return response()->json(['message' => 'Rendez-vous introuvable.'], 404);
         }
-    
+
         if ($appointment->status !== 'pending') {
             return response()->json(['message' => 'Le statut ne peut être modifié que si le rendez-vous est en attente.'], 400);
         }
-    
+
         $request->validate([
             'status' => 'required|in:pending,passed,cancelled',
         ]);
-    
+
         $appointment->status = $request->status;
         $appointment->save();
-    
+        // return response()->json(['message' => 'Rendez-vous introuvable.'], 404);
+
         // Send notifications based on status change
         if ($appointment->status === 'passed') {
             $this->sendThankYouEmails($appointment);
         } elseif ($appointment->status === 'cancelled') {
             $this->sendApologyEmails($appointment);
         }
-    
+
         return response()->json($appointment, 200);
     }
-    
+
     protected function sendThankYouEmails(Appointment $appointment)
     {
         $etudiant = $appointment->etudiant;
-        $cgcpDesigners = Designer::where('is_cgcp', true)->get();
-    
+        $cgcps = Designer::where('is_cgcp', 1)->get()->merge(Validator::where('is_cgcp', 1)->get());
+
         // Send email to student
-        $etudiant->notify(new AppointmentThankYou($appointment));
-    
+        Mail::to($etudiant->email)->send(new AppointmentThankYouMail($appointment, $etudiant));
+
         // Send email to CGCP users
-        foreach ($cgcpDesigners as $designer) {
-            $designer->notify(new AppointmentThankYou($appointment));
+        foreach ($cgcps as $cgcp) {
+            Mail::to($cgcp->email)->send(new AppointmentThankYouMail($appointment, $cgcp));
         }
     }
-    
+
     protected function sendApologyEmails(Appointment $appointment)
     {
         $etudiant = $appointment->etudiant;
-        $cgcpDesigners = Designer::where('is_cgcp', true)->get();
-    
+        $cgcps = Designer::where('is_cgcp', 1)->get()->merge(Validator::where('is_cgcp', 1)->get());
+
         // Send email to student
-        $etudiant->notify(new AppointmentApology($appointment));
-    
+        Mail::to($etudiant->email)->send(new AppointmentApologyMail($appointment, $etudiant));
+
         // Send email to CGCP users
-        foreach ($cgcpDesigners as $designer) {
-            $designer->notify(new AppointmentApology($appointment));
+        foreach ($cgcps as $cgcp) {
+            Mail::to($cgcp->email)->send(new AppointmentApologyMail($appointment, $cgcp));
         }
     }
-    
+
 
 
     public function destroy($id)

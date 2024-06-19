@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AbsenceAlertMail;
 use App\Models\Etudiant;
 use App\Notifications\AbsenceAlert;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 
 class EtudiantController extends Controller
@@ -116,8 +120,8 @@ class EtudiantController extends Controller
     {
         $etudiant = Etudiant::with(['group.filiere', 'alerts'])
             ->with(['absences' => function ($query) {
-                $query->where('statut', 'Absent')
-                    ->where('is_justified', 0);
+                $query->where('statut', 'Absent');
+                // ->where('is_justified', 0);
             }])
             ->find($id);
 
@@ -141,7 +145,8 @@ class EtudiantController extends Controller
         $etudiant = Etudiant::find($etudiantId);
 
         if ($etudiant && $totalAbsences > 5) {
-            $etudiant->notify(new AbsenceAlert($totalAbsences));
+            $etudiantName = $etudiant->nom . ' ' . $etudiant->prenom;
+            Mail::to($etudiant->email)->send(new AbsenceAlertMail($totalAbsences, $etudiantName));
         }
 
         return response()->json(['message' => 'Alert sent successfully'], 200);
@@ -167,6 +172,10 @@ class EtudiantController extends Controller
 
     public function updateObservationConseiller($id, Request $request)
     {
+        $conseiller = $request->user('validator');
+        if (!$conseiller || !$conseiller->is_conseiller) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
         $request->validate([
             'observations_conseiller' => 'required|string|max:255',
         ]);
@@ -187,5 +196,28 @@ class EtudiantController extends Controller
     {
         $etudiants = Etudiant::where('group_id', $id)->with('group.filiere')->get();
         return response()->json($etudiants);
+    }
+
+    public function downloadCertificat(Request $request)
+    {
+        $filePath = $request->input('filePath');
+
+        if (!$filePath) {
+            return response()->json(['error' => 'File path is required.'], 400);
+        }
+
+        $filePath = $filePath;
+
+        if (!Storage::disk('local')->exists($filePath)) {
+            return response()->json(['error' => 'File not found.'], 404);
+        }
+
+        $file = Storage::disk('local')->get($filePath);
+        $mimeType = Storage::mimeType($filePath);
+
+        return Response::make($file, 200, [
+            'Content-Type' => $mimeType,
+            'Content-Disposition' => 'attachment; filename="' . basename($filePath) . '"'
+        ]);
     }
 }

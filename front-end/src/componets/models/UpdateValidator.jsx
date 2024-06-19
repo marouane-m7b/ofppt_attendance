@@ -8,10 +8,15 @@ import { errorToast, successToast } from "../../config/Toasts/toasts";
 const UpdateValidator = ({ open, onClose, validator, getAllGestionnaires }) => {
   const { setErrors, errors } = useAppContext();
   const [loading, setLoading] = useState(false);
-  const [isConsultant, setIsConsultant] = useState(false);
+  const [isConseiller, setIsConseiller] = useState(false);
+  const [isCgcp, setIsCgcp] = useState(false);
 
   const handleCheckboxChange = (event) => {
-    setIsConsultant(event.target.checked);
+    setIsConseiller(event.target.checked);
+  };
+
+  const handleCgcpChange = (event) => {
+    setIsCgcp(event.target.checked);
   };
 
 
@@ -26,7 +31,8 @@ const UpdateValidator = ({ open, onClose, validator, getAllGestionnaires }) => {
           first_name: first_name.value,
           last_name: last_name.value,
           email: email.value,
-          is_consultant: isConsultant,
+          is_conseiller: isConseiller,
+          is_cgcp: isCgcp
         }
       );
       await getAllGestionnaires();
@@ -42,7 +48,8 @@ const UpdateValidator = ({ open, onClose, validator, getAllGestionnaires }) => {
 
   useEffect(() => {
     if (validator) {
-      setIsConsultant(validator.is_consultant);
+      setIsConseiller(validator.is_conseiller);
+      setIsCgcp(validator.is_cgcp);
     }
   }, [validator]);
 
@@ -53,44 +60,55 @@ const UpdateValidator = ({ open, onClose, validator, getAllGestionnaires }) => {
           Modifier Une Validateur
         </Typography>
         <form onSubmit={updateValidator}>
-          <TextField 
-            label="Nom" 
-            name="first_name" 
-            defaultValue={validator?.first_name} 
-            fullWidth 
-            margin="normal" 
-            error={!!errors?.first_name} 
+          <TextField
+            label="Nom"
+            name="first_name"
+            defaultValue={validator?.first_name}
+            fullWidth
+            margin="normal"
+            error={!!errors?.first_name}
             helperText={errors?.first_name}
           />
-          <TextField 
-            label="Prenom" 
-            name="last_name" 
-            defaultValue={validator?.last_name} 
-            fullWidth 
-            margin="normal" 
-            error={!!errors?.last_name} 
+          <TextField
+            label="Prenom"
+            name="last_name"
+            defaultValue={validator?.last_name}
+            fullWidth
+            margin="normal"
+            error={!!errors?.last_name}
             helperText={errors?.last_name}
           />
-          <TextField 
-            label="E-mail" 
-            name="email" 
-            type="email" 
-            defaultValue={validator?.email} 
-            fullWidth 
-            margin="normal" 
-            error={!!errors?.email} 
+          <TextField
+            label="E-mail"
+            name="email"
+            type="email"
+            defaultValue={validator?.email}
+            fullWidth
+            margin="normal"
+            error={!!errors?.email}
             helperText={errors?.email}
           />
           <FormControlLabel
             control={
               <Checkbox
-                checked={isConsultant}
+                checked={isConseiller}
                 onChange={handleCheckboxChange}
-                name="is_consultant"
+                name="is_conseiller"
                 color="primary"
               />
             }
-            label="Consultant"
+            label="Conseiller"
+          />
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={isCgcp}
+                onChange={handleCgcpChange}
+                name="is_cgcp"
+                color="primary"
+              />
+            }
+            label="CGCP"
           />
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
             <Button onClick={onClose} variant="contained" color="secondary" sx={{ mr: 1 }}>
