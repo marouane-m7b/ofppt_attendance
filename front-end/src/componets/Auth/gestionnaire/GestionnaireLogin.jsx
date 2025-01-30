@@ -1,10 +1,23 @@
 import { useState } from "react";
 import { useAppContext } from "../../../config/context/ComponentContext";
+import { 
+  Container,
+  Box,
+  Typography,
+  TextField,
+  Button,
+  Link,
+  Grid,
+  CircularProgress,
+  Paper,
+  Alert
+} from '@mui/material';
+import { Lock as LockIcon, Email as EmailIcon } from '@mui/icons-material';
 
-const GestionnaireLogin = () => {
+const AdministrateurLogin = () => {
   const [loading, setLoading] = useState(false);
-
   const { handleLogin, navigateTo, errors } = useAppContext();
+
   const login = async (e) => {
     setLoading(true);
     e.preventDefault();
@@ -20,89 +33,140 @@ const GestionnaireLogin = () => {
       setLoading(false);
     }
   };
+
   return (
-    <div
-      className="w-100 d-flex flex-column justify-content-center align-items-center"
-      style={{ minHeight: "100vh" }}
-    >
-      <div className="card mb-3 w-50">
-        <div className="row g-0 d-flex flex-column align-content-center pt-5">
-          <div className="col-lg-8">
-            <div>
-              <img
-                src="../pictures/ista.png"
-                alt="Trendy Pants and Shoes"
-                className="w-100 rounded-t-5 rounded-tr-lg-0 rounded-bl-lg-5"
+    <Container component="main" maxWidth="lg">
+      <Box
+        sx={{
+          minHeight: '100vh',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          py: 4
+        }}
+      >
+        <Paper elevation={6} sx={{
+          display: 'flex',
+          borderRadius: 4,
+          overflow: 'hidden',
+          boxShadow: '0px 10px 30px rgba(0,0,0,0.1)'
+        }}>
+          {/* Image Section */}
+          <Box sx={{
+            flex: 1,
+            background: `linear-gradient(rgba(230, 230, 230, 0.8),rgba(164, 164, 164, 0.8), rgba(0, 0, 0, 0.8))`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            display: { xs: 'none', md: 'flex' },
+            alignItems: 'center',
+            justifyContent: 'center',
+            p: 4
+          }}>
+            <Box sx={{ textAlign: 'center', color: 'white' }}>
+              <img 
+                src="../pictures/ofppt.png" 
+                alt="ISTA Logo"
+                style={{ 
+                  width: '60%', 
+                  marginBottom: '2rem',
+                }} 
               />
-            </div>
-          </div>
-          <div className="col-lg-8">
-            <div className="card-body py-5 px-md-5">
-              <form onSubmit={login}>
-                <div data-mdb-input-init className="form-outline mb-4">
-                  <label className="form-label" htmlFor="form2Example1">
-                    Email address <span className="text text-danger">*</span>
-                  </label>
-                  <input
-                    type="email"
-                    id="form2Example1"
-                    className={
-                      "form-control" + (errors?.email ? " is-invalid" : "")
-                    }
-                    placeholder="ex: exemple@ofppt.ma"
-                    name="email"
-                  />
-                  <span className="text text-danger">{errors?.email}</span>
-                </div>
+              <Typography variant="h4" gutterBottom>
+                Welcome Back!
+              </Typography>
+              <Typography variant="body1">
+                Institut Spécialisée de Technologie Appliquée SIDI MOUMEN
+              </Typography>
+            </Box>
+          </Box>
 
-                <div data-mdb-input-init className="form-outline mb-4">
-                  <label className="form-label" htmlFor="form2Example2">
-                    Password <span className="text text-danger">*</span>
-                  </label>
-                  <input
-                    type="password"
-                    id="form2Example2"
-                    className={
-                      "form-control" + (errors?.password ? " is-invalid" : "")
-                    }
-                    placeholder="ex: ********"
-                    name="password"
-                  />
-                  <span className="text text-danger">{errors?.password}</span>
-                </div>
+          {/* Form Section */}
+          <Box sx={{
+            flex: 1,
+            p: 6,
+            minWidth: 400,
+            backgroundColor: 'background.paper'
+          }}>
+            <Box sx={{ textAlign: 'center', mb: 4 }}>
+              <LockIcon sx={{ fontSize: 50, color: 'primary.main', mb: 2 }} />
+              <Typography component="h1" variant="h4" sx={{ fontWeight: 700 }}>
+                Admin Login
+              </Typography>
+            </Box>
 
-                <div className="d-flex justify-content-between align-items-center">
-                  <div className="row mb-4">
-                    <div className="col d-flex justify-content-center">
-                      <div className="col">
-                        <a href="#!">Forgot password?</a>
-                      </div>
-                      <div className="form-check">
-                        {/* <input className="form-check-input" type="checkbox" value="" id="form2Example31" checked /> */}
-                        {/* <label className="form-check-label" htmlFor="form2Example31"> Remember me </label> */}
-                      </div>
-                    </div>
-                  </div>
+            <Box component="form" onSubmit={login} sx={{ mt: 3 }}>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                id="email"
+                label="Email Address"
+                name="email"
+                autoComplete="email"
+                autoFocus
+                error={Boolean(errors?.email)}
+                helperText={errors?.email}
+                InputProps={{
+                  startAdornment: <EmailIcon sx={{ color: 'action.active', mr: 1 }} />
+                }}
+                placeholder="exemple@ofppt.ma"
+                variant="outlined"
+                sx={{ mb: 3 }}
+              />
 
-                  <div>
-                    <button
-                      type="submit"
-                      data-mdb-button-init
-                      data-mdb-ripple-init
-                      disabled={loading}
-                      className="btn btn-primary btn-block mb-4"
-                    >
-                      {loading ? "Loading..." : "Sign in"}
-                    </button>
-                  </div>
-                </div>
-              </form>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
+              <TextField
+                margin="normal"
+                required
+                fullWidth
+                name="password"
+                label="Password"
+                type="password"
+                id="password"
+                autoComplete="current-password"
+                error={Boolean(errors?.password)}
+                helperText={errors?.password}
+                InputProps={{
+                  startAdornment: <LockIcon sx={{ color: 'action.active', mr: 1 }} />
+                }}
+                placeholder="••••••••"
+                variant="outlined"
+                sx={{ mb: 3 }}
+              />
+
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                disabled={loading}
+                sx={{
+                  mt: 2,
+                  py: 1.5,
+                  fontSize: '1.1rem',
+                  fontWeight: 600,
+                  borderRadius: 2
+                }}
+              >
+                {loading ? (
+                  <CircularProgress size={24} color="inherit" />
+                ) : (
+                  'Sign In'
+                )}
+              </Button>
+
+              <Grid container sx={{ mt: 3 }}>
+                <Grid item xs>
+                  <Link href="#!" variant="body2" color="text.secondary">
+                    Forgot password?
+                  </Link>
+                </Grid>
+              </Grid>
+            </Box>
+          </Box>
+        </Paper>
+      </Box>
+    </Container>
   );
 };
 
-export default GestionnaireLogin;
+export default AdministrateurLogin;

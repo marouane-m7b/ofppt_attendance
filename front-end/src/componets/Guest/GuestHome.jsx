@@ -1,109 +1,169 @@
-import { FaUser, FaUserTie } from "react-icons/fa"; // Import des icônes Font Awesome
+import { Box, Button, Container, Grid, Typography, useTheme } from '@mui/material';
+import { FaUser, FaUserTie, FaChartLine, FaMobileAlt, FaRegClock, FaChalkboardTeacher } from "react-icons/fa";
 import { Link } from "react-router-dom";
-export default function GuestHome() {
-  return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between", // Utilisation de l'espace entre les éléments pour placer le footer en bas
-        alignItems: "center",
-        minHeight: "100vh",
-        backgroundColor: "#fff", // Changement de la couleur de fond en blanc
-        color: "#000", // Changement de la couleur du texte en noir
-        padding: "20px",
-        fontFamily: "Arial, sans-serif", // Changement de la police d'écriture
-      }}
-    >
-      <div style={{ marginTop: "20px", width: "100%", maxWidth: "400px" }}>
-        <img
-          src={"./pictures/ista.png"}
-          alt="ISTA Logo"
-          style={{ width: "100%" }}
-        />
-      </div>
-      <div style={{ textAlign: "center", marginTop: "100px" }}>
-        <h2>
-          Bienvenue à l&apos;Institut Spécialisée de Technologie Appliquée SIDI
-          MOUMEN
-        </h2>
-        <p>Nous sommes là pour vous offrir nos meilleurs services :</p>
-        <div className="d-flex justify-content-center flex-wrap" 
-          style={{
-            marginTop: "100px",
-          }}
-        >
-          <Link
-            to="/formateur/login"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "10px 20px",
-              margin: "0 10px",
-              backgroundColor: "#007bff",
-              color: "#fff",
-              textDecoration: "none",
-              borderRadius: "5px",
-              border: "2px solid #fff",
-              transition: "background-color 0.3s ease",
-            }}
-          >
-            <FaUser style={{ marginRight: "10px" }} /> Connexion Formateur
-          </Link>
-          <Link
-            to="/gestionnaire/login"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "10px 20px",
-              width: '234px',
+import { styled } from '@mui/system';
 
-              // margin: "0 10px",
-              backgroundColor: "#007bff",
-              color: "#fff",
-              textDecoration: "none",
-              borderRadius: "5px",
-              border: "2px solid #fff",
-              transition: "background-color 0.3s ease",
-            }}
-          >
-            <FaUser style={{ marginRight: "10px" }} /> Connexion Gestionnaire
-          </Link>
-        </div>
-        <div className="pt-md-3 ms-lg-2 ms-md-2 ms-sm-0">
-          <Link
-            to="/administrateur/login"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-              padding: "10px 20px",
-              margin: "0 10px",
-              backgroundColor: "#007bff",
-              color: "#fff",
-              textDecoration: "none",
-              borderRadius: "5px",
-              border: "2px solid #fff",
-              transition: "background-color 0.3s ease",
-            }}
-          >
-            <FaUserTie style={{ marginRight: "10px" }} /> Connexion Administrateur
-          </Link>
-        </div>
-      </div>
-      <footer
-        style={{
-          width: "100%",
-          textAlign: "center",
-          marginTop: "auto",
-          fontSize: "0.8rem",
-          color: "#999",
-        }}
-      >
-        <p>&copy; ISTA SIDI MOUMEN</p>
-      </footer>
-    </div>
+const HeroSection = styled('section')(({ theme }) => ({
+  minHeight: '70vh',
+  display: 'flex',
+  alignItems: 'center',
+  background: `linear-gradient(rgba(0, 123, 255, 0.9), rgba(0, 86, 179, 0.9)), url('../public/pictures/students.jpg')`,
+  backgroundSize: 'cover',
+  backgroundPosition: 'center',
+  color: theme.palette.common.white,
+  padding: theme.spacing(10, 2),
+}));
+
+const FeatureCard = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(4),
+  backgroundColor: theme.palette.common.white,
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: theme.shadows[4],
+  transition: 'transform 0.3s ease',
+  textAlign: 'center',
+  '&:hover': {
+    transform: 'translateY(-8px)'
+  }
+}));
+
+const LoginCard = styled(Box)(({ theme }) => ({
+  padding: theme.spacing(4),
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: theme.shape.borderRadius,
+  boxShadow: theme.shadows[2],
+  transition: 'all 0.3s ease',
+  textAlign: 'center',
+  '&:hover': {
+    boxShadow: theme.shadows[6],
+    backgroundColor: theme.palette.action.hover
+  }
+}));
+
+export default function GuestHome() {
+  const theme = useTheme();
+
+  return (
+    <Box sx={{ backgroundColor: theme.palette.grey[50] }}>
+      {/* Hero Section */}
+      <HeroSection sx={{ height: '100vh' }}>
+        <Container maxWidth="md">
+          <Box textAlign="center">
+            <Typography variant="h2" component="h1" gutterBottom sx={{ fontWeight: 700 }}>
+              Système Intelligent de Gestion de Présence
+            </Typography>
+            <Typography variant="h5" component="p" sx={{ mb: 4 }}>
+              Suivi en temps réel, analyse des performances, et gestion simplifiée des étudiants
+            </Typography>
+            <Button
+              component={Link}
+              to="/formateur/login"
+              variant="contained"
+              color="primary"
+              size="large"
+              startIcon={<FaChalkboardTeacher />}
+              sx={{
+                py: 2,
+                px: 5,
+                borderRadius: 50,
+                fontWeight: 700,
+                textTransform: 'uppercase'
+              }}
+            >
+              Commencer maintenant
+            </Button>
+          </Box>
+        </Container>
+      </HeroSection>
+
+      {/* Login Sections */}
+      <Box sx={{ py: 8, backgroundColor: 'background.paper' }}>
+        <Container>
+          <Typography variant="h3" component="h2" textAlign="center" gutterBottom sx={{ fontWeight: 700 }}>
+            Accès Personnel
+          </Typography>
+          <Grid container spacing={4} sx={{ mt: 2 }}>
+            {[
+              { role: "Formateur", path: "/formateur/login", icon: <FaUser /> },
+              { role: "Gestionnaire", path: "/gestionnaire/login", icon: <FaUser /> },
+              { role: "Administrateur", path: "/administrateur/login", icon: <FaUserTie /> },
+            ].map((login, index) => (
+              <Grid item xs={12} md={4} key={index}>
+                <LoginCard>
+                  <Box sx={{ color: 'primary.main', fontSize: 40, mb: 2 }}>
+                    {login.icon}
+                  </Box>
+                  <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+                    {login.role}
+                  </Typography>
+                  <Button
+                    component={Link}
+                    to={login.path}
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      borderRadius: 50,
+                      px: 4,
+                      fontWeight: 600
+                    }}
+                  >
+                    Se Connecter
+                  </Button>
+                </LoginCard>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
+
+      {/* Features Section */}
+      <Container sx={{ py: 8 }}>
+        <Typography variant="h3" component="h2" textAlign="center" gutterBottom sx={{ fontWeight: 700 }}>
+          Fonctionnalités Clés
+        </Typography>
+        <Grid container spacing={4} sx={{ mt: 2 }}>
+          {[
+            { icon: <FaRegClock />, title: "Suivi en Temps Réel", text: "Surveillance instantanée de la présence des étudiants" },
+            { icon: <FaChartLine />, title: "Analyses Détaillées", text: "Statistiques et rapports de performance détaillés" },
+            { icon: <FaMobileAlt />, title: "Accès Multi-Plateforme", text: "Disponible sur ordinateur, tablette et mobile" },
+          ].map((feature, index) => (
+            <Grid item xs={12} md={4} key={index}>
+              <FeatureCard>
+                <Box sx={{ color: 'primary.main', fontSize: 40, mb: 2 }}>
+                  {feature.icon}
+                </Box>
+                <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+                  {feature.title}
+                </Typography>
+                <Typography variant="body1" color="text.secondary">
+                  {feature.text}
+                </Typography>
+              </FeatureCard>
+            </Grid>
+          ))}
+        </Grid>
+      </Container>
+
+      {/* Footer */}
+      <Box sx={{ py: 6, backgroundColor: 'primary', color: 'common.white' }}>
+        <Container>
+          <Box textAlign="center">
+            <img
+              src="./pictures/ofppt.png"
+              alt="ISTA Logo"
+              style={{
+                height: 60,
+                marginBottom: theme.spacing(2),
+              }}
+            />
+            <Typography variant="body1" paragraph color="text.secondary">
+              Institut Spécialisée de Technologie Appliquée SIDI MOUMEN
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              © {new Date().getFullYear()} Tous droits réservés
+            </Typography>
+          </Box>
+        </Container>
+      </Box>
+    </Box>
   );
 }
