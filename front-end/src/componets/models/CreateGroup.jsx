@@ -124,7 +124,7 @@ const CreateGroup = ({ open, onClose, getAllGroups, filieres }) => {
             </Box>
           ))}
           <Button onClick={handleAddDesigner} variant="contained" color="primary" sx={{ mb: 2 }}>
-            <Add /> Add Designer
+            <Add /> Add Formateur
           </Button>
           <Box sx={{ display: 'flex', justifyContent: 'flex-end', mt: 2 }}>
             <Button onClick={onClose} variant="contained" color="secondary" sx={{ mr: 1 }}>
