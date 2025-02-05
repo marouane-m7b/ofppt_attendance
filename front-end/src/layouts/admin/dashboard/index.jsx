@@ -1,47 +1,68 @@
 import { useEffect, useState } from "react";
-import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
-import { tokens } from "../../../theme";
-import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
-import EmailIcon from "@mui/icons-material/Email";
-import PersonAddIcon from "@mui/icons-material/PersonAdd";
-import TrafficIcon from "@mui/icons-material/Traffic";
+import { 
+  Box, 
+  Typography, 
+  useTheme, 
+  Grid, 
+  LinearProgress,
+  Skeleton, 
+  styled 
+} from "@mui/material";
 import Header from "../../../components/Header";
-import LineChart from "../../../components/LineChart";
-import GeographyChart from "../../../components/GeographyChart";
-import BarChart from "../../../components/BarChart";
-import StatBox from "../../../components/StatBox";
-import ProgressCircle from "../../../components/ProgressCircle";
 import { axiosClient } from "../../../config/Api/AxiosClient";
+import { 
+  PeopleAlt, 
+  School, 
+  Warning, 
+  Schedule 
+} from "@mui/icons-material";
+
+const StatCard = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.background.paper,
+  borderRadius: '16px',
+  padding: theme.spacing(4),
+  transition: 'all 0.3s ease',
+  '&:hover': {
+    transform: 'translateY(-5px)',
+    boxShadow: theme.shadows[8]
+  }
+}));
 
 const DashboardAdmin = () => {
   const theme = useTheme();
-  const colors = tokens(theme.palette.mode);
-  const [totalStudents, setTotalStudents] = useState(0);
-  const [totalAbsences, setTotalAbsences] = useState(0);
-  const [totalAlerts, setTotalAlerts] = useState(0);
-  const [totalFormateurs, setTotalFormateurs] = useState(0);
-  const [recentAppointments, setRecentAppointments] = useState([]);
+  const [stats, setStats] = useState({
+    students: 0,
+    absences: 0,
+    alerts: 0,
+    formateurs: 0
+  });
+  const [loading, setLoading] = useState(true);
+
+  // Safe color getter function
+  const getColor = (colorName) => {
+    return theme.palette[colorName]?.main || theme.palette.primary.main;
+  };
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [studentsRes, absencesRes, alertsRes, designersRes, appointmentsRes] = await Promise.all([
+        const [studentsRes, absencesRes, alertsRes, designersRes] = await Promise.all([
           axiosClient.get('/dashboard/total-students'),
           axiosClient.get('/dashboard/total-absences'),
           axiosClient.get('/dashboard/total-alerts'),
           axiosClient.get('/dashboard/total-designers'),
-          axiosClient.get('/dashboard/recent-appointments'),
         ]);
 
-        console.log('Dashboard data:', studentsRes.data, absencesRes.data, alertsRes.data, appointmentsRes.data);
-
-        setTotalStudents(studentsRes.data.total);
-        setTotalAbsences(absencesRes.data.total);
-        setTotalAlerts(alertsRes.data.total);
-        setTotalFormateurs(designersRes.data.total);
-        setRecentAppointments(appointmentsRes.data.appointments);
+        setStats({
+          students: studentsRes.data.total,
+          absences: absencesRes.data.total,
+          alerts: alertsRes.data.total,
+          formateurs: designersRes.data.total
+        });
       } catch (error) {
         console.error('Error fetching dashboard data', error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -49,263 +70,99 @@ const DashboardAdmin = () => {
   }, []);
 
   return (
-    <Box m="20px">
-      {/* HEADER */}
-      <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="TABLEAU DE BORD" subtitle="Bienvenue sur votre tableau de bord" />
-        <Box>
-          <Button
-            sx={{
-              backgroundColor: colors.blueAccent[700],
-              color: colors.grey[100],
-              fontSize: "14px",
-              fontWeight: "bold",
-              padding: "10px 20px",
-            }}
-          >
-            <DownloadOutlinedIcon sx={{ mr: "10px" }} />
-            Download Reports
-          </Button>
-        </Box>
+    <Box sx={{ p: 4 }}>
+      {/* Welcome Header */}
+      <Box sx={{ mb: 6, textAlign: 'center' }}>
+        <Header 
+          title="Tableau de Bord Administratif" 
+          subtitle="Bienvenue dans votre portail de gestion" 
+        />
+        <Typography variant="body1" sx={{ mt: 2, color: 'text.secondary' }}>
+          Surveillance en temps réel des indicateurs clés de performance
+        </Typography>
       </Box>
 
-      {/* GRID & CHARTS */}
-      <Box
-        display="grid"
-        gridTemplateColumns="repeat(12, 1fr)"
-        gridAutoRows="140px"
-        gap="20px"
-      >
-        {/* ROW 1 */}
-        <Box
-          gridColumn="span 3"
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <StatBox
-            title={totalStudents}
-            subtitle="Total Students"
-            progress="0.75"
-            increase="+14%"
-            icon={
-              <PersonAddIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-        </Box>
-        <Box
-          gridColumn="span 3"
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <StatBox
-            title={totalFormateurs}
-            subtitle="Total Formateurs"
-            progress="0.80"
-            increase="+43%"
-            icon={
-              <TrafficIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-        </Box>
-        <Box
-          gridColumn="span 3"
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <StatBox
-            title={totalAbsences}
-            subtitle="Total Absences"
-            progress="0.50"
-            increase="+21%"
-            icon={
-              <TrafficIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-        </Box>
-        <Box
-          gridColumn="span 3"
-          backgroundColor={colors.primary[400]}
-          display="flex"
-          alignItems="center"
-          justifyContent="center"
-        >
-          <StatBox
-            title={totalAlerts}
-            subtitle="Total Alerts"
-            progress="0.30"
-            increase="+5%"
-            icon={
-              <EmailIcon
-                sx={{ color: colors.greenAccent[600], fontSize: "26px" }}
-              />
-            }
-          />
-        </Box>
-        {/* ROW 2 */}
-        <Box
-          gridColumn="span 8"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-        >
-          <Box
-            mt="25px"
-            p="0 30px"
-            display="flex "
-            justifyContent="space-between"
-            alignItems="center"
-          >
-            <Box>
-              <Typography
-                variant="h5"
-                fontWeight="600"
-                color={colors.grey[100]}
-              >
-                Revenue Generated
-              </Typography>
-              <Typography
-                variant="h3"
-                fontWeight="bold"
-                color={colors.greenAccent[500]}
-              >
-                $59,342.32
-              </Typography>
-            </Box>
-            <Box>
-              <IconButton>
-                <DownloadOutlinedIcon
-                  sx={{ fontSize: "26px", color: colors.greenAccent[500] }}
-                />
-              </IconButton>
-            </Box>
-          </Box>
-          <Box height="250px" m="-20px 0 0 0">
-            <LineChart isDashboard={true} />
-          </Box>
-        </Box>
-        <Box
-          gridColumn="span 4"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-          overflow="auto"
-        >
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            borderBottom={`4px solid ${colors.primary[500]}`}
-            colors={colors.grey[100]}
-            p="15px"
-          >
-            <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-              Récent rendez-vous
-            </Typography>
-          </Box>
-          {recentAppointments?.map((appointment, i) => (
-            <Box
-              key={`${appointment.id}-${i}`}
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              borderBottom={`4px solid ${colors.primary[500]}`}
-              p="15px"
-            >
-              <Box>
-                <Typography
-                  color={colors.greenAccent[500]}
-                  variant="h5"
-                  fontWeight="600"
-                >
-                  {appointment?.etudiant?.nom} {appointment?.etudiant?.prenom}
-                </Typography>
-                <Typography color={colors.grey[100]}>
-                  avec {appointment?.validator?.first_name} {appointment?.validator?.last_name}
-                </Typography>
-              </Box>
-              <Box color={colors.grey[100]}>{appointment.date}</Box>
-              <Box
-                backgroundColor={colors.greenAccent[500]}
-                p="5px 10px"
-                borderRadius="4px"
-              >
-                {appointment?.rdv_time} {/* Adjust based on your appointment model */}
-              </Box>
-            </Box>
-          ))}
-        </Box>
+      {/* Stats Grid */}
+      <Grid container spacing={4} justifyContent="center">
+        {[
+          { 
+            icon: <School sx={{ fontSize: 40, color: getColor('primary') }} />,
+            title: "Étudiants",
+            value: stats.students,
+            color: getColor('primary')
+          },
+          { 
+            icon: <PeopleAlt sx={{ fontSize: 40, color: getColor('secondary') }} />,
+            title: "Formateurs",
+            value: stats.formateurs,
+            color: getColor('secondary')
+          },
+          { 
+            icon: <Schedule sx={{ fontSize: 40, color: getColor('error') }} />,
+            title: "Absences",
+            value: stats.absences,
+            color: getColor('error')
+          },
+          { 
+            icon: <Warning sx={{ fontSize: 40, color: getColor('warning') }} />,
+            title: "Alertes",
+            value: stats.alerts,
+            color: getColor('warning')
+          },
+        ].map((stat, index) => (
+          <Grid item xs={12} sm={6} md={3} key={index}>
+            <StatCard>
+              {loading ? (
+                <>
+                  <Skeleton variant="circular" width={40} height={40} />
+                  <Skeleton variant="text" sx={{ mt: 2, fontSize: '2rem' }} />
+                  <Skeleton variant="text" width="60%" />
+                </>
+              ) : (
+                <>
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                    {stat.icon}
+                    <Typography variant="h4" sx={{ fontWeight: 700, color: stat.color }}>
+                      {stat.value}
+                    </Typography>
+                  </Box>
+                  <Typography variant="h6" sx={{ mt: 1 }}>
+                    {stat.title}
+                  </Typography>
+                  <LinearProgress 
+                    variant="determinate" 
+                    value={Math.min((stat.value / 1000) * 100, 100)}
+                    sx={{ 
+                      mt: 2,
+                      height: 8,
+                      borderRadius: 4,
+                      backgroundColor: theme.palette.action.hover,
+                      '& .MuiLinearProgress-bar': {
+                        backgroundColor: stat.color
+                      }
+                    }}
+                  />
+                </>
+              )}
+            </StatCard>
+          </Grid>
+        ))}
+      </Grid>
 
-        {/* ROW 3 */}
-        <Box
-          gridColumn="span 4"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-          p="30px"
-        >
-          <Typography variant="h5" fontWeight="600">
-            Campaign
+      {/* Status Bar */}
+      {!loading && (
+        <Box sx={{ 
+          mt: 6,
+          p: 3,
+          borderRadius: 4,
+          backgroundColor: 'background.default',
+          textAlign: 'center'
+        }}>
+          <Typography variant="body2" color="text.secondary">
+            Dernière mise à jour: {new Date().toLocaleTimeString()}
           </Typography>
-          <Box
-            display="flex"
-            flexDirection="column"
-            alignItems="center"
-            mt="25px"
-          >
-            <ProgressCircle size="125" />
-            <Typography
-              variant="h5"
-              color={colors.greenAccent[500]}
-              sx={{ mt: "15px" }}
-            >
-              $48,352 revenue generated
-            </Typography>
-            <Typography>Includes extra misc expenditures and costs</Typography>
-          </Box>
         </Box>
-        <Box
-          gridColumn="span 4"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-        >
-          <Typography
-            variant="h5"
-            fontWeight="600"
-            sx={{ padding: "30px 30px 0 30px" }}
-          >
-            Sales Quantity
-          </Typography>
-          <Box height="250px" mt="-20px">
-            <BarChart isDashboard={true} />
-          </Box>
-        </Box>
-        <Box
-          gridColumn="span 4"
-          gridRow="span 2"
-          backgroundColor={colors.primary[400]}
-          padding="30px"
-        >
-          <Typography
-            variant="h5"
-            fontWeight="600"
-            sx={{ marginBottom: "15px" }}
-          >
-            Geography Based Traffic
-          </Typography>
-          <Box height="200px">
-            <GeographyChart isDashboard={true} />
-          </Box>
-        </Box>
-      </Box>
+      )}
     </Box>
   );
 };

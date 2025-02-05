@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { useAppContext } from "../../config/context/ComponentContext";
 import { axiosClient } from "../../config/Api/AxiosClient";
-import Swal from "sweetalert2";
 import PropTypes from "prop-types";
+import { successToast } from "../../config/Toasts/toasts";
 
 const CreateAbsence = ({ targetModel, getAllDesigners, role }) => {
   const { setErrors, errors } = useAppContext();
@@ -21,10 +21,7 @@ const CreateAbsence = ({ targetModel, getAllDesigners, role }) => {
         duree: duree?.value,
       });
       console.log(data);
-      Swal.fire({
-        text: data.message,
-        icon: "success",
-      });
+      successToast(data.message);
       await getAllDesigners();
       cancelModel.current.click();
     } catch (error) {

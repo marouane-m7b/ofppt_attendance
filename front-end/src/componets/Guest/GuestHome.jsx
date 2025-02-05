@@ -2,12 +2,13 @@ import { Box, Button, Container, Grid, Typography, useTheme } from '@mui/materia
 import { FaUser, FaUserTie, FaChartLine, FaMobileAlt, FaRegClock, FaChalkboardTeacher } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import { styled } from '@mui/system';
+import { useRef } from 'react';
 
 const HeroSection = styled('section')(({ theme }) => ({
   minHeight: '70vh',
   display: 'flex',
   alignItems: 'center',
-  background: `linear-gradient(rgba(0, 123, 255, 0.9), rgba(0, 86, 179, 0.9)), url('../public/pictures/students.jpg')`,
+  background: `linear-gradient(rgba(146, 164, 255, 0.72), rgba(136, 193, 255, 0.9)), url('../public/pictures/students.jpg')`,
   backgroundSize: 'cover',
   backgroundPosition: 'center',
   color: theme.palette.common.white,
@@ -39,7 +40,9 @@ const LoginCard = styled(Box)(({ theme }) => ({
   }
 }));
 
+
 export default function GuestHome() {
+  const loginSectionRef = useRef(null);
   const theme = useTheme();
 
   return (
@@ -55,12 +58,11 @@ export default function GuestHome() {
               Suivi en temps réel, analyse des performances, et gestion simplifiée des étudiants
             </Typography>
             <Button
-              component={Link}
-              to="/formateur/login"
               variant="contained"
               color="primary"
               size="large"
               startIcon={<FaChalkboardTeacher />}
+              onClick={() => loginSectionRef.current?.scrollIntoView({ behavior: "smooth" })}
               sx={{
                 py: 2,
                 px: 5,
@@ -74,46 +76,6 @@ export default function GuestHome() {
           </Box>
         </Container>
       </HeroSection>
-
-      {/* Login Sections */}
-      <Box sx={{ py: 8, backgroundColor: 'background.paper' }}>
-        <Container>
-          <Typography variant="h3" component="h2" textAlign="center" gutterBottom sx={{ fontWeight: 700 }}>
-            Accès Personnel
-          </Typography>
-          <Grid container spacing={4} sx={{ mt: 2 }}>
-            {[
-              { role: "Formateur", path: "/formateur/login", icon: <FaUser /> },
-              { role: "Gestionnaire", path: "/gestionnaire/login", icon: <FaUser /> },
-              { role: "Administrateur", path: "/administrateur/login", icon: <FaUserTie /> },
-            ].map((login, index) => (
-              <Grid item xs={12} md={4} key={index}>
-                <LoginCard>
-                  <Box sx={{ color: 'primary.main', fontSize: 40, mb: 2 }}>
-                    {login.icon}
-                  </Box>
-                  <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
-                    {login.role}
-                  </Typography>
-                  <Button
-                    component={Link}
-                    to={login.path}
-                    variant="contained"
-                    color="primary"
-                    sx={{
-                      borderRadius: 50,
-                      px: 4,
-                      fontWeight: 600
-                    }}
-                  >
-                    Se Connecter
-                  </Button>
-                </LoginCard>
-              </Grid>
-            ))}
-          </Grid>
-        </Container>
-      </Box>
 
       {/* Features Section */}
       <Container sx={{ py: 8 }}>
@@ -142,6 +104,46 @@ export default function GuestHome() {
           ))}
         </Grid>
       </Container>
+
+      {/* Login Sections */}
+      <Box ref={loginSectionRef} sx={{ py: 8, backgroundColor: 'background.paper' }}>
+        <Container>
+          <Typography variant="h3" component="h2" textAlign="center" gutterBottom sx={{ fontWeight: 700 }}>
+            Accès Personnel
+          </Typography>
+          <Grid container spacing={4} sx={{ mt: 2 }}>
+            {[
+              { role: "Administrateur", path: "/administrateur/login", icon: <FaUserTie /> },
+              { role: "Gestionnaire", path: "/gestionnaire/login", icon: <FaUser /> },
+              { role: "Formateur", path: "/formateur/login", icon: <FaUser /> },
+            ].map((login, index) => (
+              <Grid item xs={12} md={4} key={index}>
+                <LoginCard>
+                  <Box sx={{ color: 'primary.main', fontSize: 40, mb: 2 }}>
+                    {login.icon}
+                  </Box>
+                  <Typography variant="h5" gutterBottom sx={{ fontWeight: 600 }}>
+                    {login.role}
+                  </Typography>
+                  <Button
+                    component={Link}
+                    to={login.path}
+                    variant="contained"
+                    color="primary"
+                    sx={{
+                      borderRadius: 50,
+                      px: 4,
+                      fontWeight: 600
+                    }}
+                  >
+                    Se Connecter
+                  </Button>
+                </LoginCard>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
 
       {/* Footer */}
       <Box sx={{ py: 6, backgroundColor: 'primary', color: 'common.white' }}>

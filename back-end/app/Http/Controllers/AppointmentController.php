@@ -7,6 +7,7 @@ use App\Mail\AppointmentCreatedMail;
 use App\Mail\AppointmentThankYouMail;
 use App\Models\Appointment;
 use App\Models\Designer;
+use App\Models\Validator as ModelsValidator;
 use App\Notifications\AppointmentApology;
 use App\Notifications\AppointmentCreated;
 use App\Notifications\AppointmentThankYou;
@@ -73,6 +74,7 @@ class AppointmentController extends Controller
             return response()->json(['message' => 'Le conseiller est occupé à ce moment-là.'], 400);
         }
 
+
         $appointment = Appointment::create([
             'etudiant_id' => $request->etudiant_id,
             'validator_id' => $validator->id,
@@ -83,7 +85,7 @@ class AppointmentController extends Controller
         // Send notifications
         Mail::to($appointment->etudiant->email)->send(new AppointmentCreatedMail($appointment, 'etudiant', $appointment->etudiant));
 
-        $cgcps = Designer::where('is_cgcp', 1)->get()->merge(Validator::where('is_cgcp', 1)->get());
+        $cgcps = Designer::where('is_cgcp', 1)->get()->merge(ModelsValidator::where('is_cgcp', 1)->get());
         foreach ($cgcps as $cgcp) {
             Mail::to($cgcp->email)->send(new AppointmentCreatedMail($appointment, 'cgcp', $cgcp));
         }
@@ -126,7 +128,7 @@ class AppointmentController extends Controller
     protected function sendThankYouEmails(Appointment $appointment)
     {
         $etudiant = $appointment->etudiant;
-        $cgcps = Designer::where('is_cgcp', 1)->get()->merge(Validator::where('is_cgcp', 1)->get());
+        $cgcps = Designer::where('is_cgcp', 1)->get()->merge(ModelsValidator::where('is_cgcp', 1)->get());
 
         // Send email to student
         Mail::to($etudiant->email)->send(new AppointmentThankYouMail($appointment, $etudiant));
@@ -140,7 +142,7 @@ class AppointmentController extends Controller
     protected function sendApologyEmails(Appointment $appointment)
     {
         $etudiant = $appointment->etudiant;
-        $cgcps = Designer::where('is_cgcp', 1)->get()->merge(Validator::where('is_cgcp', 1)->get());
+        $cgcps = Designer::where('is_cgcp', 1)->get()->merge(ModelsValidator::where('is_cgcp', 1)->get());
 
         // Send email to student
         Mail::to($etudiant->email)->send(new AppointmentApologyMail($appointment, $etudiant));

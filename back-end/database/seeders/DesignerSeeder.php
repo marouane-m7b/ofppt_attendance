@@ -18,7 +18,7 @@ class DesignerSeeder extends Seeder
             // Mle Affecté Présentiel Actif    Formateur Affecté Présentiel Actif
             ['first_name' => 'Fatima', 'last_name' => 'Moustati', 'email' => 'fatima.moustati@ofppt.ma', 'is_cgcp' => 0, 'password' => Hash::make('ofppt')],
             ['first_name' => 'Kaoutar', 'last_name' => 'Meddri', 'email' => 'kaoutar.meddri@ofppt.ma', 'is_cgcp' => 0, 'password' => Hash::make('ofppt')],
-            ['first_name' => 'Hassan', 'last_name' => 'Khoullak', 'email' => 'hassan.khoullak@ofppt.ma', 'is_cgcp' => 0, 'password' => Hash::make('ofppt')],
+            ['first_name' => 'Hassan', 'last_name' => 'Khoullak', 'email' => 'hassan.khoullak@ofppt.ma', 'is_cgcp' => 1, 'password' => Hash::make('ofppt')],
             ['first_name' => 'Faical', 'last_name' => 'Essaiydy', 'email' => 'faical.essaiydy@ofppt.ma', 'is_cgcp' => 0, 'password' => Hash::make('ofppt')],
             ['first_name' => 'Khadija', 'last_name' => 'Traf', 'email' => 'khadija.traf@ofppt.ma', 'is_cgcp' => 0, 'password' => Hash::make('ofppt')],
             ['first_name' => 'Mostafa', 'last_name' => 'Zahouani', 'email' => 'mostafa.zahouani@ofppt.ma', 'is_cgcp' => 0, 'password' => Hash::make('ofppt')],
@@ -50,7 +50,7 @@ class DesignerSeeder extends Seeder
             ['first_name' => 'Abdelghani', 'last_name' => 'Ennaciri', 'email' => 'abdelghani.ennaciri@ofppt.ma', 'is_cgcp' => 0, 'password' => Hash::make('ofppt')],
             ['first_name' => 'Salaheddine', 'last_name' => 'Bahri', 'email' => 'salaheddine.bahri@ofppt.ma', 'is_cgcp' => 0, 'password' => Hash::make('ofppt')],
             ['first_name' => 'Moussa', 'last_name' => 'Essaadaoui', 'email' => 'moussa.essaadaoui@ofppt.ma', 'is_cgcp' => 0, 'password' => Hash::make('ofppt')],
-            ['first_name' => 'Yassine', 'last_name' => 'Dabachine', 'email' => 'yassine.dabachine@ofppt.ma', 'is_cgcp' => 1, 'password' => Hash::make('ofppt')],
+            ['first_name' => 'Anas', 'last_name' => 'Tazi', 'email' => 'anas.tazi@ofppt.ma', 'is_cgcp' => 1, 'password' => Hash::make('ofppt')],
             ['first_name' => 'Hichame', 'last_name' => 'Lmrahi', 'email' => 'hicham.lmrahi@ofppt.ma', 'is_cgcp' => 1, 'password' => Hash::make('ofppt')],
         ];
 

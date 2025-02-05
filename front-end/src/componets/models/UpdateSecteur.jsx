@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useAppContext } from "../../config/context/ComponentContext";
 import { axiosClient } from "../../config/Api/AxiosClient";
-import Swal from "sweetalert2";
 import { Modal, Box, TextField, Button, Typography, CircularProgress } from '@mui/material';
 import PropTypes from "prop-types";
+import { successToast } from "../../config/Toasts/toasts";
 
 const UpdateSecteur = ({ open, onClose, secteur, getAllSecteurs }) => {
   const { setErrors, errors } = useAppContext();
@@ -22,10 +22,7 @@ const UpdateSecteur = ({ open, onClose, secteur, getAllSecteurs }) => {
       );
       await getAllSecteurs();
       onClose();
-      Swal.fire({
-        text: data.message,
-        icon: "success",
-      });
+      successToast(data.message);
     } catch (error) {
       setErrors(error.response.data.errors);
     } finally {

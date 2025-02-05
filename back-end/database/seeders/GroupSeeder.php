@@ -15,12 +15,20 @@ class GroupSeeder extends Seeder
     {
         $groups = [
             [
+                'nom' => 'DD101',
+                'filiere_id' => 9,
+            ],
+            [
                 'nom' => 'DD201',
                 'filiere_id' => 9,
             ],
             [
-                'nom' => 'DD202',
-                'filiere_id' => 9,
+                'nom' => 'TSMFM101',
+                'filiere_id' => 4,
+            ],
+            [
+                'nom' => 'ESA201',
+                'filiere_id' => 2,
             ],
             [
                 'nom' => 'ESA202',
